@@ -163,54 +163,58 @@
   const isMobileLike = () =>
     window.matchMedia("(hover: none), (pointer: coarse)").matches;
 
+  function restorePopup(pop) {
+    if (!pop || !pop.__home) return;
+    const { parent, next } = pop.__home;
+    if (next && next.parentNode === parent) parent.insertBefore(pop, next);
+    else parent.appendChild(pop);
+  }
+
   function hideActive() {
-    if (activePop) {
-      activePop.classList.remove("is-shown", "demo-tip__pop--below");
-      activePop.style.left = "";
-      activePop.style.top = "";
-      activePop.style.setProperty("--tip-arrow", "50%");
-    }
+    if (!activePop) return;
+
+    activePop.classList.remove("is-shown", "demo-tip__pop--float", "demo-tip__pop--below");
+    activePop.style.left = "";
+    activePop.style.top = "";
+    activePop.style.transform = "";
+
+    restorePopup(activePop);
+
     activeTip = null;
     activePop = null;
   }
 
-  function positionTooltip(tip, pop) {
-    pop.classList.add("demo-tip__pop--float");
+  function showTooltip(tip, pop) {
+    if (!pop.__home) {
+      pop.__home = {
+        parent: pop.parentNode,
+        next: pop.nextSibling
+      };
+    }
+
+    document.body.appendChild(pop);
+    pop.classList.add("demo-tip__pop--float", "is-shown");
 
     const r = tip.getBoundingClientRect();
     const margin = 12;
+    const popRect = pop.getBoundingClientRect();
 
-    // Temporarily show invisibly so we can measure it
-    pop.style.visibility = "hidden";
-    pop.classList.add("is-shown");
-
-    const pr = pop.getBoundingClientRect();
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-
-    let left = r.left + r.width / 2 - pr.width / 2;
-    left = Math.max(margin, Math.min(left, vw - pr.width - margin));
-
-    let top = r.top - pr.height - 10;
-    let below = false;
+    let top = r.top - popRect.height - 12;
 
     if (top < margin) {
-      top = r.bottom + 10;
-      below = true;
+      top = r.bottom + 12;
+      pop.classList.add("demo-tip__pop--below");
+    } else {
+      pop.classList.remove("demo-tip__pop--below");
     }
 
-    if (top + pr.height > vh - margin) {
-      top = Math.max(margin, vh - pr.height - margin);
+    if (top + popRect.height > window.innerHeight - margin) {
+      top = window.innerHeight - popRect.height - margin;
     }
 
-    const arrowX = r.left + r.width / 2 - left;
-
-    pop.style.left = `${left}px`;
-    pop.style.top = `${top}px`;
-    pop.style.setProperty("--tip-arrow", `${arrowX}px`);
-    pop.classList.toggle("demo-tip__pop--below", below);
-
-    pop.style.visibility = "";
+    pop.style.left = "50%";
+    pop.style.top = `${Math.max(margin, top)}px`;
+    pop.style.transform = "translateX(-50%)";
   }
 
   tips.forEach((tip) => {
@@ -231,8 +235,7 @@
       hideActive();
       activeTip = tip;
       activePop = pop;
-
-      positionTooltip(tip, pop);
+      showTooltip(tip, pop);
     });
   });
 
