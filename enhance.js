@@ -156,7 +156,6 @@
 })();
 
 (() => {
-(() => {
   const tips = document.querySelectorAll(".demo-tip");
   let activeTip = null;
   let activePop = null;
@@ -174,11 +173,7 @@
   function hideActive() {
     if (!activePop) return;
 
-    activePop.classList.remove(
-      "is-shown",
-      "demo-tip__pop--float",
-      "demo-tip__pop--below"
-    );
+    activePop.classList.remove("is-shown", "demo-tip__pop--float", "demo-tip__pop--below");
     activePop.style.left = "";
     activePop.style.top = "";
     activePop.style.transform = "";
