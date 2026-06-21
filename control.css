@@ -741,7 +741,12 @@
   color: var(--text-faint); font-family: var(--font-mono); font-size: 8px; line-height: 1;
   cursor: help; position: relative; transition: color 0.3s var(--ease), border-color 0.3s var(--ease);
 }
-.demo-tip:hover, .demo-tip:focus-visible, .demo-tip:focus { color: var(--text); border-color: var(--cyan-line); outline: none; }
+.demo-tip:hover,
+.demo-tip:focus-visible {
+  color: var(--text);
+  border-color: var(--cyan-line);
+  outline: none;
+}
 .demo-tip__pop {
   position: absolute; bottom: calc(100% + 9px); left: 50%; transform: translateX(-50%) translateY(4px);
   width: max-content; max-width: 240px; z-index: 50;
@@ -754,11 +759,18 @@
 }
 .demo-tip__pop b { color: var(--text); font-weight: 500; }
 .demo-tip__pop::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: var(--line-2); }
-.demo-tip:hover .demo-tip__pop, .demo-tip:focus-visible .demo-tip__pop, .demo-tip:focus .demo-tip__pop { opacity: 1; transform: translateX(-50%) translateY(0); }
+.demo-tip:hover .demo-tip__pop,
+.demo-tip:focus-visible .demo-tip__pop {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
 /* flip near right edge handled with modifier */
 .demo-tip--end .demo-tip__pop { left: auto; right: -4px; transform: translateX(0) translateY(4px); }
 .demo-tip--end .demo-tip__pop::after { left: auto; right: 8px; transform: none; }
-.demo-tip--end:hover .demo-tip__pop, .demo-tip--end:focus-visible .demo-tip__pop, .demo-tip--end:focus .demo-tip__pop { transform: translateX(0) translateY(0); }
+.demo-tip--end:hover .demo-tip__pop,
+.demo-tip--end:focus-visible .demo-tip__pop {
+  transform: translateX(0) translateY(0);
+}
 
 /* keep tooltip labels from inheriting uppercase letter-spacing weirdness */
 .demo-metric__label .demo-tip, .demo-stat .k .demo-tip, .cp-rnode__row .k .demo-tip { letter-spacing: 0; }
