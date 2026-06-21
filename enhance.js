@@ -93,11 +93,27 @@
      absolutely-positioned popup gets cut at the border. On
      open we relocate the popup to <body> and position it
      fixed, clamped to the viewport, flipping above/below as
-     room allows — so it always floats clear of any clip.    */
+     room allows — so it always floats clear of any clip.
+
+     ONE controller, two interaction modes chosen by device:
+       • hover-capable (desktop): hover / focus opens, leave / blur closes
+       • touch (no hover): tap the "i" to toggle it open/closed;
+         tapping anywhere else, scrolling, or resizing dismisses it.
+
+     The mode is keyed to the SAME media query the CSS uses
+     ((hover: none), (pointer: coarse)) so JS and CSS always
+     agree which mode is live. (Previously a second, separate
+     tap handler ran alongside the hover one and the two fought
+     over the same popup on phones — opening then instantly
+     hiding it. That duplicate is now gone.)                 */
   (function floatTips() {
     const tips = $$('.demo-tip');
     if (!tips.length) return;
-    let open = null;
+
+    // Touch-mode when the device can't hover / uses a coarse pointer —
+    // identical condition to the CSS @media block for tooltips.
+    const isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    let open = null;          // the currently-floated .demo-tip__pop, or null
 
     function place(tip, pop) {
       const r = tip.getBoundingClientRect();
@@ -112,10 +128,15 @@
       let below = false;
       let top = r.top - pr.height - 9;
       if (top < M) { top = r.bottom + 9; below = true; }
+      // keep it on screen vertically even when flipped below a low trigger
+      top = Math.min(top, vh - pr.height - M);
+      top = Math.max(M, top);
       pop.style.left = Math.round(left) + 'px';
       pop.style.top = Math.round(top) + 'px';
       pop.style.setProperty('--tip-arrow', Math.round(r.left + r.width / 2 - left) + 'px');
       pop.classList.toggle('demo-tip__pop--below', below);
+      // (On touch the CSS centers the popup and hides the arrow; the
+      //  left/arrow values above are simply overridden there.)
     }
 
     function show(tip) {
@@ -145,104 +166,32 @@
     }
 
     tips.forEach((tip) => {
-      tip.addEventListener('pointerenter', () => show(tip));
-      tip.addEventListener('pointerleave', hide);
-      tip.addEventListener('focus', () => show(tip));
-      tip.addEventListener('blur', hide);
+      if (isTouch) {
+        // Tap toggles this tip. Tapping a different tip swaps to it
+        // (show() closes any already-open one first).
+        tip.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();        // keep the outside-tap closer below from firing
+          const pop = tip.querySelector('.demo-tip__pop');
+          if (open && open === pop) hide();
+          else show(tip);
+        });
+      } else {
+        tip.addEventListener('pointerenter', () => show(tip));
+        tip.addEventListener('pointerleave', hide);
+        tip.addEventListener('focus', () => show(tip));
+        tip.addEventListener('blur', hide);
+      }
     });
+
+    // Touch: a tap anywhere outside the open popup dismisses it.
+    if (isTouch) {
+      document.addEventListener('click', (e) => {
+        if (open && !open.contains(e.target)) hide();
+      });
+    }
+
     window.addEventListener('scroll', hide, { passive: true });
     window.addEventListener('resize', hide);
   })();
-})();
-
-(() => {
-  const tips = document.querySelectorAll(".demo-tip");
-  let activeTip = null;
-  let activePop = null;
-
-  const isMobileLike = () =>
-    window.matchMedia("(hover: none), (pointer: coarse)").matches;
-
-  function restorePopup(pop) {
-    if (!pop || !pop.__home) return;
-    const { parent, next } = pop.__home;
-    if (next && next.parentNode === parent) parent.insertBefore(pop, next);
-    else parent.appendChild(pop);
-  }
-
-  function hideActive() {
-    if (!activePop) return;
-
-    activePop.classList.remove("is-shown", "demo-tip__pop--float", "demo-tip__pop--below");
-    activePop.style.left = "";
-    activePop.style.top = "";
-    activePop.style.transform = "";
-
-    restorePopup(activePop);
-
-    activeTip = null;
-    activePop = null;
-  }
-
-  function showTooltip(tip, pop) {
-    if (!pop.__home) {
-      pop.__home = {
-        parent: pop.parentNode,
-        next: pop.nextSibling
-      };
-    }
-
-    document.body.appendChild(pop);
-    pop.classList.add("demo-tip__pop--float", "is-shown");
-
-    const r = tip.getBoundingClientRect();
-    const margin = 12;
-    const popRect = pop.getBoundingClientRect();
-
-    let top = r.top - popRect.height - 12;
-
-    if (top < margin) {
-      top = r.bottom + 12;
-      pop.classList.add("demo-tip__pop--below");
-    } else {
-      pop.classList.remove("demo-tip__pop--below");
-    }
-
-    if (top + popRect.height > window.innerHeight - margin) {
-      top = window.innerHeight - popRect.height - margin;
-    }
-
-    pop.style.left = "50%";
-    pop.style.top = `${Math.max(margin, top)}px`;
-    pop.style.transform = "translateX(-50%)";
-  }
-
-  tips.forEach((tip) => {
-    const pop = tip.querySelector(".demo-tip__pop");
-    if (!pop) return;
-
-    tip.addEventListener("click", (e) => {
-      if (!isMobileLike()) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-
-      if (activeTip === tip) {
-        hideActive();
-        return;
-      }
-
-      hideActive();
-      activeTip = tip;
-      activePop = pop;
-      showTooltip(tip, pop);
-    });
-  });
-
-  document.addEventListener("click", () => {
-    if (isMobileLike()) hideActive();
-  });
-
-  window.addEventListener("scroll", hideActive, { passive: true });
-  window.addEventListener("resize", hideActive);
 })();
