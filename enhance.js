@@ -154,3 +154,92 @@
     window.addEventListener('resize', hide);
   })();
 })();
+
+(() => {
+  const tips = document.querySelectorAll(".demo-tip");
+  let activeTip = null;
+  let activePop = null;
+
+  const isMobileLike = () =>
+    window.matchMedia("(hover: none), (pointer: coarse)").matches;
+
+  function hideActive() {
+    if (activePop) {
+      activePop.classList.remove("is-shown", "demo-tip__pop--below");
+      activePop.style.left = "";
+      activePop.style.top = "";
+      activePop.style.setProperty("--tip-arrow", "50%");
+    }
+    activeTip = null;
+    activePop = null;
+  }
+
+  function positionTooltip(tip, pop) {
+    pop.classList.add("demo-tip__pop--float");
+
+    const r = tip.getBoundingClientRect();
+    const margin = 12;
+
+    // Temporarily show invisibly so we can measure it
+    pop.style.visibility = "hidden";
+    pop.classList.add("is-shown");
+
+    const pr = pop.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+
+    let left = r.left + r.width / 2 - pr.width / 2;
+    left = Math.max(margin, Math.min(left, vw - pr.width - margin));
+
+    let top = r.top - pr.height - 10;
+    let below = false;
+
+    if (top < margin) {
+      top = r.bottom + 10;
+      below = true;
+    }
+
+    if (top + pr.height > vh - margin) {
+      top = Math.max(margin, vh - pr.height - margin);
+    }
+
+    const arrowX = r.left + r.width / 2 - left;
+
+    pop.style.left = `${left}px`;
+    pop.style.top = `${top}px`;
+    pop.style.setProperty("--tip-arrow", `${arrowX}px`);
+    pop.classList.toggle("demo-tip__pop--below", below);
+
+    pop.style.visibility = "";
+  }
+
+  tips.forEach((tip) => {
+    const pop = tip.querySelector(".demo-tip__pop");
+    if (!pop) return;
+
+    tip.addEventListener("click", (e) => {
+      if (!isMobileLike()) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (activeTip === tip) {
+        hideActive();
+        return;
+      }
+
+      hideActive();
+      activeTip = tip;
+      activePop = pop;
+
+      positionTooltip(tip, pop);
+    });
+  });
+
+  document.addEventListener("click", () => {
+    if (isMobileLike()) hideActive();
+  });
+
+  window.addEventListener("scroll", hideActive, { passive: true });
+  window.addEventListener("resize", hideActive);
+})();
