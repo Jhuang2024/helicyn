@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>document.documentElement.className += ' js';</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#08090b" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Helicyn Control Plane · Simulation</title>
+<meta name="description" content="A live simulation of compute, energy, and thermal coordination across AI infrastructure." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="favicon-180.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="control.css" />
+</head>
+<body>
+
+<a class="skip" href="#control-main">Skip to content</a>
+<div class="progress"></div>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav" data-screen-label="nav">
+  <a class="brand" href="https://helicyn.com" aria-label="Helicyn home" data-magnetic="0.18">
+    <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
+      <circle cx="9" cy="9" r="2" fill="currentColor"></circle>
+    </svg>
+    <span class="brand__name">Helicyn</span>
+  </a>
+  <nav class="nav__right">
+    <span class="nav__meta">
+      <span class="statusdot" aria-hidden="true"></span>
+      <span class="mono" data-clock>00:00:00 UTC</span>
+    </span>
+    <a class="navlink" href="https://helicyn.com">Overview</a>
+    <a class="navlink" href="https://helicyn.com/#access">Request access <span class="arr" aria-hidden="true">↗</span></a>
+  </nav>
+</header>
+
+<main id="control-main" tabindex="-1">
+
+<!-- ===================== 1 · STATUS HEADER ===================== -->
+<section class="control-head" data-screen-label="control-header" id="top">
+  <div class="demo-wrap control-head__inner">
+    <span class="eyebrow" data-reveal>Helicyn · control plane</span>
+    <h1 data-reveal style="--i:1">Helicyn Control Plane</h1>
+    <p class="control-head__sub" data-reveal style="--i:2">A live simulation of compute, energy, and thermal coordination across AI&nbsp;infrastructure.</p>
+
+    <div class="control-statusrow" data-reveal style="--i:3">
+      <span class="control-chip"><span class="control-badge--opt control-badge" style="border:0;padding:0;"><span class="d"></span></span><span class="label">Mode</span><span class="val">Simulation</span></span>
+      <span class="control-chip"><span class="label">Build</span><span class="val">v0.1.1</span></span>
+      <span class="control-chip"><span class="label">Region</span><span class="val">Global</span></span>
+      <span class="control-chip"><span class="label">System</span><span class="val">Nominal</span></span>
+      <span class="control-chip"><span class="label">Sync</span><span class="val live" data-clock>00:00:00 UTC</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 2 · KEY METRIC CARDS =================== -->
+<section class="demo-section" aria-label="Key metrics">
+  <div class="demo-wrap">
+    <div class="demo-modlabel" data-reveal>
+      <span class="tick">01</span>
+      <h2>Today, coordinated</h2>
+      <span class="demo-modnote">Rolling 24h · simulated</span>
+    </div>
+
+    <div class="demo-metrics" data-reveal style="--i:1">
+      <!-- shared gradient for the area sparklines -->
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+        <linearGradient id="demoSparkGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--signal)" stop-opacity="0.20"></stop>
+          <stop offset="100%" stop-color="var(--signal)" stop-opacity="0"></stop>
+        </linearGradient>
+      </defs></svg>
+
+      <!-- each card: label · value(+unit) · trend · context · filled area sparkline -->
+      <article class="demo-metric">
+        <span class="demo-metric__label">Energy optimized today</span>
+        <div class="demo-metric__value"><span data-metric="energy">18.7</span><span class="unit">MWh</span></div>
+        <div class="demo-metric__trend"><span class="dir">↗</span> +2.3 MWh vs. yesterday</div>
+        <div class="demo-metric__ctx">across 5 coordinated regions</div>
+        <svg class="demo-metric__spark" viewBox="0 0 100 48" preserveAspectRatio="none" aria-hidden="true">
+          <path class="area" d="M0,34 L17,30 L33,31 L50,21 L66,24 L83,13 L100,9 L100,48 L0,48 Z"></path>
+          <path class="line" d="M0,34 L17,30 L33,31 L50,21 L66,24 L83,13 L100,9"></path>
+        </svg>
+      </article>
+
+      <article class="demo-metric">
+        <span class="demo-metric__label">Estimated cost avoided</span>
+        <div class="demo-metric__value"><span data-metric="cost">4,820</span></div>
+        <div class="demo-metric__trend"><span class="dir">↗</span> +$610 vs. yesterday</div>
+        <div class="demo-metric__ctx">grid arbitrage + deferred load</div>
+        <svg class="demo-metric__spark" viewBox="0 0 100 48" preserveAspectRatio="none" aria-hidden="true">
+          <path class="area" d="M0,36 L17,32 L33,33 L50,23 L66,19 L83,14 L100,8 L100,48 L0,48 Z"></path>
+          <path class="line" d="M0,36 L17,32 L33,33 L50,23 L66,19 L83,14 L100,8"></path>
+        </svg>
+      </article>
+
+      <article class="demo-metric">
+        <span class="demo-metric__label">Carbon shifted</span>
+        <div class="demo-metric__value"><span data-metric="carbon">6.2</span><span class="unit">tCO₂e</span></div>
+        <div class="demo-metric__trend"><span class="dir">↗</span> +0.8 t vs. yesterday</div>
+        <div class="demo-metric__ctx">load moved to low-carbon windows</div>
+        <svg class="demo-metric__spark" viewBox="0 0 100 48" preserveAspectRatio="none" aria-hidden="true">
+          <path class="area" d="M0,32 L17,34 L33,25 L50,27 L66,17 L83,19 L100,10 L100,48 L0,48 Z"></path>
+          <path class="line" d="M0,32 L17,34 L33,25 L50,27 L66,17 L83,19 L100,10"></path>
+        </svg>
+      </article>
+
+      <article class="demo-metric">
+        <span class="demo-metric__label">Average PUE</span>
+        <div class="demo-metric__value"><span data-metric="pue">1.18</span></div>
+        <div class="demo-metric__trend"><span class="dir down">↘</span> −0.04 vs. baseline</div>
+        <div class="demo-metric__ctx">power usage effectiveness</div>
+        <svg class="demo-metric__spark" viewBox="0 0 100 48" preserveAspectRatio="none" aria-hidden="true">
+          <path class="area" d="M0,14 L17,16 L33,15 L50,20 L66,22 L83,21 L100,26 L100,48 L0,48 Z"></path>
+          <path class="line" d="M0,14 L17,16 L33,15 L50,20 L66,22 L83,21 L100,26"></path>
+        </svg>
+      </article>
+
+      <article class="demo-metric">
+        <span class="demo-metric__label">GPU utilization</span>
+        <div class="demo-metric__value"><span data-metric="gpu">87</span><span class="unit">%</span></div>
+        <div class="demo-metric__trend"><span class="dir">↗</span> +5 pts vs. baseline</div>
+        <div class="demo-metric__ctx">fleet-wide, scheduling-aware</div>
+        <svg class="demo-metric__spark" viewBox="0 0 100 48" preserveAspectRatio="none" aria-hidden="true">
+          <path class="area" d="M0,28 L17,24 L33,25 L50,16 L66,18 L83,12 L100,11 L100,48 L0,48 Z"></path>
+          <path class="line" d="M0,28 L17,24 L33,25 L50,16 L66,18 L83,12 L100,11"></path>
+        </svg>
+      </article>
+
+      <article class="demo-metric">
+        <span class="demo-metric__label">Cooling load reduced</span>
+        <div class="demo-metric__value"><span data-metric="cooling">11.4</span><span class="unit">%</span></div>
+        <div class="demo-metric__trend"><span class="dir down">↘</span> setpoint coordination</div>
+        <div class="demo-metric__ctx">thermal headroom recovered</div>
+        <svg class="demo-metric__spark" viewBox="0 0 100 48" preserveAspectRatio="none" aria-hidden="true">
+          <path class="area" d="M0,30 L17,27 L33,29 L50,20 L66,23 L83,16 L100,18 L100,48 L0,48 Z"></path>
+          <path class="line" d="M0,30 L17,27 L33,29 L50,20 L66,23 L83,16 L100,18"></path>
+        </svg>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============== 3 · REGIONAL INFRASTRUCTURE GRID ============= -->
+<section class="demo-section demo-section--line" aria-label="Regional infrastructure">
+  <div class="demo-wrap">
+    <div class="demo-modlabel" data-reveal>
+      <span class="tick">02</span>
+      <h2>Regional infrastructure</h2>
+      <span class="demo-modnote">5 regions · live telemetry</span>
+    </div>
+
+    <div class="demo-regions" data-reveal style="--i:1">
+      <!-- US-WEST: recomputed live (shift source) -->
+      <article class="demo-region" data-region="us-west">
+        <div class="demo-region__top">
+          <span class="demo-region__name">US-WEST</span>
+          <span class="control-badge control-badge--opt"><span class="d"></span>Optimizing</span>
+        </div>
+        <div class="demo-load">
+          <div class="demo-load__head"><span class="k">Compute load</span><span class="v" data-load-val>84%</span></div>
+          <div class="demo-bar"><div class="demo-bar__fill warn" style="width:84%"></div></div>
+        </div>
+        <div class="demo-region__stats">
+          <div class="demo-stat"><span class="k">Carbon intensity</span><span class="v">412 g/kWh</span></div>
+          <div class="demo-stat"><span class="k">Cooling risk</span><span class="v"><span class="demo-risk demo-risk--med"><span class="d"></span>Medium</span></span></div>
+        </div>
+      </article>
+
+      <!-- US-CENTRAL: recomputed live (shift target) -->
+      <article class="demo-region" data-region="us-central">
+        <div class="demo-region__top">
+          <span class="demo-region__name">US-CENTRAL</span>
+          <span class="control-badge control-badge--ok"><span class="d"></span>Nominal</span>
+        </div>
+        <div class="demo-load">
+          <div class="demo-load__head"><span class="k">Compute load</span><span class="v" data-load-val>61%</span></div>
+          <div class="demo-bar"><div class="demo-bar__fill" style="width:61%"></div></div>
+        </div>
+        <div class="demo-region__stats">
+          <div class="demo-stat"><span class="k">Carbon intensity</span><span class="v">280 g/kWh</span></div>
+          <div class="demo-stat"><span class="k">Cooling risk</span><span class="v"><span class="demo-risk demo-risk--low"><span class="d"></span>Low</span></span></div>
+        </div>
+      </article>
+
+      <article class="demo-region">
+        <div class="demo-region__top">
+          <span class="demo-region__name">US-EAST</span>
+          <span class="control-badge control-badge--ok"><span class="d"></span>Nominal</span>
+        </div>
+        <div class="demo-load">
+          <div class="demo-load__head"><span class="k">Compute load</span><span class="v">73%</span></div>
+          <div class="demo-bar"><div class="demo-bar__fill" data-load-target="73" style="width:0%"></div></div>
+        </div>
+        <div class="demo-region__stats">
+          <div class="demo-stat"><span class="k">Carbon intensity</span><span class="v">351 g/kWh</span></div>
+          <div class="demo-stat"><span class="k">Cooling risk</span><span class="v"><span class="demo-risk demo-risk--low"><span class="d"></span>Low</span></span></div>
+        </div>
+      </article>
+
+      <article class="demo-region">
+        <div class="demo-region__top">
+          <span class="demo-region__name">EU-WEST</span>
+          <span class="control-badge control-badge--ok"><span class="d"></span>Nominal</span>
+        </div>
+        <div class="demo-load">
+          <div class="demo-load__head"><span class="k">Compute load</span><span class="v">58%</span></div>
+          <div class="demo-bar"><div class="demo-bar__fill" data-load-target="58" style="width:0%"></div></div>
+        </div>
+        <div class="demo-region__stats">
+          <div class="demo-stat"><span class="k">Carbon intensity</span><span class="v">190 g/kWh</span></div>
+          <div class="demo-stat"><span class="k">Cooling risk</span><span class="v"><span class="demo-risk demo-risk--low"><span class="d"></span>Low</span></span></div>
+        </div>
+      </article>
+
+      <article class="demo-region">
+        <div class="demo-region__top">
+          <span class="demo-region__name">APAC</span>
+          <span class="control-badge control-badge--crit"><span class="d"></span>Constrained</span>
+        </div>
+        <div class="demo-load">
+          <div class="demo-load__head"><span class="k">Compute load</span><span class="v">79%</span></div>
+          <div class="demo-bar"><div class="demo-bar__fill crit" data-load-target="79" style="width:0%"></div></div>
+        </div>
+        <div class="demo-region__stats">
+          <div class="demo-stat"><span class="k">Carbon intensity</span><span class="v">468 g/kWh</span></div>
+          <div class="demo-stat"><span class="k">Cooling risk</span><span class="v"><span class="demo-risk demo-risk--high"><span class="d"></span>High</span></span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============= 4 · WORKLOAD ORCHESTRATION TABLE ============== -->
+<section class="demo-section demo-section--line" aria-label="Workload orchestration">
+  <div class="demo-wrap">
+    <div class="demo-modlabel" data-reveal>
+      <span class="tick">03</span>
+      <h2>Workload orchestration</h2>
+      <span class="demo-modnote">Scheduler · 4 active</span>
+    </div>
+
+    <div class="demo-tablewrap" data-reveal style="--i:1">
+      <div class="demo-tablescroll">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Workload</th>
+              <th scope="col">Priority</th>
+              <th scope="col">Region</th>
+              <th scope="col">Power draw</th>
+              <th scope="col">Thermal risk</th>
+              <th scope="col">Recommended action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="wl-name">LLM Training · Batch A17</span><span class="wl-sub">job-a17 · 1,024 GPU</span></td>
+              <td><span class="demo-prio demo-prio--flexible">Flexible</span></td>
+              <td><span class="mono">US-WEST</span></td>
+              <td><span class="mono">2.4 MW</span></td>
+              <td><span class="demo-risk demo-risk--med"><span class="d"></span>Medium</span></td>
+              <td><span class="wl-action">Shift 18% <span class="arr" aria-hidden="true">→</span></span></td>
+            </tr>
+            <tr>
+              <td><span class="wl-name">Inference Cluster 04</span><span class="wl-sub">svc-inf-04 · realtime</span></td>
+              <td><span class="demo-prio demo-prio--critical">Critical</span></td>
+              <td><span class="mono">US-EAST</span></td>
+              <td><span class="mono">1.1 MW</span></td>
+              <td><span class="demo-risk demo-risk--low"><span class="d"></span>Low</span></td>
+              <td><span class="wl-action">Hold</span></td>
+            </tr>
+            <tr>
+              <td><span class="wl-name">Embedding Refresh</span><span class="wl-sub">job-emb · nightly</span></td>
+              <td><span class="demo-prio demo-prio--flexible">Flexible</span></td>
+              <td><span class="mono">EU-WEST</span></td>
+              <td><span class="mono">0.7 MW</span></td>
+              <td><span class="demo-risk demo-risk--low"><span class="d"></span>Low</span></td>
+              <td><span class="wl-action">Defer 42 min <span class="arr" aria-hidden="true">→</span></span></td>
+            </tr>
+            <tr>
+              <td><span class="wl-name">Vision Model Training</span><span class="wl-sub">job-vis · 512 GPU</span></td>
+              <td><span class="demo-prio demo-prio--standard">Standard</span></td>
+              <td><span class="mono">US-CENTRAL</span></td>
+              <td><span class="mono">1.8 MW</span></td>
+              <td><span class="demo-risk demo-risk--high"><span class="d"></span>High</span></td>
+              <td><span class="wl-action">Reroute <span class="arr" aria-hidden="true">→</span></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================ 6 · CHARTS / VISUAL PANELS ================= -->
+<section class="demo-section demo-section--line" aria-label="Telemetry">
+  <div class="demo-wrap">
+    <div class="demo-modlabel" data-reveal>
+      <span class="tick">04</span>
+      <h2>Telemetry</h2>
+      <span class="demo-modnote">Vanilla render · no libraries</span>
+    </div>
+
+    <div class="demo-split demo-split--7-5" data-reveal style="--i:1">
+      <!-- power demand over time -->
+      <div class="demo-panel demo-chart">
+        <div class="demo-chart__head">
+          <span class="demo-chart__title">Power demand · total facility</span>
+          <span class="demo-chart__note" data-power-now>11.4 MW</span>
+        </div>
+        <svg id="demo-power" class="demo-linechart" viewBox="0 0 600 180" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="demoPowerGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--signal)" stop-opacity="0.22"></stop>
+              <stop offset="100%" stop-color="var(--signal)" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+          <g class="grid">
+            <line x1="0" y1="45" x2="600" y2="45"></line>
+            <line x1="0" y1="90" x2="600" y2="90"></line>
+            <line x1="0" y1="135" x2="600" y2="135"></line>
+          </g>
+          <path class="area" d=""></path>
+          <path class="line" d=""></path>
+          <circle class="now" r="3" cx="0" cy="0"></circle>
+          <text class="axis" x="2" y="14">16 MW</text>
+          <text class="axis" x="2" y="176">7 MW</text>
+        </svg>
+      </div>
+
+      <!-- cooling load by zone -->
+      <div class="demo-panel demo-chart">
+        <div class="demo-chart__head">
+          <span class="demo-chart__title">Cooling load by zone</span>
+          <span class="demo-chart__note">% capacity</span>
+        </div>
+        <div class="demo-zones">
+          <div class="demo-zone"><span class="z">Zone A</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="72" style="width:0%"></div></div><span class="v">72%</span></div>
+          <div class="demo-zone"><span class="z">Zone B</span><div class="demo-bar"><div class="demo-bar__fill warn" data-zone-target="88" style="width:0%"></div></div><span class="v">88%</span></div>
+          <div class="demo-zone"><span class="z">Zone C</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="64" style="width:0%"></div></div><span class="v">64%</span></div>
+          <div class="demo-zone"><span class="z">Zone D</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="41" style="width:0%"></div></div><span class="v">41%</span></div>
+          <div class="demo-zone"><span class="z">Zone E</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="55" style="width:0%"></div></div><span class="v">55%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- before / after comparison -->
+    <div class="demo-panel demo-chart" data-reveal style="--i:2; margin-top:1.2rem;">
+      <div class="demo-chart__head">
+        <span class="demo-chart__title">Before / after optimization</span>
+        <span class="demo-chart__note">baseline → coordinated</span>
+      </div>
+      <div class="demo-compare">
+        <div class="demo-cmp" data-cmp="peak">
+          <div class="demo-cmp__head"><span class="k">Peak power</span><span class="delta">−10%</span></div>
+          <div class="demo-cmp__bars">
+            <div class="demo-cmp__bar before"><span class="lbl">Before</span><div class="track"><div class="fill"></div></div><span class="num">14.2</span></div>
+            <div class="demo-cmp__bar after"><span class="lbl">After</span><div class="track"><div class="fill"></div></div><span class="num">12.8</span></div>
+          </div>
+        </div>
+        <div class="demo-cmp" data-cmp="carbon">
+          <div class="demo-cmp__head"><span class="k">Carbon / hr (tCO₂e)</span><span class="delta">−32%</span></div>
+          <div class="demo-cmp__bars">
+            <div class="demo-cmp__bar before"><span class="lbl">Before</span><div class="track"><div class="fill"></div></div><span class="num">9.1</span></div>
+            <div class="demo-cmp__bar after"><span class="lbl">After</span><div class="track"><div class="fill"></div></div><span class="num">6.2</span></div>
+          </div>
+        </div>
+        <div class="demo-cmp" data-cmp="pue">
+          <div class="demo-cmp__head"><span class="k">PUE</span><span class="delta">−10%</span></div>
+          <div class="demo-cmp__bars">
+            <div class="demo-cmp__bar before"><span class="lbl">Before</span><div class="track"><div class="fill"></div></div><span class="num">1.31</span></div>
+            <div class="demo-cmp__bar after"><span class="lbl">After</span><div class="track"><div class="fill"></div></div><span class="num">1.18</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5 + 7 · RECOMMENDATIONS & CONTROLS ============ -->
+<section class="demo-section demo-section--line" aria-label="Optimization">
+  <div class="demo-wrap">
+    <div class="demo-split demo-split--7-5">
+
+      <!-- 5 · recommendations -->
+      <div>
+        <div class="demo-modlabel" data-reveal>
+          <span class="tick">05</span>
+          <h2>Recommendations</h2>
+          <span class="demo-modnote">Operator approval required</span>
+        </div>
+
+        <div class="demo-recs" style="grid-template-columns:1fr; --i:1;" data-reveal>
+          <!-- rec 1 -->
+          <article class="demo-rec" data-rec-name="US-WEST → US-CENTRAL shift">
+            <div class="demo-rec__head">
+              <span class="demo-rec__idx">REC-01</span>
+              <span class="demo-rec__statebadge control-badge"><span class="d"></span>Proposed</span>
+            </div>
+            <p class="demo-rec__text">Shift flexible GPU workloads from <strong>US-WEST</strong> to <strong>US-CENTRAL</strong> during peak grid load.</p>
+            <div class="demo-rec__meta">
+              <div class="demo-rec__row"><span class="k">Est. impact</span><span class="v impact" data-rec-impact="shift">−1.4 MW peak</span></div>
+              <div class="demo-rec__row"><span class="k">Confidence</span><span class="demo-conf"><span class="demo-conf__track"><span class="demo-conf__fill" style="width:92%"></span></span><span class="v">92%</span></span></div>
+            </div>
+            <div class="demo-rec__actions">
+              <button class="control-btn" data-act="simulate"><span class="t">Simulate</span></button>
+              <button class="control-btn control-btn--primary" data-act="approve"><span class="t">Approve</span></button>
+            </div>
+          </article>
+
+          <!-- rec 2 -->
+          <article class="demo-rec" data-rec-name="Delay non-critical training">
+            <div class="demo-rec__head">
+              <span class="demo-rec__idx">REC-02</span>
+              <span class="demo-rec__statebadge control-badge"><span class="d"></span>Proposed</span>
+            </div>
+            <p class="demo-rec__text">Delay non-critical training jobs by <strong>42 minutes</strong> to align with lower-carbon energy.</p>
+            <div class="demo-rec__meta">
+              <div class="demo-rec__row"><span class="k">Est. impact</span><span class="v impact">−0.8 tCO₂e</span></div>
+              <div class="demo-rec__row"><span class="k">Confidence</span><span class="demo-conf"><span class="demo-conf__track"><span class="demo-conf__fill" style="width:87%"></span></span><span class="v">87%</span></span></div>
+            </div>
+            <div class="demo-rec__actions">
+              <button class="control-btn" data-act="simulate"><span class="t">Simulate</span></button>
+              <button class="control-btn control-btn--primary" data-act="approve"><span class="t">Approve</span></button>
+            </div>
+          </article>
+
+          <!-- rec 3 -->
+          <article class="demo-rec" data-rec-name="Zone B cooling setpoint">
+            <div class="demo-rec__head">
+              <span class="demo-rec__idx">REC-03</span>
+              <span class="demo-rec__statebadge control-badge"><span class="d"></span>Proposed</span>
+            </div>
+            <p class="demo-rec__text">Increase cooling setpoint by <strong>0.8°C</strong> in Zone B without exceeding SLA thermal limits.</p>
+            <div class="demo-rec__meta">
+              <div class="demo-rec__row"><span class="k">Est. impact</span><span class="v impact">−340 kW cooling</span></div>
+              <div class="demo-rec__row"><span class="k">Confidence</span><span class="demo-conf"><span class="demo-conf__track"><span class="demo-conf__fill" data-conf="cooling" style="width:78%"></span></span><span class="v" data-conf-val="cooling">78%</span></span></div>
+            </div>
+            <div class="demo-rec__actions">
+              <button class="control-btn" data-act="simulate"><span class="t">Simulate</span></button>
+              <button class="control-btn control-btn--primary" data-act="approve"><span class="t">Approve</span></button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- 7 · simulation controls -->
+      <div>
+        <div class="demo-modlabel" data-reveal>
+          <span class="tick">06</span>
+          <h2>Simulation controls</h2>
+        </div>
+
+        <div class="demo-panel control-deck" data-reveal style="--i:1">
+          <!-- optimization mode -->
+          <div class="control-field">
+            <div class="control-field__label"><span class="k">Optimization mode</span></div>
+            <div class="control-seg" data-control="mode" role="group" aria-label="Optimization mode">
+              <button type="button" data-value="conservative" aria-pressed="false">Conservative</button>
+              <button type="button" data-value="balanced" aria-pressed="true">Balanced</button>
+              <button type="button" data-value="aggressive" aria-pressed="false">Aggressive</button>
+            </div>
+          </div>
+
+          <!-- carbon priority -->
+          <div class="control-field">
+            <div class="control-field__label"><span class="k">Carbon priority</span></div>
+            <div class="control-seg" data-control="carbon" role="group" aria-label="Carbon priority">
+              <button type="button" data-value="low" aria-pressed="false">Low</button>
+              <button type="button" data-value="medium" aria-pressed="true">Medium</button>
+              <button type="button" data-value="high" aria-pressed="false">High</button>
+            </div>
+          </div>
+
+          <!-- SLA protection: locked -->
+          <div class="control-field">
+            <div class="control-field__label"><span class="k">SLA protection</span></div>
+            <div class="control-locked" aria-disabled="true">
+              <span class="lock">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.6"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.6"></path></svg>
+                Locked
+              </span>
+              <span class="state">Enforced</span>
+            </div>
+          </div>
+
+          <!-- workload flexibility -->
+          <div class="control-field">
+            <div class="control-field__label"><span class="k">Workload flexibility</span><span class="v" data-flex-val>60%</span></div>
+            <input id="control-flex" class="control-range" type="range" min="0" max="100" step="1" value="60" aria-label="Workload flexibility" />
+            <div class="control-scale"><span>Rigid</span><span>Elastic</span></div>
+          </div>
+
+          <!-- cooling risk tolerance -->
+          <div class="control-field">
+            <div class="control-field__label"><span class="k">Cooling risk tolerance</span></div>
+            <div class="control-seg" data-control="cooling" role="group" aria-label="Cooling risk tolerance">
+              <button type="button" data-value="low" aria-pressed="false">Low</button>
+              <button type="button" data-value="medium" aria-pressed="true">Medium</button>
+              <button type="button" data-value="high" aria-pressed="false">High</button>
+            </div>
+          </div>
+
+          <div class="control-deck__foot">
+            <span class="statusdot" aria-hidden="true"></span>
+            Recomputing projection in real time
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 8 · CLOSING THESIS ===================== -->
+<section class="demo-thesis" id="thesis" data-screen-label="thesis">
+  <div class="demo-wrap">
+    <span class="eyebrow" data-reveal>The role we play</span>
+    <p class="demo-thesis__quote" data-reveal style="--i:1; margin-top:1.4rem;">Helicyn does not replace operators. It gives them a <span class="lift">coordination layer across compute, energy, and thermal systems</span>, surfacing decisions before inefficiency becomes constraint.</p>
+    <div class="demo-thesis__cta" data-reveal style="--i:2">
+      <a class="btn" href="https://helicyn.com/#access" data-magnetic="0.2">Request access <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn-ghost" href="https://helicyn.com/#thesis"><span class="dot" aria-hidden="true"></span> View thesis</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ========================== FOOTER =========================== -->
+<footer class="footer" data-screen-label="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <span class="brand">
+          <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true" style="width:20px;height:20px;">
+            <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
+            <circle cx="9" cy="9" r="2" fill="currentColor"></circle>
+          </svg>
+          <span class="brand__name">Helicyn</span>
+        </span>
+        <p class="footer__tagline">The coordination layer for large-scale physical and computational systems.</p>
+      </div>
+
+      <div class="fcol">
+        <h4>Company</h4>
+        <a href="https://helicyn.com/#thesis">Thesis</a>
+        <a href="https://helicyn.com/#capabilities">What we build</a>
+        <a href="Control Plane.html">Control Plane</a>
+        <a href="https://helicyn.com/#access">Request access</a>
+      </div>
+    </div>
+
+    <div class="footer__base">
+      <span class="mono">© 2026 Helicyn · All rights reserved</span>
+      <span class="statusband__item"><span class="statusdot" aria-hidden="true"></span><span class="mono">Simulation · <span data-clock>00:00:00 UTC</span></span></span>
+      <span class="mono">Control Plane · build v0.1.1</span>
+    </div>
+  </div>
+</footer>
+
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" fill="#08090b"/>
+    <rect x="22" y="30" width="24" height="16" rx="2" fill="none" stroke="#5aa6f0" stroke-width="1.4"/>
+    <rect x="54" y="30" width="24" height="16" rx="2" fill="none" stroke="#eef2f7" stroke-width="1.2" opacity="0.4"/>
+    <rect x="22" y="54" width="56" height="3" rx="1.5" fill="#5aa6f0" opacity="0.7"/>
+    <rect x="22" y="62" width="40" height="3" rx="1.5" fill="#eef2f7" opacity="0.3"/>
+    <rect x="22" y="70" width="48" height="3" rx="1.5" fill="#eef2f7" opacity="0.3"/>
+  </svg>
+</template>
+
+<script src="main.js"></script>
+<script src="control.js"></script>
+</body>
+</html>
