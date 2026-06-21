@@ -916,17 +916,28 @@
 .cp-demolist li:last-child p { color: var(--text); }
 
 @media (hover: none), (pointer: coarse) {
-  .demo-tip .demo-tip__pop:not(.demo-tip__pop--float) {
+  .demo-tip:hover .demo-tip__pop,
+  .demo-tip:focus .demo-tip__pop,
+  .demo-tip:focus-visible .demo-tip__pop {
     opacity: 0 !important;
     visibility: hidden !important;
-    pointer-events: none !important;
     display: none !important;
+    pointer-events: none !important;
   }
 
-  .demo-tip__pop.demo-tip__pop--float {
-    position: fixed;
-    z-index: 9999;
+  .demo-tip__pop.demo-tip__pop--float.is-shown {
+    position: fixed !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 9999 !important;
     display: block !important;
     visibility: visible !important;
+    opacity: 1 !important;
+    width: max-content;
+    max-width: calc(100vw - 24px);
+  }
+
+  .demo-tip__pop.demo-tip__pop--float::after {
+    display: none !important;
   }
 }
