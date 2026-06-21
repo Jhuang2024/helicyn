@@ -101,7 +101,7 @@
     const note = form.querySelector('.form__note');
     const valid = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
     // recipient assembled at runtime — never rendered or stored as plain text
-    const dest = ['jerryhuang', 'hjr'].join('.') + String.fromCharCode(64) + ['gmail', 'com'].join('.');
+    const dest = 'jerry' + String.fromCharCode(64) + ['helicyn', 'com'].join('.');
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const v = input.value.trim();
