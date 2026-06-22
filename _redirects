@@ -1,0 +1,9 @@
+# Helicyn - Netlify redirects
+# Old space-encoded Control Plane URL → clean hyphenated path
+/control%20plane      /control-plane   301
+/control plane        /control-plane   301
+/Control%20Plane.html /control-plane   301
+/Control Plane.html   /control-plane   301
+/control-plane.html   /control-plane   301
+# Pretty URL → file
+/control-plane        /control-plane.html  200
