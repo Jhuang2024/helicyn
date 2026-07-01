@@ -252,9 +252,9 @@ h1, h2, h3 { overflow-wrap: break-word; }
 
 .hero h1 {
   font-weight: 500;
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  line-height: 1.015;
-  letter-spacing: -0.032em;
+  font-size: clamp(2.2rem, 3.4vw, 3.7rem);
+  line-height: 1.08;
+  letter-spacing: -0.028em;
   text-wrap: balance;
 }
 .hero h1 .soft { color: var(--text-dim); }
@@ -335,7 +335,10 @@ h1, h2, h3 { overflow-wrap: break-word; }
   z-index: 4; text-align: right; color: var(--text-faint);
   display: grid; gap: 0.35rem; line-height: 1.4;
 }
-@media (max-width: 720px) { .hero__coords { display: none; } }
+/* hidden whenever the scene panel stacks below the hero copy (same
+   breakpoint as .hero__layout going single-column) - otherwise the
+   corner coordinates overlap the scene panel's own "Simulated" tag */
+@media (max-width: 1039.98px) { .hero__coords { display: none; } }
 
 /* ============================================================
    HERO LAYOUT - text column + coordination scene panel
@@ -348,7 +351,7 @@ h1, h2, h3 { overflow-wrap: break-word; }
    ============================================================ */
 .hero__scenewrap { position: relative; }
 .hero__scene {
-  position: relative; aspect-ratio: 1 / 1; max-width: 560px; margin-inline: auto;
+  position: relative; aspect-ratio: 1 / 1; max-width: 640px; margin-inline: auto;
   border: 1px solid var(--line-2); border-radius: 10px; overflow: hidden;
   background:
     radial-gradient(120% 120% at 50% 28%, color-mix(in srgb, var(--signal) 7%, transparent) 0%, transparent 62%),
@@ -414,7 +417,7 @@ h1, h2, h3 { overflow-wrap: break-word; }
   .heroscene__packetgroup { display: none; }
   .heroscene__pathdash { animation: none; opacity: 0.5; }
 }
-@media (max-width: 1039.98px) { .hero__scene { max-width: 420px; } }
+@media (max-width: 1039.98px) { .hero__scene { max-width: 460px; } }
 
 /* ============================================================
    SECTION SCAFFOLD
