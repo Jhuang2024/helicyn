@@ -44,7 +44,7 @@
   <nav class="nav__right">
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
-      <span class="mono" data-clock>Sync initializing</span>
+      <span class="mono" data-clock>00:00:00 UTC</span>
     </span>
     <a class="navlink" href="index.html">Overview</a>
     <a class="navlink navlink--cta" href="index.html#access"><span class="lbl-full">Request access</span><span class="lbl-short">Access</span> <span class="arr" aria-hidden="true">↗</span></a>
@@ -100,7 +100,7 @@
       <span class="control-chip"><span class="label">Build</span><span class="val">v0.2.0</span></span>
       <span class="control-chip"><span class="label">Region</span><span class="val">Global</span></span>
       <span class="control-chip"><span class="label">System</span><span class="val">Nominal</span></span>
-      <span class="control-chip"><span class="label">Sync</span><span class="val live" data-clock>initializing</span></span>
+      <span class="control-chip"><span class="label">Sync</span><span class="val live" data-clock>00:00:00 UTC</span></span>
     </div>
 
     <div class="cp-simnotice" data-reveal style="--i:6" role="note">
@@ -681,7 +681,7 @@
     <div class="demo-modlabel" data-reveal>
       <span class="tick">08</span>
       <h2>Telemetry</h2>
-      <span class="demo-modnote">Vanilla render · no libraries</span>
+      <span class="demo-modnote">Illustrative telemetry</span>
     </div>
 
     <p class="demo-caption" data-reveal>After fleet-level decisions are made, Helicyn verifies local facility impact. This is the local optimization layer, downstream of coordination.</p>
@@ -724,6 +724,77 @@
           <div class="demo-zone"><span class="z">Zone D</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="41" style="width:0%"></div></div><span class="v">41%</span></div>
           <div class="demo-zone"><span class="z">Zone E</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="55" style="width:0%"></div></div><span class="v">55%</span></div>
         </div>
+      </div>
+    </div>
+
+    <div class="demo-trendgrid" data-reveal style="--i:2">
+      <div class="demo-panel demo-chart demo-chart--trend">
+        <div class="demo-chart__head">
+          <span class="demo-chart__title">Carbon intensity forecast</span>
+          <span class="demo-chart__note" data-carbon-now>—</span>
+        </div>
+        <svg data-trendchart="carbon" class="demo-linechart demo-linechart--trend" viewBox="0 0 300 140" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="trendGradCarbon" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--warn)" stop-opacity="0.22"></stop>
+              <stop offset="100%" stop-color="var(--warn)" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+          <g class="grid"><line x1="0" y1="35" x2="300" y2="35"></line><line x1="0" y1="70" x2="300" y2="70"></line><line x1="0" y1="105" x2="300" y2="105"></line></g>
+          <path class="area" d="" fill="url(#trendGradCarbon)"></path>
+          <path class="line" d="" stroke="var(--warn)"></path>
+          <path class="proj" d=""></path>
+          <line class="nowmark" x1="0" y1="0" x2="0" y2="140"></line>
+          <text class="axis" data-trend-hi x="4" y="12">—</text>
+          <text class="axis" data-trend-lo x="4" y="136">—</text>
+        </svg>
+        <span class="demo-chart__unit">g CO₂e / kWh · fleet average</span>
+      </div>
+
+      <div class="demo-panel demo-chart demo-chart--trend">
+        <div class="demo-chart__head">
+          <span class="demo-chart__title">GPU utilization trend</span>
+          <span class="demo-chart__note" data-gpu-now>—</span>
+        </div>
+        <svg data-trendchart="gpu" class="demo-linechart demo-linechart--trend" viewBox="0 0 300 140" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="trendGradGpu" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--signal)" stop-opacity="0.22"></stop>
+              <stop offset="100%" stop-color="var(--signal)" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+          <g class="grid"><line x1="0" y1="35" x2="300" y2="35"></line><line x1="0" y1="70" x2="300" y2="70"></line><line x1="0" y1="105" x2="300" y2="105"></line></g>
+          <path class="area" d="" fill="url(#trendGradGpu)"></path>
+          <path class="line" d="" stroke="var(--signal)"></path>
+          <path class="proj" d=""></path>
+          <line class="nowmark" x1="0" y1="0" x2="0" y2="140"></line>
+          <text class="axis" data-trend-hi x="4" y="12">—</text>
+          <text class="axis" data-trend-lo x="4" y="136">—</text>
+        </svg>
+        <span class="demo-chart__unit">% fleet GPU capacity in use</span>
+      </div>
+
+      <div class="demo-panel demo-chart demo-chart--trend">
+        <div class="demo-chart__head">
+          <span class="demo-chart__title">PUE trend</span>
+          <span class="demo-chart__note" data-pue-now>—</span>
+        </div>
+        <svg data-trendchart="pue" class="demo-linechart demo-linechart--trend" viewBox="0 0 300 140" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="trendGradPue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--ok)" stop-opacity="0.22"></stop>
+              <stop offset="100%" stop-color="var(--ok)" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+          <g class="grid"><line x1="0" y1="35" x2="300" y2="35"></line><line x1="0" y1="70" x2="300" y2="70"></line><line x1="0" y1="105" x2="300" y2="105"></line></g>
+          <path class="area" d="" fill="url(#trendGradPue)"></path>
+          <path class="line" d="" stroke="var(--ok)"></path>
+          <path class="proj" d=""></path>
+          <line class="nowmark" x1="0" y1="0" x2="0" y2="140"></line>
+          <text class="axis" data-trend-hi x="4" y="12">—</text>
+          <text class="axis" data-trend-lo x="4" y="136">—</text>
+        </svg>
+        <span class="demo-chart__unit">power usage effectiveness</span>
       </div>
     </div>
 

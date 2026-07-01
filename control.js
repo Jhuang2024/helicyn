@@ -215,6 +215,19 @@
     renderSpark('gpu',     (t) => gpuFloor + (gpuTop - gpuFloor) * ACC(t), false);
     renderSpark('pue',     (t) => BASELINE.pue + (pueTop - BASELINE.pue) * ACC(t), false);
 
+    // dedicated trend panels (Telemetry section): bigger canvas, same math as
+    // the metric-card sparklines above for GPU/PUE; carbon intensity is a
+    // standalone illustrative forecast (a rate, not a cumulative total, so
+    // it isn't tied to the 00:00-UTC accumulation used elsewhere).
+    renderTrendChart('[data-trendchart="gpu"]', (t) => gpuFloor + (gpuTop - gpuFloor) * ACC(t), { dp: 0, frac: cf, unit: '%' });
+    const gpuNowEl = $('[data-gpu-now]'); if (gpuNowEl) gpuNowEl.textContent = Math.round(dGpu) + '%';
+    renderTrendChart('[data-trendchart="pue"]', (t) => BASELINE.pue + (pueTop - BASELINE.pue) * ACC(t), { dp: 2, frac: cf });
+    const pueNowEl = $('[data-pue-now]'); if (pueNowEl) pueNowEl.textContent = fmt(dPue, 2);
+    const carbonBase = { normal: 320, surge: 350, inference: 300, cooling: 310, power: 340, lowcarbon: 180 }[state.scenario] || 320;
+    const carbonNow = carbonBase * (0.94 + (cMult - 1) * 0.4);
+    renderTrendChart('[data-trendchart="carbon"]', (t) => carbonNow + Math.sin(t * Math.PI * 1.6 + 0.5) * (carbonNow * 0.13) - t * carbonNow * 0.1, { dp: 0, frac: 1 });
+    const carbonNowEl = $('[data-carbon-now]'); if (carbonNowEl) carbonNowEl.textContent = Math.round(carbonNow) + ' g/kWh';
+
     // 3 + region grid: scenario-driven loads & cooling risk for ALL regions
     const baseLoads = INFRA[state.scenario] || INFRA.normal;
     const risks     = INFRA_RISK[state.scenario] || INFRA_RISK.normal;
@@ -364,6 +377,51 @@
     const nx = X(frac).toFixed(1);
     mark.setAttribute('x1', nx); mark.setAttribute('x2', nx);
     mark.setAttribute('y1', '4'); mark.setAttribute('y2', '48');
+  }
+
+  /* larger standalone trend-chart panels (Telemetry section): same
+     solid/dashed-projection idea as renderSpark, on a bigger canvas
+     with min/max axis labels. `opts.frac` is how much of the curve
+     (0..1) is drawn solid before the dashed projection takes over;
+     pass 1 for a fully-solid forecast curve. */
+  function renderTrendChart(svgSel, seriesFn, opts) {
+    opts = opts || {};
+    const svg = $(svgSel);
+    if (!svg) return;
+    const W = 300, H = 140, dp = opts.dp || 0;
+    const frac = clamp(opts.frac == null ? 1 : opts.frac, 0.004, 1);
+    const N = 60;
+    const ys = [];
+    for (let i = 0; i < N; i++) ys.push(seriesFn(i / (N - 1)));
+    let lo = Math.min.apply(null, ys), hi = Math.max.apply(null, ys);
+    if (hi - lo < 1e-6) hi = lo + 1;
+    const pad = (hi - lo) * 0.16;
+    const loBound = lo - pad * 0.3, hiBound = hi + pad;
+    const X = (t) => t * W;
+    const Y = (v) => (H - 10) - (v - loBound) / (hiBound - loBound) * (H - 20);
+    const seg = (t0, t1) => {
+      const steps = Math.max(2, Math.round((t1 - t0) * N));
+      let dd = '';
+      for (let i = 0; i <= steps; i++) {
+        const t = t0 + (t1 - t0) * i / steps;
+        dd += (i ? ' L' : 'M') + X(t).toFixed(1) + ',' + Y(seriesFn(t)).toFixed(1);
+      }
+      return dd;
+    };
+    const solid = seg(0, frac);
+    const areaP = svg.querySelector('.area'), lineP = svg.querySelector('.line');
+    const projP = svg.querySelector('.proj'), markP = svg.querySelector('.nowmark');
+    if (areaP) areaP.setAttribute('d', solid + ' L' + X(frac).toFixed(1) + ',' + (H - 2) + ' L0,' + (H - 2) + ' Z');
+    if (lineP) lineP.setAttribute('d', solid);
+    if (projP) projP.setAttribute('d', frac < 0.999 ? seg(frac, 1) : '');
+    if (markP) {
+      if (frac < 0.999) { const nx = X(frac).toFixed(1); markP.setAttribute('x1', nx); markP.setAttribute('x2', nx); markP.setAttribute('y1', '4'); markP.setAttribute('y2', String(H - 4)); markP.style.display = ''; }
+      else markP.style.display = 'none';
+    }
+    const hiEl = svg.querySelector('[data-trend-hi]'), loEl = svg.querySelector('[data-trend-lo]');
+    const unit = opts.unit || '';
+    if (hiEl) hiEl.textContent = fmt(hi, dp) + unit;
+    if (loEl) loEl.textContent = fmt(lo, dp) + unit;
   }
   const SVGNS = 'http://www.w3.org/2000/svg';
   function setRegionLoad(key, pct) {
@@ -581,7 +639,7 @@
   // apply a generic effect object to the fleet (used by rec cards AND workload staging)
   // energy/cost/carbon bumps are scaled to the fleet so they read against the big totals.
   const BUMP_SCALE = { energy: 16, cost: 18, carbon: 15 };
-  function applyFx(fx, scenePatchId) {
+  function applyFx(fx) {
     if (!fx) return;
     if (fx.regionDelta) for (const k in fx.regionDelta) state.regionDelta[k] = (state.regionDelta[k] || 0) + fx.regionDelta[k];
     if (fx.risk) for (const k in fx.risk) state.riskOverride[k] = fx.risk[k];
@@ -589,7 +647,6 @@
     recompute();
     (fx.flash || []).forEach((k) => flash($('[data-region="' + k + '"]')));
     if (fx.telemetry) applyTelemetry(fx.telemetry);
-    if (scenePatchId && window.CPScene && window.CPScene.applyRecPatch) window.CPScene.applyRecPatch(scenePatchId);
   }
   function resetApprovals() {
     actionApplied = {};
@@ -598,6 +655,7 @@
     resetTelemetry();
     resetQueue();
     hideVerification();
+    if (window.CPScene && window.CPScene.clearRecHighlight) window.CPScene.clearRecHighlight();
     if (window.__resetRecs) window.__resetRecs();
     // reset the workload orchestration table + staged-actions panel
     if (window.__resetWorkloads) window.__resetWorkloads();
@@ -614,18 +672,24 @@
     if (!host) return;
     const PRIOC = { High: 'demo-prio--critical', Medium: 'demo-prio--standard', Low: 'demo-prio--flexible' };
     const POOL = [
-      { type: 'Workload routing', cat: 'Workload routing', text: 'Shift flexible GPU workloads from <strong>US-WEST</strong> to <strong>US-CENTRAL</strong> during peak grid load.', prio: 'High', impact: '−1.4 MW peak', conf: 92, protect: 'Latency-critical inference remains locked in US-EAST.', risk: 'Stop rerouting if US-CENTRAL utilization exceeds 78%.', sim: [{ k: 'Peak power', b: '12.8 MW', a: '11.4 MW' }, { k: 'US-CENTRAL util', b: '61%', a: '74%' }, { k: 'Thermal risk', b: 'Medium', a: 'Low' }], verify: { peak: '−1.4 MW', pue: '1.31 → 1.18', variance: '9.8°C → 4.2°C', emissions: '−0.8 tCO₂e/hr' }, fx: { regionDelta: { 'us-west': -14, 'us-central': 14 }, risk: { 'us-west': 'low' }, flash: ['us-west', 'us-central'], telemetry: { peak: 1.4 }, bump: { energy: 1.1, cost: 280, carbon: 0.4, pue: -0.01, cooling: 0.9 } } },
-      { type: 'Time shifting', cat: 'Time shifting', text: 'Delay non-critical training jobs by <strong>42 minutes</strong> to align with lower-carbon energy.', prio: 'Medium', impact: '−0.8 tCO₂e', conf: 87, protect: 'SLA-bound jobs keep their original deadlines.', risk: 'Re-evaluate if the low-carbon window closes early.', sim: [{ k: 'Carbon / hr', b: '9.1 tCO₂e', a: '8.3 tCO₂e' }, { k: 'Deadline match', b: 'At risk', a: 'Aligned' }], verify: { peak: '−0.4 MW', pue: '1.24 → 1.22', variance: '6.1°C → 5.4°C', emissions: '−0.8 tCO₂e/hr' }, fx: { regionDelta: { 'eu-west': -8 }, flash: ['eu-west'], telemetry: { peak: 0.4 }, bump: { energy: 0.5, cost: 140, carbon: 0.7, cooling: 0.2 } } },
-      { type: 'Local thermal control', cat: 'Thermal control', text: 'Increase cooling setpoint by <strong>0.8°C</strong> in Zone B without exceeding SLA thermal limits.', prio: 'Low', impact: '−340 kW cooling', conf: 78, protect: 'Zone B stays within SLA thermal limits.', risk: 'Revert setpoint if rack inlet variance exceeds 6°C.', sim: [{ k: 'Cooling load', b: '88%', a: '84%' }, { k: 'Zone B PUE', b: '1.31', a: '1.27' }, { k: 'Inlet variance', b: '9.8°C', a: '7.9°C' }], verify: { peak: '−0.3 MW', pue: '1.31 → 1.27', variance: '9.8°C → 7.9°C', emissions: '−0.2 tCO₂e/hr' }, fx: { telemetry: { peak: 0.3, zones: { B: -4 } }, flash: [], bump: { energy: 0.4, cost: 90, cooling: 1.4, pue: -0.01 } } },
-      { type: 'Workload routing', cat: 'Workload routing', text: 'Shift flexible training from <strong>APAC</strong> to <strong>EU-WEST</strong> away from constrained cooling.', prio: 'High', impact: '−1.1 MW peak', conf: 84, protect: 'APAC inference stays in-region for latency.', risk: 'Hold if EU-WEST utilization passes 80%.', sim: [{ k: 'APAC cooling', b: '92%', a: '80%' }, { k: 'EU-WEST util', b: '58%', a: '68%' }, { k: 'Thermal risk', b: 'High', a: 'Medium' }], verify: { peak: '−1.1 MW', pue: '1.29 → 1.20', variance: '8.4°C → 5.1°C', emissions: '−0.6 tCO₂e/hr' }, fx: { regionDelta: { 'apac': -16, 'eu-west': 10 }, risk: { 'apac': 'med' }, flash: ['apac', 'eu-west'], telemetry: { peak: 1.1 }, bump: { energy: 0.8, cost: 210, carbon: 0.6, cooling: 1.1 } } },
-      { type: 'Carbon-aware scheduling', cat: 'Time shifting', text: 'Move flexible batch in <strong>EU-WEST</strong> into the next low-carbon window.', prio: 'Medium', impact: '−0.6 tCO₂e', conf: 83, protect: 'Deadlines with SLA penalties are excluded.', risk: 'Window forecast confidence drops after 3h.', sim: [{ k: 'Grid carbon', b: '410 g', a: '280 g' }, { k: 'Batch slip', b: '0 min', a: '31 min' }], verify: { peak: '−0.3 MW', pue: '1.23 → 1.21', variance: '5.6°C → 5.2°C', emissions: '−0.6 tCO₂e/hr' }, fx: { regionDelta: { 'eu-west': -5 }, flash: ['eu-west'], telemetry: { peak: 0.3 }, bump: { energy: 0.4, cost: 110, carbon: 0.6 } } },
-      { type: 'Local thermal control', cat: 'Thermal control', text: 'Tune <strong>Zone A</strong> fan curve to recover headroom at equal inlet temps.', prio: 'Low', impact: '−180 kW cooling', conf: 80, protect: 'Inlet temperature target unchanged.', risk: 'Revert if Zone A variance exceeds 5°C.', sim: [{ k: 'Zone A load', b: '72%', a: '69%' }, { k: 'Fan power', b: '210 kW', a: '180 kW' }], verify: { peak: '−0.2 MW', pue: '1.22 → 1.20', variance: '5.1°C → 4.6°C', emissions: '−0.1 tCO₂e/hr' }, fx: { telemetry: { peak: 0.2, zones: { A: -3 } }, flash: [], bump: { cooling: 0.8, cost: 70, pue: -0.01 } } },
-      { type: 'Workload routing', cat: 'Workload routing', text: 'Rebalance a fine-tune job from <strong>US-EAST</strong> to <strong>US-CENTRAL</strong>.', prio: 'Medium', impact: '−0.9 MW peak', conf: 86, protect: 'Checkpoint cadence preserved across the move.', risk: 'Pause if US-CENTRAL crosses 80% utilization.', sim: [{ k: 'US-EAST util', b: '89%', a: '81%' }, { k: 'US-CENTRAL util', b: '66%', a: '74%' }], verify: { peak: '−0.9 MW', pue: '1.27 → 1.21', variance: '7.0°C → 5.3°C', emissions: '−0.4 tCO₂e/hr' }, fx: { regionDelta: { 'us-east': -8, 'us-central': 8 }, flash: ['us-east', 'us-central'], telemetry: { peak: 0.9 }, bump: { energy: 0.5, cost: 120, cooling: 0.5 } } }
+      { type: 'Workload routing', cat: 'Workload routing', text: 'Shift flexible GPU workloads from <strong>US-WEST</strong> to <strong>US-CENTRAL</strong> during peak grid load.', prio: 'High', impact: '−1.4 MW peak', conf: 92, protect: 'Latency-critical inference remains locked in US-EAST.', risk: 'Stop rerouting if US-CENTRAL utilization exceeds 78%.', sim: [{ k: 'Peak power', b: '12.8 MW', a: '11.4 MW' }, { k: 'US-CENTRAL util', b: '61%', a: '74%' }, { k: 'Thermal risk', b: 'Medium', a: 'Low' }], verify: { peak: '−1.4 MW', pue: '1.31 → 1.18', variance: '9.8°C → 4.2°C', emissions: '−0.8 tCO₂e/hr' }, fx: { regionDelta: { 'us-west': -14, 'us-central': 14 }, risk: { 'us-west': 'low' }, flash: ['us-west', 'us-central'], telemetry: { peak: 1.4 }, bump: { energy: 1.1, cost: 280, carbon: 0.4, pue: -0.01, cooling: 0.9 } }, topo: { from: 'virginia', to: 'oregon' } },
+      { type: 'Time shifting', cat: 'Time shifting', text: 'Delay non-critical training jobs by <strong>42 minutes</strong> to align with lower-carbon energy.', prio: 'Medium', impact: '−0.8 tCO₂e', conf: 87, protect: 'SLA-bound jobs keep their original deadlines.', risk: 'Re-evaluate if the low-carbon window closes early.', sim: [{ k: 'Carbon / hr', b: '9.1 tCO₂e', a: '8.3 tCO₂e' }, { k: 'Deadline match', b: 'At risk', a: 'Aligned' }], verify: { peak: '−0.4 MW', pue: '1.24 → 1.22', variance: '6.1°C → 5.4°C', emissions: '−0.8 tCO₂e/hr' }, fx: { regionDelta: { 'eu-west': -8 }, flash: ['eu-west'], telemetry: { peak: 0.4 }, bump: { energy: 0.5, cost: 140, carbon: 0.7, cooling: 0.2 } }, topo: { from: 'frankfurt', to: 'oregon' } },
+      { type: 'Local thermal control', cat: 'Thermal control', text: 'Increase cooling setpoint by <strong>0.8°C</strong> in Zone B without exceeding SLA thermal limits.', prio: 'Low', impact: '−340 kW cooling', conf: 78, protect: 'Zone B stays within SLA thermal limits.', risk: 'Revert setpoint if rack inlet variance exceeds 6°C.', sim: [{ k: 'Cooling load', b: '88%', a: '84%' }, { k: 'Zone B PUE', b: '1.31', a: '1.27' }, { k: 'Inlet variance', b: '9.8°C', a: '7.9°C' }], verify: { peak: '−0.3 MW', pue: '1.31 → 1.27', variance: '9.8°C → 7.9°C', emissions: '−0.2 tCO₂e/hr' }, fx: { telemetry: { peak: 0.3, zones: { B: -4 } }, flash: [], bump: { energy: 0.4, cost: 90, cooling: 1.4, pue: -0.01 } }, topo: { from: 'singapore', to: null } },
+      { type: 'Workload routing', cat: 'Workload routing', text: 'Shift flexible training from <strong>APAC</strong> to <strong>EU-WEST</strong> away from constrained cooling.', prio: 'High', impact: '−1.1 MW peak', conf: 84, protect: 'APAC inference stays in-region for latency.', risk: 'Hold if EU-WEST utilization passes 80%.', sim: [{ k: 'APAC cooling', b: '92%', a: '80%' }, { k: 'EU-WEST util', b: '58%', a: '68%' }, { k: 'Thermal risk', b: 'High', a: 'Medium' }], verify: { peak: '−1.1 MW', pue: '1.29 → 1.20', variance: '8.4°C → 5.1°C', emissions: '−0.6 tCO₂e/hr' }, fx: { regionDelta: { 'apac': -16, 'eu-west': 10 }, risk: { 'apac': 'med' }, flash: ['apac', 'eu-west'], telemetry: { peak: 1.1 }, bump: { energy: 0.8, cost: 210, carbon: 0.6, cooling: 1.1 } }, topo: { from: 'singapore', to: 'frankfurt' } },
+      { type: 'Carbon-aware scheduling', cat: 'Time shifting', text: 'Move flexible batch in <strong>EU-WEST</strong> into the next low-carbon window.', prio: 'Medium', impact: '−0.6 tCO₂e', conf: 83, protect: 'Deadlines with SLA penalties are excluded.', risk: 'Window forecast confidence drops after 3h.', sim: [{ k: 'Grid carbon', b: '410 g', a: '280 g' }, { k: 'Batch slip', b: '0 min', a: '31 min' }], verify: { peak: '−0.3 MW', pue: '1.23 → 1.21', variance: '5.6°C → 5.2°C', emissions: '−0.6 tCO₂e/hr' }, fx: { regionDelta: { 'eu-west': -5 }, flash: ['eu-west'], telemetry: { peak: 0.3 }, bump: { energy: 0.4, cost: 110, carbon: 0.6 } }, topo: { from: 'frankfurt', to: 'oregon' } },
+      { type: 'Local thermal control', cat: 'Thermal control', text: 'Tune <strong>Zone A</strong> fan curve to recover headroom at equal inlet temps.', prio: 'Low', impact: '−180 kW cooling', conf: 80, protect: 'Inlet temperature target unchanged.', risk: 'Revert if Zone A variance exceeds 5°C.', sim: [{ k: 'Zone A load', b: '72%', a: '69%' }, { k: 'Fan power', b: '210 kW', a: '180 kW' }], verify: { peak: '−0.2 MW', pue: '1.22 → 1.20', variance: '5.1°C → 4.6°C', emissions: '−0.1 tCO₂e/hr' }, fx: { telemetry: { peak: 0.2, zones: { A: -3 } }, flash: [], bump: { cooling: 0.8, cost: 70, pue: -0.01 } }, topo: { from: 'virginia', to: null } },
+      { type: 'Workload routing', cat: 'Workload routing', text: 'Rebalance a fine-tune job from <strong>US-EAST</strong> to <strong>US-CENTRAL</strong>.', prio: 'Medium', impact: '−0.9 MW peak', conf: 86, protect: 'Checkpoint cadence preserved across the move.', risk: 'Pause if US-CENTRAL crosses 80% utilization.', sim: [{ k: 'US-EAST util', b: '89%', a: '81%' }, { k: 'US-CENTRAL util', b: '66%', a: '74%' }], verify: { peak: '−0.9 MW', pue: '1.27 → 1.21', variance: '7.0°C → 5.3°C', emissions: '−0.4 tCO₂e/hr' }, fx: { regionDelta: { 'us-east': -8, 'us-central': 8 }, flash: ['us-east', 'us-central'], telemetry: { peak: 0.9 }, bump: { energy: 0.5, cost: 120, cooling: 0.5 } }, topo: { from: 'tokyo', to: 'oregon' } }
     ];
     let displayed = [0, 1, 2];
     let ptr = 3;
     let seq = 0;
     const idFor = () => 'REC-' + String(++seq).padStart(2, '0');
+
+    /* id of the recommendation this panel currently owns on the shared
+       topology highlight (staged or approved), if any - used only to
+       know when to release it on reject/regenerate. */
+    let ownedRecId = null;
+    let suppressHoverUntil = 0;
 
     function cardHTML(poolIdx, recId) {
       const r = POOL[poolIdx];
@@ -662,6 +726,9 @@
     function regenerate(slotCard) {
       const slot = [...host.children].indexOf(slotCard);
       if (slot < 0) return;
+      // note: an approved action's topology highlight intentionally survives
+      // regeneration - the card slot recycles, but the applied action stands.
+      // Reject already clears its own highlight before calling regenerate().
       slotCard.classList.add('is-leaving');
       setTimeout(() => {
         const nextPool = ptr % POOL.length; ptr++;
@@ -671,8 +738,43 @@
         node.classList.add('is-entering');
         if (slotCard.parentNode) slotCard.parentNode.replaceChild(node, slotCard);
         requestAnimationFrame(() => node.classList.remove('is-entering'));
+        // new content just appeared under a possibly-stationary cursor -
+        // ignore the spurious pointerover so it can't clobber a highlight
+        // that a *different* just-approved card still owns.
+        suppressHoverUntil = Date.now() + 250;
       }, 420);
     }
+
+    /* hover/focus preview: lights the exact source/target path for the
+       recommendation under the pointer, then reverts to whatever is
+       actually staged/approved (or clears) once the pointer leaves. */
+    let hoverCard = null;
+    function previewCard(rec) {
+      if (!rec || !window.CPScene || rec.classList.contains('is-rejected')) return;
+      const poolIdx = parseInt(rec.dataset.pool, 10);
+      const r = POOL[poolIdx];
+      if (!r || !r.topo) return;
+      window.CPScene.previewHighlight(r.topo);
+    }
+    host.addEventListener('pointerover', (e) => {
+      if (Date.now() < suppressHoverUntil) return;
+      const rec = e.target.closest('.demo-rec');
+      if (!rec || rec === hoverCard) return;
+      hoverCard = rec;
+      previewCard(rec);
+    });
+    host.addEventListener('pointerout', (e) => {
+      const rec = e.target.closest('.demo-rec');
+      if (!rec || rec.contains(e.relatedTarget)) return;
+      if (rec === hoverCard) hoverCard = null;
+      if (window.CPScene) window.CPScene.restoreHighlight();
+    });
+    host.addEventListener('focusin', (e) => previewCard(e.target.closest('.demo-rec')));
+    host.addEventListener('focusout', (e) => {
+      const rec = e.target.closest('.demo-rec');
+      if (rec && rec.contains(e.relatedTarget)) return;
+      if (window.CPScene) window.CPScene.restoreHighlight();
+    });
 
     host.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-act]');
@@ -703,6 +805,7 @@
         btn.disabled = true;
         if (badge) { badge.className = 'demo-rec__statebadge control-badge control-badge--crit'; badge.innerHTML = '<span class="d"></span>Rejected'; }
         queueRemovePending(id);
+        if (ownedRecId === id && window.CPScene) { ownedRecId = null; window.CPScene.clearCommittedHighlight(); }
         toast('Rejected · removed from operator queue', false);
         if (window.CPScene && window.CPScene.pushEvent) {
           const d = new Date();
@@ -723,6 +826,7 @@
         simBtn.classList.add('control-btn--primary');
         if (badge) { badge.className = 'demo-rec__statebadge control-badge control-badge--opt'; badge.innerHTML = '<span class="d"></span>Approved · ready to simulate'; }
         queueAddPending(id, r.cat);
+        if (r.topo && window.CPScene) { ownedRecId = id; window.CPScene.setCommittedHighlight(r.topo, 'staged'); }
         toast('Approved in simulation · ready to simulate', true);
         return;
       }
@@ -744,6 +848,11 @@
           }
           // apply fleet + telemetry + KPI effects
           applyFx(r.fx);
+          // animate the exact approved path on the topology map
+          if (r.topo && window.CPScene) {
+            window.CPScene.approveCommittedHighlight(r.topo);
+            ownedRecId = id;
+          }
           // file into operator queue + verification window
           const item = queueMoveApproved(id);
           if (item) { const lbl = $('[data-approved-label]', item); if (lbl) lbl.textContent = r.cat; }
@@ -847,14 +956,19 @@
     const RISKC = { low: 'demo-risk--low', med: 'demo-risk--med', high: 'demo-risk--high' };
     const RISKT = { low: 'Low', med: 'Medium', high: 'High' };
     const PRIOC = { Flexible: 'demo-prio--flexible', Standard: 'demo-prio--standard', Critical: 'demo-prio--critical' };
+    /* maps the infrastructure grid's US-WEST/US-CENTRAL/US-EAST/EU-WEST/APAC
+       naming onto the topology map's virginia/oregon/frankfurt/singapore/tokyo
+       nodes, so staging a workload highlights the same map used by the
+       Recommendations panel and the Regional coordination topology. */
+    const INFRA_TO_TOPO = { 'US-WEST': 'oregon', 'US-CENTRAL': 'virginia', 'US-EAST': 'tokyo', 'EU-WEST': 'frankfurt', 'APAC': 'singapore' };
     const POOL = [
-      { name: 'LLM Training · Batch A17', sub: 'Training Cluster · 1,024 GPU', prio: 'Flexible', region: 'US-WEST', power: '2.4 MW', risk: 'med', action: 'Shift 18% → US-CENTRAL', why: 'Medium thermal risk; cheaper, lower-risk capacity in US-CENTRAL', fx: { regionDelta: { 'us-west': -14, 'us-central': 14 }, risk: { 'us-west': 'low' }, flash: ['us-west', 'us-central'], bump: { energy: 1.1, cost: 280, carbon: 0.4, pue: -0.01, cooling: 0.9 } } },
-      { name: 'Embedding Refresh', sub: 'Batch Scheduler · nightly', prio: 'Flexible', region: 'EU-WEST', power: '0.7 MW', risk: 'low', action: 'Defer 42 min', why: 'Flexible batch aligned to a cleaner, cheaper window', fx: { regionDelta: { 'eu-west': -8 }, flash: ['eu-west'], bump: { energy: 0.5, cost: 140, carbon: 0.7, cooling: 0.2 } } },
-      { name: 'Vision Model Training', sub: 'GPU Pods · 512 GPU', prio: 'Standard', region: 'US-CENTRAL', power: '1.8 MW', risk: 'high', action: 'Reroute → US-EAST', why: 'High thermal risk in current region', fx: { regionDelta: { 'us-central': -12, 'us-east': 6 }, risk: { 'us-central': 'med' }, flash: ['us-central', 'us-east'], bump: { energy: 0.4, cost: 90, cooling: 1.4, pue: -0.01 } } },
-      { name: 'Recsys Retrain', sub: 'Training Cluster · 768 GPU', prio: 'Flexible', region: 'APAC', power: '1.5 MW', risk: 'high', action: 'Shift → EU-WEST', why: 'Constrained cooling; cleaner capacity in EU-WEST', fx: { regionDelta: { 'apac': -16, 'eu-west': 10 }, risk: { 'apac': 'med' }, flash: ['apac', 'eu-west'], bump: { energy: 0.8, cost: 210, carbon: 0.6, cooling: 1.1 } } },
-      { name: 'Checkpoint Sync', sub: 'Batch Scheduler · rolling', prio: 'Flexible', region: 'US-WEST', power: '0.9 MW', risk: 'med', action: 'Defer 25 min', why: 'Non-urgent; shift out of the current demand peak', fx: { regionDelta: { 'us-west': -6 }, flash: ['us-west'], bump: { energy: 0.3, cost: 95, carbon: 0.3 } } },
-      { name: 'Fine-tune Job 22', sub: 'GPU Pods · 256 GPU', prio: 'Standard', region: 'US-EAST', power: '1.3 MW', risk: 'med', action: 'Rebalance → US-CENTRAL', why: 'Spread load off a warming US-EAST zone', fx: { regionDelta: { 'us-east': -8, 'us-central': 8 }, flash: ['us-east', 'us-central'], bump: { energy: 0.5, cost: 120, cooling: 0.5 } } },
-      { name: 'Data Pipeline ETL', sub: 'Batch Scheduler · hourly', prio: 'Flexible', region: 'EU-WEST', power: '0.6 MW', risk: 'low', action: 'Consolidate nodes', why: 'Pack onto fewer nodes to free idle capacity', fx: { regionDelta: { 'eu-west': -5 }, flash: ['eu-west'], bump: { energy: 0.4, cost: 110, carbon: 0.2, cooling: 0.3 } } }
+      { name: 'LLM Training · Batch A17', sub: 'Training Cluster · 1,024 GPU', prio: 'Flexible', region: 'US-WEST', power: '2.4 MW', risk: 'med', action: 'Shift 18% → US-CENTRAL', why: 'Medium thermal risk; cheaper, lower-risk capacity in US-CENTRAL', fx: { regionDelta: { 'us-west': -14, 'us-central': 14 }, risk: { 'us-west': 'low' }, flash: ['us-west', 'us-central'], bump: { energy: 1.1, cost: 280, carbon: 0.4, pue: -0.01, cooling: 0.9 } }, topo: { from: 'oregon', to: 'virginia' } },
+      { name: 'Embedding Refresh', sub: 'Batch Scheduler · nightly', prio: 'Flexible', region: 'EU-WEST', power: '0.7 MW', risk: 'low', action: 'Defer 42 min', why: 'Flexible batch aligned to a cleaner, cheaper window', fx: { regionDelta: { 'eu-west': -8 }, flash: ['eu-west'], bump: { energy: 0.5, cost: 140, carbon: 0.7, cooling: 0.2 } }, topo: { from: 'frankfurt', to: null } },
+      { name: 'Vision Model Training', sub: 'GPU Pods · 512 GPU', prio: 'Standard', region: 'US-CENTRAL', power: '1.8 MW', risk: 'high', action: 'Reroute → US-EAST', why: 'High thermal risk in current region', fx: { regionDelta: { 'us-central': -12, 'us-east': 6 }, risk: { 'us-central': 'med' }, flash: ['us-central', 'us-east'], bump: { energy: 0.4, cost: 90, cooling: 1.4, pue: -0.01 } }, topo: { from: 'virginia', to: 'tokyo' } },
+      { name: 'Recsys Retrain', sub: 'Training Cluster · 768 GPU', prio: 'Flexible', region: 'APAC', power: '1.5 MW', risk: 'high', action: 'Shift → EU-WEST', why: 'Constrained cooling; cleaner capacity in EU-WEST', fx: { regionDelta: { 'apac': -16, 'eu-west': 10 }, risk: { 'apac': 'med' }, flash: ['apac', 'eu-west'], bump: { energy: 0.8, cost: 210, carbon: 0.6, cooling: 1.1 } }, topo: { from: 'singapore', to: 'frankfurt' } },
+      { name: 'Checkpoint Sync', sub: 'Batch Scheduler · rolling', prio: 'Flexible', region: 'US-WEST', power: '0.9 MW', risk: 'med', action: 'Defer 25 min', why: 'Non-urgent; shift out of the current demand peak', fx: { regionDelta: { 'us-west': -6 }, flash: ['us-west'], bump: { energy: 0.3, cost: 95, carbon: 0.3 } }, topo: { from: 'oregon', to: null } },
+      { name: 'Fine-tune Job 22', sub: 'GPU Pods · 256 GPU', prio: 'Standard', region: 'US-EAST', power: '1.3 MW', risk: 'med', action: 'Rebalance → US-CENTRAL', why: 'Spread load off a warming US-EAST zone', fx: { regionDelta: { 'us-east': -8, 'us-central': 8 }, flash: ['us-east', 'us-central'], bump: { energy: 0.5, cost: 120, cooling: 0.5 } }, topo: { from: 'tokyo', to: 'virginia' } },
+      { name: 'Data Pipeline ETL', sub: 'Batch Scheduler · hourly', prio: 'Flexible', region: 'EU-WEST', power: '0.6 MW', risk: 'low', action: 'Consolidate nodes', why: 'Pack onto fewer nodes to free idle capacity', fx: { regionDelta: { 'eu-west': -5 }, flash: ['eu-west'], bump: { energy: 0.4, cost: 110, carbon: 0.2, cooling: 0.3 } }, topo: { from: 'frankfurt', to: null } }
     ];
     let displayed = [0, 1, 2, 3];
     let ptr = 4;
@@ -887,11 +1001,16 @@
         tr.hidden = activeFilter !== 'all' && !types.includes(activeFilter);
       });
     }
+    let suppressHoverUntil = 0;
     function render() {
       tbody.innerHTML = displayed.map(rowHTML).join('');
       const note = $('[data-wl-note]');
       if (note) note.textContent = 'Scheduler · 4 active';
       applyRowFilter();
+      // a row that regenerates under a stationary cursor fires a spurious
+      // pointerover on the new content - ignore hover-preview briefly so
+      // it can't silently override the action that was just committed.
+      suppressHoverUntil = Date.now() + 250;
     }
     const filterBar = $('[data-wl-filters]');
     if (filterBar) {
@@ -931,6 +1050,7 @@
       const w = POOL[i];
       applyFx(w.fx);                  // real per-region infrastructure change
       addStaged(w);
+      if (w.topo && window.CPScene) window.CPScene.setCommittedHighlight(w.topo, 'staged');
       // regenerate this slot with the next workload from the pool
       const slot = displayed.indexOf(i);
       displayed[slot] = ptr % POOL.length;
@@ -942,6 +1062,25 @@
       const btn = e.target.closest('[data-wl-pool]');
       if (!btn) return;
       onStage(parseInt(btn.dataset.wlPool, 10));
+    });
+    /* hover a row to preview its topology path, matching the
+       Recommendations panel's behavior on the same shared map. */
+    let hoverRow = null;
+    tbody.addEventListener('pointerover', (e) => {
+      if (Date.now() < suppressHoverUntil) return;
+      const row = e.target.closest('tr[data-wl-slot]');
+      if (!row || row === hoverRow || !window.CPScene) return;
+      hoverRow = row;
+      const idx = [...tbody.children].indexOf(row);
+      const poolIdx = displayed[idx];
+      const w = POOL[poolIdx];
+      if (w && w.topo) window.CPScene.previewHighlight(w.topo);
+    });
+    tbody.addEventListener('pointerout', (e) => {
+      const row = e.target.closest('tr[data-wl-slot]');
+      if (!row || row.contains(e.relatedTarget)) return;
+      if (row === hoverRow) hoverRow = null;
+      if (window.CPScene) window.CPScene.restoreHighlight();
     });
     window.__resetWorkloads = function () {
       displayed = [0, 1, 2, 3]; ptr = 4; staged = 0;

@@ -567,6 +567,7 @@
   function applyScenario(name) {
     const scn = SCN[name] || SCN.normal;
     activeScene = scn;            // keep a live reference for rec-patch updates
+    committed = null;             // a scenario change drops any staged/approved topology highlight
     tipUsed = {};                 // reset so region tooltips re-attach once
     CP.setScenario(name);         // recompute KPI cards
     renderTopology(scn);
@@ -585,21 +586,11 @@
      live regional coordination map + node cards (persists until the
      scenario changes). Mirrors the action the operator approved. */
   let activeScene = null;
-  const REC_SCENE_PATCH = {
-    'REC-01': { virginia: { util: -11, status: 'opt', role: 'Shedding to Oregon' }, oregon: { util: 9, status: 'ok', role: 'Absorbing shifted training' } },
-    'REC-02': { tokyo: { util: -7, carbon: 'Low', role: 'Deferred to low-carbon' }, oregon: { util: 4, role: 'Low-carbon intake' } },
-    'REC-03': { singapore: { util: -6, thermal: 'Stable', status: 'warn', role: 'Setpoint relieved' } }
-  };
-  function applyRecPatch(recId) {
+  function bumpRegion(fromId, toId) {
     if (!activeScene) return;
-    const patch = REC_SCENE_PATCH[recId];
-    if (!patch) return;
     activeScene.regions.forEach((reg) => {
-      const p = patch[reg.id]; if (!p) return;
-      for (const k in p) {
-        if (k === 'util') reg.util = Math.max(0, Math.min(100, reg.util + p.util));
-        else reg[k] = p[k];
-      }
+      if (reg.id === fromId) { reg.util = Math.max(0, reg.util - 9); if (reg.status === 'crit') reg.status = 'warn'; else if (reg.status === 'warn') reg.status = 'opt'; }
+      if (toId && reg.id === toId) { reg.util = Math.min(100, reg.util + 6); if (reg.status === 'ok') reg.status = 'opt'; }
     });
     renderTopology(activeScene);
     renderPins(activeScene);
@@ -608,9 +599,93 @@
     bumpAction();
     const constrained = activeScene.regions.filter((r) => r.status === 'warn' || r.status === 'crit').length;
     const sbC = $('[data-sb="constrained"]'); if (sbC) sbC.textContent = String(constrained);
-    pushEvent({ time: nowClock(), type: 'acted', text: 'Applied ' + recId + ' · regional load rebalanced in simulation' });
   }
-  window.CPScene = { applyRecPatch, pushEvent };
+
+  /* ============================================================
+     PER-RECOMMENDATION TOPOLOGY TRACING
+     A single recommendation (from the Recommendations panel OR the
+     Workload table - both now reference the same region-id vocabulary
+     used by the topology map) can claim the map: dim every other flow,
+     draw its exact source→target path (built fresh from the region
+     node positions so it's correct regardless of which flows the
+     active scenario happens to be rendering), and mark the source /
+     target nodes. Three visual states: preview (hover/select),
+     staged, approved. Clearing returns the map to the scenario
+     baseline. Rejecting never calls into this - so a rejected action
+     never touches the topology, honoring "rejected has no effect".
+     ============================================================ */
+  let recPathEl = null, recDashEl = null;
+  function clearRecHighlight() {
+    const map = document.querySelector('.cp-topo__map');
+    if (map) map.classList.remove('is-tracing-rec');
+    $$('.cp-flow, .cp-flow-dash').forEach((f) => f.classList.remove('is-dimmed'));
+    $$('.cp-node').forEach((n) => n.classList.remove('is-rec-source', 'is-rec-target'));
+    if (recPathEl && recPathEl.parentNode) recPathEl.parentNode.removeChild(recPathEl);
+    if (recDashEl && recDashEl.parentNode) recDashEl.parentNode.removeChild(recDashEl);
+    recPathEl = null; recDashEl = null;
+  }
+  function highlightRecPath(fromId, toId, mode) {
+    clearRecHighlight();
+    const a = NODE_POS[fromId];
+    if (!a || !flowsG) return;
+    const map = document.querySelector('.cp-topo__map');
+    if (map) map.classList.add('is-tracing-rec');
+    $$('.cp-flow, .cp-flow-dash').forEach((f) => f.classList.add('is-dimmed'));
+    const sourceNode = document.querySelector('.cp-node[data-region-id="' + fromId + '"]');
+    if (sourceNode) sourceNode.classList.add('is-rec-source');
+    const b = toId && NODE_POS[toId];
+    if (!b) return; // local-only action (e.g. a deferral): source emphasis is enough, no path to draw
+    const targetNode = document.querySelector('.cp-node[data-region-id="' + toId + '"]');
+    if (targetNode) targetNode.classList.add('is-rec-target');
+    const d = curve(a, b);
+    recPathEl = document.createElementNS(SVGNS, 'path');
+    recPathEl.setAttribute('d', d);
+    recPathEl.setAttribute('class', 'cp-flow cp-flow--rec cp-flow--rec-' + mode);
+    flowsG.appendChild(recPathEl);
+    recDashEl = document.createElementNS(SVGNS, 'path');
+    recDashEl.setAttribute('d', d);
+    recDashEl.setAttribute('class', 'cp-flow-dash cp-flow-dash--rec cp-flow-dash--rec-' + mode);
+    flowsG.appendChild(recDashEl);
+  }
+  function approveRecPath(fromId, toId) {
+    // bumpRegion() re-renders the topology from scratch (it rebuilds the
+    // node/flow groups from scenario data), so it must run BEFORE the
+    // highlight is drawn - otherwise the fresh render wipes the overlay
+    // path we just added.
+    bumpRegion(fromId, toId);
+    highlightRecPath(fromId, toId, 'approved');
+    const targetNode = document.querySelector('.cp-node[data-region-id="' + (toId || fromId) + '"]');
+    if (targetNode) { targetNode.classList.remove('cp-flash'); void targetNode.offsetWidth; targetNode.classList.add('cp-flash'); }
+  }
+
+  /* single shared "committed" highlight (staged or approved), so the
+     Recommendations panel and the Workload table - two independent UI
+     surfaces - never fight over which path the map is showing. Both
+     call the same setCommitted/clearCommitted/preview/restore API. */
+  let committed = null; // { topo: {from,to}, mode: 'staged'|'approved' }
+  function setCommittedHighlight(topo, mode) {
+    if (!topo) return;
+    committed = { topo, mode };
+    highlightRecPath(topo.from, topo.to, mode);
+  }
+  function approveCommittedHighlight(topo) {
+    if (!topo) return;
+    committed = { topo, mode: 'approved' };
+    approveRecPath(topo.from, topo.to);
+  }
+  function clearCommittedHighlight() {
+    committed = null;
+    clearRecHighlight();
+  }
+  function previewHighlight(topo) {
+    if (!topo) return;
+    highlightRecPath(topo.from, topo.to, 'preview');
+  }
+  function restoreHighlight() {
+    if (committed) highlightRecPath(committed.topo.from, committed.topo.to, committed.mode);
+    else clearRecHighlight();
+  }
+  window.CPScene = { pushEvent, setCommittedHighlight, approveCommittedHighlight, clearCommittedHighlight, previewHighlight, restoreHighlight };
 
   /* ---- custom themed dropdown (replaces native select) ---- */
   const selRoot = $('#cp-scenario');

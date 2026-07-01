@@ -52,7 +52,7 @@
   <nav class="nav__right">
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
-      <span class="mono" data-clock>Sync initializing</span>
+      <span class="mono" data-clock>00:00:00 UTC</span>
     </span>
     <a class="navlink" href="control-plane.html"><span class="lbl-full">Interactive demo</span><span class="lbl-short">Demo</span></a>
     <a class="navlink navlink--cta" href="#access"><span class="lbl-full">Request access</span><span class="lbl-short">Access</span> <span class="arr" aria-hidden="true">↗</span></a>
@@ -77,12 +77,12 @@
           <a class="btn" href="#access" data-magnetic="0.2">Request access <span class="arr" aria-hidden="true">→</span></a>
           <a class="btn-ghost" href="#thesis"><span class="dot" aria-hidden="true"></span> Thesis preview</a>
         </div>
-        <div class="hero__status" data-reveal style="--i:4" role="note" aria-label="Illustrative system status">
-          <span class="hero__pill"><span class="d" aria-hidden="true"></span>Simulation mode</span>
-          <span class="hero__pill">5 regions modeled</span>
-          <span class="hero__pill">Operator approval required</span>
-          <span class="hero__pill">Carbon window detected</span>
-          <span class="hero__pill hero__pill--fade">Thermal headroom shifting</span>
+        <div class="hero__status" data-reveal style="--i:4" role="note" aria-label="What this preview demonstrates">
+          <span class="hero__pill"><span class="d" aria-hidden="true"></span>Research preview</span>
+          <span class="hero__pill">5-region simulation</span>
+          <span class="hero__pill">Workload-first coordination</span>
+          <span class="hero__pill">Operator-reviewed actions</span>
+          <span class="hero__pill hero__pill--fade">Compute · Energy · Thermal</span>
         </div>
       </div>
 
@@ -216,6 +216,53 @@
       <span class="loop__arr" aria-hidden="true">→</span>
       <span class="loop__step">Verify</span>
     </div>
+  </div>
+</section>
+
+<!-- =================== SIGNAL INTAKE BOARD ====================== -->
+<section class="section section--line signalboard" id="signals" data-screen-label="signal-intake-board">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">What Helicyn observes</span>
+      <h2>Eight signals, one board.</h2>
+      <p class="signalboard__lead">Every coordination decision starts with the same simulated telemetry, read together instead of by separate teams on separate dashboards.</p>
+    </div>
+    <div class="signalboard__grid" data-reveal style="--i:1">
+      <div class="signalboard__tile"><span class="signalboard__k">Workload queues</span><span class="signalboard__v">Queued &amp; running jobs</span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">GPU utilization</span><span class="signalboard__v">Fleet-wide %</span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">SLA constraints</span><span class="signalboard__v">Deadline &amp; latency risk</span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">Power prices</span><span class="signalboard__v">$ / MWh, by region</span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">Carbon intensity</span><span class="signalboard__v">g CO₂e / kWh</span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">Cooling telemetry</span><span class="signalboard__v">Zone load &amp; setpoints</span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">Thermal headroom</span><span class="signalboard__v">Margin to limit</span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">Regional capacity</span><span class="signalboard__v">Spare GPU by region</span></div>
+    </div>
+    <div class="signalboard__feed" aria-hidden="true" data-reveal style="--i:2">
+      <svg viewBox="0 0 1000 60" preserveAspectRatio="none">
+        <line class="signalboard__feedline" x1="0" y1="1" x2="1000" y2="1"></line>
+        <line class="signalboard__feeddash" x1="0" y1="1" x2="1000" y2="1"></line>
+      </svg>
+    </div>
+    <span class="signalboard__engine" data-reveal style="--i:2"><span class="d" aria-hidden="true"></span>Feeds the coordination engine</span>
+  </div>
+</section>
+
+<!-- ================ COORDINATION ENGINE DIAGRAM ================= -->
+<section class="section section--line enginediagram" id="engine" data-screen-label="coordination-engine-diagram">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">What Helicyn evaluates</span>
+      <h2>From signal to verified action.</h2>
+      <p class="enginediagram__lead">Six steps turn an observed constraint into an operator-approved, verified outcome.</p>
+    </div>
+    <ol class="enginediagram__pipeline" data-reveal style="--i:1">
+      <li class="enginediagram__step"><span class="i">01</span><span class="l">Detect constraint</span></li>
+      <li class="enginediagram__step"><span class="i">02</span><span class="l">Score placement</span></li>
+      <li class="enginediagram__step"><span class="i">03</span><span class="l">Simulate tradeoff</span></li>
+      <li class="enginediagram__step"><span class="i">04</span><span class="l">Generate recommendation</span></li>
+      <li class="enginediagram__step enginediagram__step--operator"><span class="i">05</span><span class="l">Operator review</span></li>
+      <li class="enginediagram__step enginediagram__step--verify"><span class="i">06</span><span class="l">Verify impact</span></li>
+    </ol>
   </div>
 </section>
 
