@@ -67,13 +67,13 @@
   <div class="reticle" aria-hidden="true"></div>
 
   <div class="hero__content">
-    <div class="wrap hero__layout">
+    <div class="wrap">
       <div class="hero__grid">
         <span class="eyebrow" data-reveal style="--i:0">Deep infrastructure · intelligence · scale</span>
         <div class="hero__logo" data-reveal style="--i:1">
           <svg class="hero__logomark" viewBox="0 0 18 18" fill="none" aria-hidden="true">
             <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="0.7" opacity="0.85"></circle>
-            <circle cx="9" cy="9" r="2" fill="currentColor"></circle>
+            <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
           </svg>
           <h1 class="hero__logotype">Helicyn</h1>
         </div>
@@ -91,87 +91,6 @@
           <span class="hero__pill hero__pill--fade">Compute · Energy · Thermal</span>
         </div>
       </div>
-
-      <div class="hero__scenewrap" data-reveal style="--i:2">
-        <div class="hero__scene">
-          <span class="hero__scene-tag"><span class="d" aria-hidden="true"></span>Coordination preview</span>
-          <span class="hero__scene-sim">Simulated</span>
-          <svg class="heroscene" viewBox="0 0 640 674" role="img" aria-label="Diagram of five regional infrastructure nodes reporting signals into a central Helicyn coordination layer, with two nodes shown as constrained and three as available">
-           <g transform="translate(0,34)">
-            <g class="heroscene__paths">
-              <path id="hpath-virginia"  class="heroscene__path heroscene__path--constrained" d="M320,80 L320,320"></path>
-              <path id="hpath-oregon"    class="heroscene__path heroscene__path--available"   d="M548,246 L320,320"></path>
-              <path id="hpath-frankfurt" class="heroscene__path heroscene__path--available"   d="M461,514 L320,320"></path>
-              <path id="hpath-singapore" class="heroscene__path heroscene__path--constrained" d="M179,514 L320,320"></path>
-              <path id="hpath-tokyo"     class="heroscene__path heroscene__path--available"   d="M92,246 L320,320"></path>
-              <path class="heroscene__pathdash heroscene__pathdash--constrained" d="M320,80 L320,320"></path>
-              <path class="heroscene__pathdash heroscene__pathdash--available"   d="M548,246 L320,320" style="animation-delay:-0.4s"></path>
-              <path class="heroscene__pathdash heroscene__pathdash--available"   d="M461,514 L320,320" style="animation-delay:-0.8s"></path>
-              <path class="heroscene__pathdash heroscene__pathdash--constrained" d="M179,514 L320,320" style="animation-delay:-1.2s"></path>
-              <path class="heroscene__pathdash heroscene__pathdash--available"   d="M92,246 L320,320" style="animation-delay:-1.6s"></path>
-            </g>
-
-            <g class="heroscene__packetgroup" aria-hidden="true">
-              <circle r="3" class="heroscene__packet"><animateMotion dur="3.1s" repeatCount="indefinite" begin="0s"><mpath href="#hpath-virginia"></mpath></animateMotion></circle>
-              <circle r="3" class="heroscene__packet"><animateMotion dur="2.8s" repeatCount="indefinite" begin="0.5s"><mpath href="#hpath-oregon"></mpath></animateMotion></circle>
-              <circle r="3" class="heroscene__packet"><animateMotion dur="3.4s" repeatCount="indefinite" begin="1s"><mpath href="#hpath-frankfurt"></mpath></animateMotion></circle>
-              <circle r="3" class="heroscene__packet"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.5s"><mpath href="#hpath-singapore"></mpath></animateMotion></circle>
-              <circle r="3" class="heroscene__packet"><animateMotion dur="3.6s" repeatCount="indefinite" begin="2s"><mpath href="#hpath-tokyo"></mpath></animateMotion></circle>
-            </g>
-
-            <g class="heroscene__node is-constrained" data-node="virginia" transform="translate(320,80)">
-              <circle class="pulsering" r="13"></circle>
-              <circle class="ring" r="13"></circle>
-              <circle class="core" r="8"></circle>
-              <circle class="dot" r="3"></circle>
-              <text class="heroscene__label" y="-24">VIRGINIA</text>
-              <text class="heroscene__label heroscene__label--status" y="30">CONSTRAINED</text>
-            </g>
-            <g class="heroscene__node is-available" data-node="oregon" transform="translate(548,246)">
-              <circle class="pulsering" r="13"></circle>
-              <circle class="ring" r="13"></circle>
-              <circle class="core" r="8"></circle>
-              <circle class="dot" r="3"></circle>
-              <text class="heroscene__label" y="-24">OREGON</text>
-              <text class="heroscene__label heroscene__label--status" y="30">AVAILABLE</text>
-            </g>
-            <g class="heroscene__node is-available" data-node="frankfurt" transform="translate(461,514)">
-              <circle class="pulsering" r="13"></circle>
-              <circle class="ring" r="13"></circle>
-              <circle class="core" r="8"></circle>
-              <circle class="dot" r="3"></circle>
-              <text class="heroscene__label" y="-24">FRANKFURT</text>
-              <text class="heroscene__label heroscene__label--status" y="30">AVAILABLE</text>
-            </g>
-            <g class="heroscene__node is-constrained" data-node="singapore" transform="translate(179,514)">
-              <circle class="pulsering" r="13"></circle>
-              <circle class="ring" r="13"></circle>
-              <circle class="core" r="8"></circle>
-              <circle class="dot" r="3"></circle>
-              <text class="heroscene__label" y="-24">SINGAPORE</text>
-              <text class="heroscene__label heroscene__label--status" y="30">CONSTRAINED</text>
-            </g>
-            <g class="heroscene__node is-available" data-node="tokyo" transform="translate(92,246)">
-              <circle class="pulsering" r="13"></circle>
-              <circle class="ring" r="13"></circle>
-              <circle class="core" r="8"></circle>
-              <circle class="dot" r="3"></circle>
-              <text class="heroscene__label" y="-24">TOKYO</text>
-              <text class="heroscene__label heroscene__label--status" y="30">AVAILABLE</text>
-            </g>
-
-            <g class="heroscene__core" transform="translate(320,320)">
-              <circle class="ring2 spin" r="94" stroke-dasharray="2 7"></circle>
-              <circle class="ring1 pulse" r="72"></circle>
-              <circle class="core" r="46"></circle>
-              <circle class="dot" r="4"></circle>
-              <text class="heroscene__core-title" y="-3">Helicyn</text>
-              <text class="heroscene__label heroscene__label--status" y="13">Coordinating</text>
-            </g>
-           </g>
-          </svg>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -187,9 +106,92 @@
 
 <!-- =================== HERO STATEMENT =========================== -->
 <section class="section herostatement" id="overview" data-screen-label="overview">
-  <div class="wrap herostatement__wrap">
-    <h2 class="herostatement__lead" data-reveal>Helicyn coordinates compute, energy, and thermal systems across AI&nbsp;infrastructure.</h2>
-    <p class="herostatement__body" data-reveal style="--i:1">As AI workloads move across GPU clusters, power markets, cooling limits, and regional grids, Helicyn helps operators decide where and when work should run, reducing waste without sacrificing&nbsp;utilization.</p>
+  <div class="wrap hero__layout">
+    <div class="herostatement__wrap">
+      <h2 class="herostatement__lead" data-reveal>Helicyn coordinates compute, energy, and thermal systems across AI&nbsp;infrastructure.</h2>
+      <p class="herostatement__body" data-reveal style="--i:1">As AI workloads move across GPU clusters, power markets, cooling limits, and regional grids, Helicyn helps operators decide where and when work should run, reducing waste without sacrificing&nbsp;utilization.</p>
+    </div>
+
+    <div class="hero__scenewrap" data-reveal style="--i:2">
+      <div class="hero__scene">
+        <span class="hero__scene-tag"><span class="d" aria-hidden="true"></span>Coordination preview</span>
+        <span class="hero__scene-sim">Simulated</span>
+        <svg class="heroscene" viewBox="0 0 640 674" role="img" aria-label="Diagram of five regional infrastructure nodes reporting signals into a central Helicyn coordination layer, with two nodes shown as constrained and three as available">
+         <g transform="translate(0,34)">
+          <g class="heroscene__paths">
+            <path id="hpath-virginia"  class="heroscene__path heroscene__path--constrained" d="M320,80 L320,320"></path>
+            <path id="hpath-oregon"    class="heroscene__path heroscene__path--available"   d="M548,246 L320,320"></path>
+            <path id="hpath-frankfurt" class="heroscene__path heroscene__path--available"   d="M461,514 L320,320"></path>
+            <path id="hpath-singapore" class="heroscene__path heroscene__path--constrained" d="M179,514 L320,320"></path>
+            <path id="hpath-tokyo"     class="heroscene__path heroscene__path--available"   d="M92,246 L320,320"></path>
+            <path class="heroscene__pathdash heroscene__pathdash--constrained" d="M320,80 L320,320"></path>
+            <path class="heroscene__pathdash heroscene__pathdash--available"   d="M548,246 L320,320" style="animation-delay:-0.4s"></path>
+            <path class="heroscene__pathdash heroscene__pathdash--available"   d="M461,514 L320,320" style="animation-delay:-0.8s"></path>
+            <path class="heroscene__pathdash heroscene__pathdash--constrained" d="M179,514 L320,320" style="animation-delay:-1.2s"></path>
+            <path class="heroscene__pathdash heroscene__pathdash--available"   d="M92,246 L320,320" style="animation-delay:-1.6s"></path>
+          </g>
+
+          <g class="heroscene__packetgroup" aria-hidden="true">
+            <circle r="3" class="heroscene__packet"><animateMotion dur="3.1s" repeatCount="indefinite" begin="0s"><mpath href="#hpath-virginia"></mpath></animateMotion></circle>
+            <circle r="3" class="heroscene__packet"><animateMotion dur="2.8s" repeatCount="indefinite" begin="0.5s"><mpath href="#hpath-oregon"></mpath></animateMotion></circle>
+            <circle r="3" class="heroscene__packet"><animateMotion dur="3.4s" repeatCount="indefinite" begin="1s"><mpath href="#hpath-frankfurt"></mpath></animateMotion></circle>
+            <circle r="3" class="heroscene__packet"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.5s"><mpath href="#hpath-singapore"></mpath></animateMotion></circle>
+            <circle r="3" class="heroscene__packet"><animateMotion dur="3.6s" repeatCount="indefinite" begin="2s"><mpath href="#hpath-tokyo"></mpath></animateMotion></circle>
+          </g>
+
+          <g class="heroscene__node is-constrained" data-node="virginia" transform="translate(320,80)">
+            <circle class="pulsering" r="13"></circle>
+            <circle class="ring" r="13"></circle>
+            <circle class="core" r="8"></circle>
+            <circle class="dot" r="3"></circle>
+            <text class="heroscene__label" y="-24">VIRGINIA</text>
+            <text class="heroscene__label heroscene__label--status" y="30">CONSTRAINED</text>
+          </g>
+          <g class="heroscene__node is-available" data-node="oregon" transform="translate(548,246)">
+            <circle class="pulsering" r="13"></circle>
+            <circle class="ring" r="13"></circle>
+            <circle class="core" r="8"></circle>
+            <circle class="dot" r="3"></circle>
+            <text class="heroscene__label" y="-24">OREGON</text>
+            <text class="heroscene__label heroscene__label--status" y="30">AVAILABLE</text>
+          </g>
+          <g class="heroscene__node is-available" data-node="frankfurt" transform="translate(461,514)">
+            <circle class="pulsering" r="13"></circle>
+            <circle class="ring" r="13"></circle>
+            <circle class="core" r="8"></circle>
+            <circle class="dot" r="3"></circle>
+            <text class="heroscene__label" y="-24">FRANKFURT</text>
+            <text class="heroscene__label heroscene__label--status" y="30">AVAILABLE</text>
+          </g>
+          <g class="heroscene__node is-constrained" data-node="singapore" transform="translate(179,514)">
+            <circle class="pulsering" r="13"></circle>
+            <circle class="ring" r="13"></circle>
+            <circle class="core" r="8"></circle>
+            <circle class="dot" r="3"></circle>
+            <text class="heroscene__label" y="-24">SINGAPORE</text>
+            <text class="heroscene__label heroscene__label--status" y="30">CONSTRAINED</text>
+          </g>
+          <g class="heroscene__node is-available" data-node="tokyo" transform="translate(92,246)">
+            <circle class="pulsering" r="13"></circle>
+            <circle class="ring" r="13"></circle>
+            <circle class="core" r="8"></circle>
+            <circle class="dot" r="3"></circle>
+            <text class="heroscene__label" y="-24">TOKYO</text>
+            <text class="heroscene__label heroscene__label--status" y="30">AVAILABLE</text>
+          </g>
+
+          <g class="heroscene__core" transform="translate(320,320)">
+            <circle class="ring2 spin" r="94" stroke-dasharray="2 7"></circle>
+            <circle class="ring1 pulse" r="72"></circle>
+            <circle class="core" r="46"></circle>
+            <circle class="dot" r="4"></circle>
+            <text class="heroscene__core-title" y="-3">Helicyn</text>
+            <text class="heroscene__label heroscene__label--status" y="13">Coordinating</text>
+          </g>
+         </g>
+        </svg>
+      </div>
+    </div>
   </div>
 </section>
 

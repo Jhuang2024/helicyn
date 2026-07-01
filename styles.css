@@ -253,14 +253,35 @@ h1, h2, h3 { overflow-wrap: break-word; }
 .hero__logo { display: flex; align-items: center; gap: clamp(0.9rem, 2.4vw, 1.7rem); }
 .hero__logomark {
   width: clamp(2.3rem, 4.6vw, 3.8rem); height: clamp(2.3rem, 4.6vw, 3.8rem);
-  color: var(--text); flex: none;
+  color: var(--text); flex: none; overflow: visible;
 }
-.hero__logomark .ring { transition: transform 0.6s var(--ease); transform-origin: center; }
+.hero__logomark .ring { transform-origin: center; }
+.hero__logomark .dot { transform-origin: center; }
 .hero h1.hero__logotype {
   font-weight: 500;
   font-size: clamp(3.2rem, 7.4vw, 6.2rem);
   line-height: 1;
   letter-spacing: -0.03em;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero__logomark .ring { animation: heroLogoSpin 26s linear infinite; }
+  .hero__logomark .dot { animation: heroLogoPulse 3.2s var(--ease-io) infinite; }
+  .hero h1.hero__logotype {
+    background: linear-gradient(100deg, var(--text) 35%, var(--signal) 50%, var(--text) 65%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: heroLogotypeSheen 6.5s ease-in-out infinite;
+  }
+}
+@keyframes heroLogoSpin { to { transform: rotate(360deg); } }
+@keyframes heroLogoPulse {
+  0%, 100% { opacity: 0.82; filter: drop-shadow(0 0 0 transparent); }
+  50% { opacity: 1; filter: drop-shadow(0 0 7px var(--signal-glow)); }
+}
+@keyframes heroLogotypeSheen {
+  0%, 18% { background-position: 200% 0; }
+  55% { background-position: -40% 0; }
+  88%, 100% { background-position: 200% 0; }
 }
 
 .hero__tagline {
@@ -436,9 +457,9 @@ section { position: relative; }
   line-height: 1.08; letter-spacing: -0.025em; text-wrap: balance;
 }
 
-/* ---- HERO STATEMENT (relocated from hero, kept out of the
-   fold so the hero itself stays a clean logo + scene) -------- */
-.herostatement__wrap { display: grid; gap: clamp(1.6rem, 3.4vw, 2.4rem); max-width: 68ch; }
+/* ---- HERO STATEMENT (relocated copy + the coordination scene,
+   out of the fold so the hero itself stays a clean logo + tagline) */
+.herostatement__wrap { display: grid; gap: clamp(1.6rem, 3.4vw, 2.4rem); max-width: 58ch; }
 .herostatement__lead {
   font-weight: 500;
   font-size: clamp(1.8rem, 3.4vw, 2.9rem);
