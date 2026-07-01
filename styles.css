@@ -250,20 +250,24 @@ h1, h2, h3 { overflow-wrap: break-word; }
 .hero__content { position: relative; z-index: 4; width: 100%; }
 .hero__grid { display: grid; gap: clamp(1.6rem, 3vh, 2.4rem); max-width: 70ch; }
 
-.hero h1 {
-  font-weight: 500;
-  font-size: clamp(2.2rem, 3.4vw, 3.7rem);
-  line-height: 1.08;
-  letter-spacing: -0.028em;
-  text-wrap: balance;
+.hero__logo { display: flex; align-items: center; gap: clamp(0.9rem, 2.4vw, 1.7rem); }
+.hero__logomark {
+  width: clamp(2.3rem, 4.6vw, 3.8rem); height: clamp(2.3rem, 4.6vw, 3.8rem);
+  color: var(--text); flex: none;
 }
-.hero h1 .soft { color: var(--text-dim); }
+.hero__logomark .ring { transition: transform 0.6s var(--ease); transform-origin: center; }
+.hero h1.hero__logotype {
+  font-weight: 500;
+  font-size: clamp(3.2rem, 7.4vw, 6.2rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
 
-.hero__sub {
-  font-size: clamp(1.02rem, 1.55vw, 1.28rem);
+.hero__tagline {
+  font-size: clamp(1.08rem, 1.7vw, 1.4rem);
   line-height: 1.55;
   color: var(--text-dim);
-  max-width: 52ch;
+  max-width: 44ch;
   font-weight: 400;
 }
 
@@ -430,6 +434,24 @@ section { position: relative; }
 .sec-head h2 {
   font-weight: 500; font-size: clamp(1.7rem, 3.2vw, 2.7rem);
   line-height: 1.08; letter-spacing: -0.025em; text-wrap: balance;
+}
+
+/* ---- HERO STATEMENT (relocated from hero, kept out of the
+   fold so the hero itself stays a clean logo + scene) -------- */
+.herostatement__wrap { display: grid; gap: clamp(1.6rem, 3.4vw, 2.4rem); max-width: 68ch; }
+.herostatement__lead {
+  font-weight: 500;
+  font-size: clamp(1.8rem, 3.4vw, 2.9rem);
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.herostatement__body {
+  font-size: clamp(1.02rem, 1.5vw, 1.24rem);
+  line-height: 1.6;
+  color: var(--text-dim);
+  max-width: 58ch;
+  font-weight: 400;
 }
 
 /* ---- MANIFESTO ------------------------------------------- */
@@ -856,10 +878,9 @@ section { position: relative; }
   .navlink--cta { padding-block: 0.45rem; }
 
   .hero { min-height: 100svh; padding-top: 4.5rem; }
-  .hero h1 { font-size: clamp(2.05rem, 9vw, 2.9rem); letter-spacing: -0.028em; }
-  /* let long words wrap rather than overflow on narrow screens */
-  .hero h1 br, .hero h1 { hyphens: none; }
-  .hero__sub { font-size: 1.02rem; }
+  .hero h1.hero__logotype { font-size: clamp(2.6rem, 15vw, 3.6rem); letter-spacing: -0.025em; }
+  .hero__logomark { width: 2rem; height: 2rem; }
+  .hero__tagline { font-size: 1.02rem; }
   .hero__cta { gap: 1rem 1.4rem; }
   /* pill row is a desktop bonus; on short mobile viewports it risks
      crowding the scroll cue, so it drops out with hero__coords */
