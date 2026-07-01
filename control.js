@@ -59,7 +59,7 @@
   })();
   function dayFraction() {
     // ACTUAL real UTC time-of-day. Fleet totals are 0 at 00:00 UTC and build
-    // to a full day's worth by 24:00 — they reflect exactly how far into the
+    // to a full day's worth by 24:00; they reflect exactly how far into the
     // real day we are right now (no seeding, no acceleration, no skipping).
     const d = new Date();
     return (d.getUTCHours() * 3600 + d.getUTCMinutes() * 60 + d.getUTCSeconds() + d.getUTCMilliseconds() / 1000) / 86400;

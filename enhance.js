@@ -98,12 +98,12 @@
     const ORDER = ['workload', 'compute', 'region', 'facility', 'power', 'thermal', 'cooling', 'operator'];
     const DATA = {
       workload: { tag: 'Not scheduler-only', text: 'Training, inference, and batch jobs enter with priority, SLA flexibility, and deadline constraints already attached. This is where a coordination decision starts.' },
-      compute:  { tag: 'GPU utilization', text: 'GPU clusters translate workload demand into utilization, thermal load, and power draw — the first physical cost of a placement decision.' },
+      compute:  { tag: 'GPU utilization', text: 'GPU clusters translate workload demand into utilization, thermal load, and power draw: the first physical cost of a placement decision.' },
       region:   { tag: 'Regional capacity', text: 'Grid carbon intensity, power price, and spare capacity vary by region. The same job costs and emits differently depending on where it runs.' },
       facility: { tag: 'Facility limits', text: 'Each data center holds its own cooling and power ceiling. Regional headroom means nothing if the facility itself is constrained.' },
       power:    { tag: 'Price exposure', text: 'Electricity price and availability set how much discretionary compute can run right now, and how much should wait for a cheaper window.' },
       thermal:  { tag: 'Thermal headroom', text: 'Rack-level heat and headroom determine how much load a zone can safely absorb before cooling becomes the binding constraint.' },
-      cooling:  { tag: 'Not cooling-only', text: 'Cooling is a downstream effect, not the starting point. Setpoints and airflow respond to thermal load inside facility limits — Helicyn is not a cooling-only optimizer.' },
+      cooling:  { tag: 'Not cooling-only', text: 'Cooling is a downstream effect, not the starting point. Setpoints and airflow respond to thermal load inside facility limits. Helicyn is not a cooling-only optimizer.' },
       operator: { tag: 'Operator-in-the-loop', text: 'Every recommended action is reviewed and approved by an operator before it changes anything. Helicyn recommends; it does not act alone.' }
     };
 

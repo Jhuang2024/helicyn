@@ -4,7 +4,7 @@
    dashboard: a cursor-reactive background glow + faint parallax
    grid behind the content, and a per-card spotlight sheen that
    follows the pointer. Vanilla. Reduced-motion aware. Purely
-   decorative — never blocks pointer events or changes layout.
+   decorative; never blocks pointer events or changes layout.
    ============================================================ */
 (function () {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

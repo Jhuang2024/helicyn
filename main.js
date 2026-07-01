@@ -70,7 +70,7 @@
   tick(); setInterval(tick, 1000);
 
   // ---- build label (static; no fake runtime counter) -------
-  // Intentionally no uptime ticker — the corner label stays a
+  // Intentionally no uptime ticker; the corner label stays a
   // static build string so static/crawled output never shows a
   // zeroed "T+00:00:00".
 

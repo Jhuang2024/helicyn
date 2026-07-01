@@ -1264,7 +1264,7 @@
    Cursor-reactive ambient background, per-card spotlight sheen,
    card lift + depth, button/badge response, topology illumination.
    Same understated language as the landing page. Subtle, eased,
-   reduced-motion safe. Decorative only — never blocks pointers.
+   reduced-motion safe. Decorative only; never blocks pointers.
    ============================================================ */
 
 /* keep all dashboard content above the fixed ambient layer */
