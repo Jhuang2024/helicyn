@@ -22,9 +22,15 @@
   const revealEls = Array.from(document.querySelectorAll('[data-reveal]'));
   const easeOutExpo = (p) => (p >= 1 ? 1 : 1 - Math.pow(2, -10 * p));
   function tween(el) {
-    if (prm) { el.style.opacity = '1'; el.style.transform = 'none'; el.classList.add('is-visible'); return; }
+    const mask = el.getAttribute('data-reveal') === 'mask';
+    if (prm) {
+      el.style.opacity = '1'; el.style.transform = 'none';
+      if (mask) el.style.clipPath = 'inset(0 0 0 0)';
+      el.classList.add('is-visible');
+      return;
+    }
     const delay = (parseFloat(el.style.getPropertyValue('--i')) || 0) * 90;
-    const dur = 900;
+    const dur = mask ? 1100 : 900;
     let start = null;
     function step(t) {
       if (start === null) start = t;
@@ -32,8 +38,13 @@
       if (e < 0) { requestAnimationFrame(step); return; }
       const p = Math.min(1, e / dur);
       const k = easeOutExpo(p);
-      el.style.opacity = String(k);
-      el.style.transform = `translateY(${(1 - k) * 22}px)`;
+      if (mask) {
+        el.style.opacity = '1';
+        el.style.clipPath = `inset(0 ${((1 - k) * 100).toFixed(2)}% 0 0)`;
+      } else {
+        el.style.opacity = String(k);
+        el.style.transform = `translateY(${(1 - k) * 22}px)`;
+      }
       if (p < 1) requestAnimationFrame(step);
       else { el.style.transform = 'none'; el.classList.add('is-visible'); }
     }
@@ -58,6 +69,37 @@
   checkReveal();
   setTimeout(checkReveal, 120);
   setTimeout(checkReveal, 600);
+
+  // ---- count-up metrics (illustrative values, animated once
+  // on scroll-into-view; final digits match the static markup) --
+  (function () {
+    const els = Array.from(document.querySelectorAll('[data-count]'));
+    if (!els.length || prm || !('IntersectionObserver' in window)) return;
+    const parsed = els.map((el) => {
+      const m = el.getAttribute('data-count').match(/^([^\d\-−]*)([\-−]?)([\d.]+)(.*)$/);
+      return m ? { el, prefix: m[1], sign: m[2], num: parseFloat(m[3]), decimals: (m[3].split('.')[1] || '').length, suffix: m[4] } : null;
+    }).filter(Boolean);
+    const render = (meta, v) => { meta.el.textContent = meta.prefix + meta.sign + v.toFixed(meta.decimals) + meta.suffix; };
+    parsed.forEach((meta) => render(meta, 0));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        io.unobserve(entry.target);
+        const meta = parsed.find((m) => m.el === entry.target);
+        if (!meta) return;
+        const dur = 1200;
+        let start = null;
+        function step(t) {
+          if (start === null) start = t;
+          const p = Math.min(1, (t - start) / dur);
+          render(meta, meta.num * easeOutExpo(p));
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      });
+    }, { threshold: 0.4 });
+    parsed.forEach((meta) => io.observe(meta.el));
+  })();
 
   // ---- live UTC clock --------------------------------------
   const clocks = document.querySelectorAll('[data-clock]');

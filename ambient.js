@@ -28,13 +28,16 @@
 
     let mx = window.innerWidth / 2, my = window.innerHeight * 0.4;
     let tx = mx, ty = my, raf = 0;
+    let scrollY = window.scrollY || document.documentElement.scrollTop || 0;
 
     function paint(x, y) {
       root.style.setProperty('--mx', x.toFixed(1) + 'px');
       root.style.setProperty('--my', y.toFixed(1) + 'px');
-      // faint grid drifts a few px opposite the cursor → parallax depth
+      // faint grid drifts a few px opposite the cursor → parallax depth,
+      // plus a slow scroll-linked drift so the whole page reads as one
+      // continuous surface rather than resetting section to section
       const gx = (x / window.innerWidth - 0.5) * -16;
-      const gy = (y / window.innerHeight - 0.5) * -16;
+      const gy = (y / window.innerHeight - 0.5) * -16 - scrollY * 0.045;
       root.style.setProperty('--gx', gx.toFixed(1) + 'px');
       root.style.setProperty('--gy', gy.toFixed(1) + 'px');
     }
@@ -47,6 +50,16 @@
       paint(mx, my);
       if (Math.abs(tx - mx) > 0.4 || Math.abs(ty - my) > 0.4) raf = requestAnimationFrame(loop);
     }
+
+    let scrollRaf = 0;
+    window.addEventListener('scroll', () => {
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(() => {
+        scrollRaf = 0;
+        scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+        paint(mx, my);
+      });
+    }, { passive: true });
 
     /* ---- per-card spotlight (cursor-tracked sheen) -------- */
     const CARD_SEL = '.demo-metric, .demo-region, .demo-rec, .cp-lifecell, .cp-rnode, .wl-staged__card, .demo-panel, .cp-queue__list li, .cp-assume, .archstack__panel, .compare__col, .cpcta__panel, .cap';
