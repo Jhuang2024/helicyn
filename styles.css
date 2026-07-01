@@ -712,13 +712,13 @@ section { position: relative; }
 .cpcta__bars { position: relative; display: grid; gap: 0.7rem; margin-top: 1.2rem; }
 .cpcta__bar { display: grid; grid-template-columns: 84px 1fr; gap: 0.9rem; align-items: center; }
 .cpcta__bar .r { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; color: var(--text-dim); }
-.cpcta__bar .track { height: 3px; border-radius: 2px; background: var(--bg-2); overflow: hidden; }
-.cpcta__bar .fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--signal-line), var(--signal)); width: var(--w, 0%); }
-.cpcta__bar .fill.warn { background: linear-gradient(90deg, color-mix(in srgb, oklch(0.80 0.12 85) 50%, transparent), oklch(0.80 0.12 85)); }
-/* bars grow into place once the panel scrolls into view */
+.cpcta__bar .track { height: 4px; border-radius: 2px; background: var(--bg-2); overflow: hidden; }
+.cpcta__bar .fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--signal-line), var(--signal)); width: var(--w, 0%); box-shadow: 0 0 8px -1px var(--signal-glow); }
+.cpcta__bar .fill.warn { background: linear-gradient(90deg, color-mix(in srgb, oklch(0.80 0.12 85) 50%, transparent), oklch(0.80 0.12 85)); box-shadow: 0 0 8px -1px oklch(0.80 0.12 85 / 0.35); }
+/* bars grow into place alongside the panel's own fade-in, not after it */
 @media (prefers-reduced-motion: no-preference) {
-  .cpcta__panel .fill { width: 0%; transition: width 1.1s var(--ease-io); }
-  .cpcta__panel.is-visible .fill { width: var(--w, 0%); }
+  .cpcta__panel .fill { width: 0%; transition: width 0.9s var(--ease-io); }
+  .cpcta__panel.is-revealing .fill { width: var(--w, 0%); }
   .cpcta__bar:nth-child(2) .fill { transition-delay: 90ms; }
   .cpcta__bar:nth-child(3) .fill { transition-delay: 180ms; }
 }
@@ -785,16 +785,17 @@ section { position: relative; }
 .compare__col--accent .compare__list li::before { background: var(--signal); border-color: var(--signal); box-shadow: 0 0 10px var(--signal-glow); }
 .compare__note { margin-top: 1.8rem; color: var(--text-dim); font-size: clamp(1rem, 1.3vw, 1.12rem); line-height: 1.55; max-width: 56ch; }
 
-/* rows converge in from opposite sides toward the divider once the
-   grid scrolls into view (grid itself still fades/rises via data-reveal) */
+/* rows converge in from opposite sides toward the divider alongside
+   the grid's own fade-in (not queued behind it, so the whole section
+   settles quickly instead of trickling in over ~2s) */
 @media (prefers-reduced-motion: no-preference) {
-  .js .compare__list li { opacity: 0; transition: opacity 0.6s var(--ease), transform 0.6s var(--ease); }
+  .js .compare__list li { opacity: 0; transition: opacity 0.5s var(--ease), transform 0.5s var(--ease); }
   .js .compare__col:first-child .compare__list li { transform: translateX(-16px); }
   .js .compare__col:last-child .compare__list li { transform: translateX(16px); }
-  .compare__grid.is-visible .compare__list li { opacity: 1; transform: translateX(0); }
-  .compare__grid.is-visible .compare__list li:nth-child(2) { transition-delay: 90ms; }
-  .compare__grid.is-visible .compare__list li:nth-child(3) { transition-delay: 180ms; }
-  .compare__grid.is-visible .compare__list li:nth-child(4) { transition-delay: 270ms; }
+  .compare__grid.is-revealing .compare__list li { opacity: 1; transform: translateX(0); }
+  .compare__grid.is-revealing .compare__list li:nth-child(2) { transition-delay: 70ms; }
+  .compare__grid.is-revealing .compare__list li:nth-child(3) { transition-delay: 140ms; }
+  .compare__grid.is-revealing .compare__list li:nth-child(4) { transition-delay: 210ms; }
 }
 
 /* ============================================================

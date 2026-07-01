@@ -23,6 +23,10 @@
   const easeOutExpo = (p) => (p >= 1 ? 1 : 1 - Math.pow(2, -10 * p));
   function tween(el) {
     const mask = el.getAttribute('data-reveal') === 'mask';
+    // 'is-revealing' fires immediately (not at animation end, like 'is-visible')
+    // so CSS-chained children (e.g. compare rows, cpcta bars) can animate in
+    // alongside the parent's own fade instead of queuing behind it.
+    el.classList.add('is-revealing');
     if (prm) {
       el.style.opacity = '1'; el.style.transform = 'none';
       if (mask) el.style.clipPath = 'inset(0 0 0 0)';
