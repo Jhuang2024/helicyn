@@ -244,3 +244,28 @@
   for (let i = 0; i < 3; i++) spawnPulse();
   requestAnimationFrame(frame);
 })();
+
+/* ============================================================
+   HELICYN - hero logo tilt
+   The big wordmark leans into the cursor (a self-contained 3D
+   perspective on the element itself, so it composes with the
+   independent `translate`-based idle float in CSS without either
+   one clobbering the other's transform).
+   ============================================================ */
+(function () {
+  const logo = document.getElementById('heroLogo');
+  const hero = document.querySelector('.hero');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!logo || !hero || reduce) return;
+  function onMove(e) {
+    const r = logo.getBoundingClientRect();
+    const px = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+    const py = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+    const rx = Math.max(-1, Math.min(1, px));
+    const ry = Math.max(-1, Math.min(1, py));
+    logo.style.transform = `perspective(900px) rotateX(${(ry * -7).toFixed(2)}deg) rotateY(${(rx * 9).toFixed(2)}deg)`;
+  }
+  function onLeave() { logo.style.transform = ''; }
+  hero.addEventListener('pointermove', onMove);
+  hero.addEventListener('pointerleave', onLeave);
+})();

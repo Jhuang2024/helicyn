@@ -69,10 +69,19 @@
       const e = lastEvt;
       if (!e || !e.target || !e.target.closest) return;
       const card = e.target.closest(CARD_SEL);
-      if (!card) return;
-      const r = card.getBoundingClientRect();
-      card.style.setProperty('--cx', (((e.clientX - r.left) / r.width) * 100).toFixed(1) + '%');
-      card.style.setProperty('--cy', (((e.clientY - r.top) / r.height) * 100).toFixed(1) + '%');
+      if (card) {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--cx', (((e.clientX - r.left) / r.width) * 100).toFixed(1) + '%');
+        card.style.setProperty('--cy', (((e.clientY - r.top) / r.height) * 100).toFixed(1) + '%');
+      }
+      const tilt = e.target.closest(TILT_SEL);
+      if (tilt) {
+        const r = tilt.getBoundingClientRect();
+        const px = ((e.clientX - r.left) / r.width - 0.5) * 2;
+        const py = ((e.clientY - r.top) / r.height - 0.5) * 2;
+        tilt.style.setProperty('--tiltx', px.toFixed(3));
+        tilt.style.setProperty('--tilty', py.toFixed(3));
+      }
     }
 
     document.addEventListener('pointermove', (e) => {
@@ -82,6 +91,15 @@
       lastEvt = e;
       if (!cardRaf) cardRaf = requestAnimationFrame(spot);
     }, { passive: true });
+
+    /* ---- card tilt (cursor-tracked 3D lean) ---------------- */
+    const TILT_SEL = '.cap, .signalboard__tile, .enginediagram__step, .cpcta__panel';
+    document.querySelectorAll(TILT_SEL).forEach((el) => {
+      el.addEventListener('pointerleave', () => {
+        el.style.setProperty('--tiltx', 0);
+        el.style.setProperty('--tilty', 0);
+      });
+    });
 
     document.addEventListener('pointerleave', () => { document.body.classList.remove('is-pointer'); });
     window.addEventListener('blur', () => { document.body.classList.remove('is-pointer'); });

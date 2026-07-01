@@ -116,6 +116,23 @@
   // static build string so static/crawled output never shows a
   // zeroed "T+00:00:00".
 
+  // ---- click ripple on buttons -------------------------------
+  if (!prm) {
+    document.querySelectorAll('.btn').forEach((btn) => {
+      btn.addEventListener('pointerdown', (e) => {
+        const r = btn.getBoundingClientRect();
+        const size = Math.max(r.width, r.height) * 1.4;
+        const span = document.createElement('span');
+        span.className = 'btn__ripple';
+        span.style.width = span.style.height = size + 'px';
+        span.style.left = (e.clientX - r.left - size / 2) + 'px';
+        span.style.top = (e.clientY - r.top - size / 2) + 'px';
+        btn.appendChild(span);
+        span.addEventListener('animationend', () => span.remove());
+      });
+    });
+  }
+
   // ---- magnetic hover --------------------------------------
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!reduce) {
@@ -134,7 +151,7 @@
   // ---- access form -----------------------------------------
   const form = document.querySelector('.form');
   if (form) {
-    const input = form.querySelector('input');
+    const input = form.querySelector('input[type="email"]');
     const note = form.querySelector('.form__note');
     const valid = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
     // recipient assembled at runtime - never rendered or stored as plain text

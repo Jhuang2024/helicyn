@@ -45,7 +45,7 @@
   <a class="brand" href="#top" aria-label="Helicyn home" data-magnetic="0.18">
     <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true">
       <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
-      <circle cx="9" cy="9" r="2" fill="currentColor"></circle>
+      <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
     </svg>
     <span class="brand__name">Helicyn</span>
   </a>
@@ -70,7 +70,8 @@
     <div class="wrap">
       <div class="hero__grid">
         <span class="eyebrow" data-reveal style="--i:0">Deep infrastructure · intelligence · scale</span>
-        <div class="hero__logo" data-reveal style="--i:1">
+        <div class="hero__logo" id="heroLogo" data-reveal style="--i:1">
+          <span class="hero__logoglow" aria-hidden="true"></span>
           <svg class="hero__logomark" viewBox="0 0 18 18" fill="none" aria-hidden="true">
             <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="0.7" opacity="0.85"></circle>
             <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
@@ -431,9 +432,9 @@
         <div><span class="k">Carbon</span><span class="v" data-count="−32%">−32%</span></div>
       </div>
       <div class="cpcta__bars">
-        <div class="cpcta__bar"><span class="r">US-WEST</span><span class="track"><span class="fill warn" style="width:84%"></span></span></div>
-        <div class="cpcta__bar"><span class="r">US-CENTRAL</span><span class="track"><span class="fill" style="width:61%"></span></span></div>
-        <div class="cpcta__bar"><span class="r">EU-WEST</span><span class="track"><span class="fill" style="width:58%"></span></span></div>
+        <div class="cpcta__bar"><span class="r">US-WEST</span><span class="track"><span class="fill warn" style="--w:84%"></span></span></div>
+        <div class="cpcta__bar"><span class="r">US-CENTRAL</span><span class="track"><span class="fill" style="--w:61%"></span></span></div>
+        <div class="cpcta__bar"><span class="r">EU-WEST</span><span class="track"><span class="fill" style="--w:58%"></span></span></div>
       </div>
       <div class="cpcta__rec">
         <span class="cpcta__reclabel"><span class="d" aria-hidden="true"></span>Recommended · pending approval</span>
@@ -494,10 +495,10 @@
   <div class="wrap">
     <div class="footer__top">
       <div class="footer__brand">
-        <span class="brand">
+        <span class="brand" data-magnetic="0.15">
           <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true" style="width:20px;height:20px;">
             <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
-            <circle cx="9" cy="9" r="2" fill="currentColor"></circle>
+            <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
           </svg>
           <span class="brand__name">Helicyn</span>
         </span>
