@@ -45,8 +45,6 @@
     }, interval);
   }
 
-  /* 1 · One system, many layers - descending layer flow */
-  walker($$('.layerflow__node'), { interval: 850 });
   /* 2 · Coordination loop - Detect → Coordinate → Optimize → Verify */
   walker($$('.loop__step'), { interval: 1300 });
   /* 3 · Control-Plane preview flow chips */
@@ -85,6 +83,71 @@
       it.addEventListener('pointerenter', () => items.forEach((x, k) => x.classList.toggle('is-lit', k <= i)));
       it.addEventListener('pointerleave', () => items.forEach((x) => x.classList.remove('is-lit')));
     });
+  })();
+
+  /* ---- architecture stack: interactive layer explainer -----
+     Hovering/focusing/selecting a layer swaps the explanation
+     panel and highlights the adjacent (connected) layers.      */
+  (function archStack() {
+    const body = document.querySelector('.archstack__body');
+    if (!body) return;
+    const buttons = $$('.archstack__layer', body);
+    const idxEl = body.querySelector('[data-archstack-idx]');
+    const textEl = body.querySelector('[data-archstack-text]');
+    const tagEl = body.querySelector('[data-archstack-tag]');
+    const ORDER = ['workload', 'compute', 'region', 'facility', 'power', 'thermal', 'cooling', 'operator'];
+    const DATA = {
+      workload: { tag: 'Not scheduler-only', text: 'Training, inference, and batch jobs enter with priority, SLA flexibility, and deadline constraints already attached. This is where a coordination decision starts.' },
+      compute:  { tag: 'GPU utilization', text: 'GPU clusters translate workload demand into utilization, thermal load, and power draw — the first physical cost of a placement decision.' },
+      region:   { tag: 'Regional capacity', text: 'Grid carbon intensity, power price, and spare capacity vary by region. The same job costs and emits differently depending on where it runs.' },
+      facility: { tag: 'Facility limits', text: 'Each data center holds its own cooling and power ceiling. Regional headroom means nothing if the facility itself is constrained.' },
+      power:    { tag: 'Price exposure', text: 'Electricity price and availability set how much discretionary compute can run right now, and how much should wait for a cheaper window.' },
+      thermal:  { tag: 'Thermal headroom', text: 'Rack-level heat and headroom determine how much load a zone can safely absorb before cooling becomes the binding constraint.' },
+      cooling:  { tag: 'Not cooling-only', text: 'Cooling is a downstream effect, not the starting point. Setpoints and airflow respond to thermal load inside facility limits — Helicyn is not a cooling-only optimizer.' },
+      operator: { tag: 'Operator-in-the-loop', text: 'Every recommended action is reviewed and approved by an operator before it changes anything. Helicyn recommends; it does not act alone.' }
+    };
+
+    let swapTimer = null;
+    function setActive(id) {
+      const idx = ORDER.indexOf(id);
+      if (idx < 0) return;
+      buttons.forEach((b) => {
+        const bi = ORDER.indexOf(b.dataset.layer);
+        const active = b.dataset.layer === id;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-selected', String(active));
+        b.classList.toggle('is-related', !active && Math.abs(bi - idx) === 1);
+      });
+      const d = DATA[id];
+      if (!d) return;
+      if (idxEl) idxEl.textContent = String(idx + 1).padStart(2, '0') + ' / ' + String(ORDER.length).padStart(2, '0');
+      if (tagEl) tagEl.textContent = d.tag;
+      if (textEl) {
+        clearTimeout(swapTimer);
+        if (reduce) { textEl.textContent = d.text; return; }
+        textEl.classList.add('is-swapping');
+        swapTimer = setTimeout(() => { textEl.textContent = d.text; textEl.classList.remove('is-swapping'); }, 140);
+      }
+    }
+
+    buttons.forEach((b) => {
+      b.addEventListener('click', () => setActive(b.dataset.layer));
+      b.addEventListener('pointerenter', () => setActive(b.dataset.layer));
+      b.addEventListener('focus', () => setActive(b.dataset.layer));
+    });
+    const list = body.querySelector('.archstack__layers');
+    if (list) {
+      list.addEventListener('keydown', (e) => {
+        const cur = buttons.findIndex((b) => b.classList.contains('is-active'));
+        let next = cur;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = Math.min(buttons.length - 1, cur + 1);
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = Math.max(0, cur - 1);
+        else return;
+        e.preventDefault();
+        buttons[next].focus();
+        setActive(buttons[next].dataset.layer);
+      });
+    }
   })();
 
   /* ---- floating tooltips ----------------------------------

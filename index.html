@@ -67,15 +67,15 @@
   <div class="reticle" aria-hidden="true"></div>
 
   <div class="hero__content">
-    <div class="wrap">
+    <div class="wrap hero__layout">
       <div class="hero__grid">
         <span class="eyebrow" data-reveal style="--i:0">Deep infrastructure · intelligence · scale</span>
         <h1 data-reveal style="--i:1">Helicyn coordinates compute, energy, and thermal systems across AI&nbsp;infrastructure.</h1>
         <p class="hero__sub" data-reveal style="--i:2">As AI workloads move across GPU clusters, power markets, cooling limits, and regional grids, Helicyn helps operators decide where and when work should run, reducing waste without sacrificing&nbsp;utilization.</p>
         <div class="hero__cta" data-reveal style="--i:3">
-          <a class="btn" href="#thesis" data-magnetic="0.2">Thesis status <span class="arr" aria-hidden="true">→</span></a>
-          <a class="btn" href="control-plane.html" data-magnetic="0.2">View interactive demo <span class="arr" aria-hidden="true">→</span></a>
-          <a class="btn-ghost" href="#access"><span class="dot" aria-hidden="true"></span> For partners &amp; operators</a>
+          <a class="btn" href="control-plane.html" data-magnetic="0.2">View control plane <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn" href="#access" data-magnetic="0.2">Request access <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn-ghost" href="#thesis"><span class="dot" aria-hidden="true"></span> Thesis preview</a>
         </div>
         <div class="hero__status" data-reveal style="--i:4" role="note" aria-label="Illustrative system status">
           <span class="hero__pill"><span class="d" aria-hidden="true"></span>Simulation mode</span>
@@ -83,6 +83,85 @@
           <span class="hero__pill">Operator approval required</span>
           <span class="hero__pill">Carbon window detected</span>
           <span class="hero__pill hero__pill--fade">Thermal headroom shifting</span>
+        </div>
+      </div>
+
+      <div class="hero__scenewrap" data-reveal style="--i:2">
+        <div class="hero__scene">
+          <span class="hero__scene-tag"><span class="d" aria-hidden="true"></span>Coordination preview</span>
+          <span class="hero__scene-sim">Simulated</span>
+          <svg class="heroscene" viewBox="0 0 640 640" role="img" aria-label="Diagram of five regional infrastructure nodes reporting signals into a central Helicyn coordination layer, with two nodes shown as constrained and three as available">
+            <g class="heroscene__paths">
+              <path id="hpath-virginia"  class="heroscene__path heroscene__path--constrained" d="M320,80 L320,320"></path>
+              <path id="hpath-oregon"    class="heroscene__path heroscene__path--available"   d="M548,246 L320,320"></path>
+              <path id="hpath-frankfurt" class="heroscene__path heroscene__path--available"   d="M461,514 L320,320"></path>
+              <path id="hpath-singapore" class="heroscene__path heroscene__path--constrained" d="M179,514 L320,320"></path>
+              <path id="hpath-tokyo"     class="heroscene__path heroscene__path--available"   d="M92,246 L320,320"></path>
+              <path class="heroscene__pathdash heroscene__pathdash--constrained" d="M320,80 L320,320"></path>
+              <path class="heroscene__pathdash heroscene__pathdash--available"   d="M548,246 L320,320" style="animation-delay:-0.4s"></path>
+              <path class="heroscene__pathdash heroscene__pathdash--available"   d="M461,514 L320,320" style="animation-delay:-0.8s"></path>
+              <path class="heroscene__pathdash heroscene__pathdash--constrained" d="M179,514 L320,320" style="animation-delay:-1.2s"></path>
+              <path class="heroscene__pathdash heroscene__pathdash--available"   d="M92,246 L320,320" style="animation-delay:-1.6s"></path>
+            </g>
+
+            <g class="heroscene__packetgroup" aria-hidden="true">
+              <circle r="3" class="heroscene__packet"><animateMotion dur="3.1s" repeatCount="indefinite" begin="0s"><mpath href="#hpath-virginia"></mpath></animateMotion></circle>
+              <circle r="3" class="heroscene__packet"><animateMotion dur="2.8s" repeatCount="indefinite" begin="0.5s"><mpath href="#hpath-oregon"></mpath></animateMotion></circle>
+              <circle r="3" class="heroscene__packet"><animateMotion dur="3.4s" repeatCount="indefinite" begin="1s"><mpath href="#hpath-frankfurt"></mpath></animateMotion></circle>
+              <circle r="3" class="heroscene__packet"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.5s"><mpath href="#hpath-singapore"></mpath></animateMotion></circle>
+              <circle r="3" class="heroscene__packet"><animateMotion dur="3.6s" repeatCount="indefinite" begin="2s"><mpath href="#hpath-tokyo"></mpath></animateMotion></circle>
+            </g>
+
+            <g class="heroscene__node is-constrained" data-node="virginia" transform="translate(320,80)">
+              <circle class="pulsering" r="13"></circle>
+              <circle class="ring" r="13"></circle>
+              <circle class="core" r="8"></circle>
+              <circle class="dot" r="3"></circle>
+              <text class="heroscene__label" y="-24">VIRGINIA</text>
+              <text class="heroscene__label heroscene__label--status" y="30">CONSTRAINED</text>
+            </g>
+            <g class="heroscene__node is-available" data-node="oregon" transform="translate(548,246)">
+              <circle class="pulsering" r="13"></circle>
+              <circle class="ring" r="13"></circle>
+              <circle class="core" r="8"></circle>
+              <circle class="dot" r="3"></circle>
+              <text class="heroscene__label" y="-24">OREGON</text>
+              <text class="heroscene__label heroscene__label--status" y="30">AVAILABLE</text>
+            </g>
+            <g class="heroscene__node is-available" data-node="frankfurt" transform="translate(461,514)">
+              <circle class="pulsering" r="13"></circle>
+              <circle class="ring" r="13"></circle>
+              <circle class="core" r="8"></circle>
+              <circle class="dot" r="3"></circle>
+              <text class="heroscene__label" y="-24">FRANKFURT</text>
+              <text class="heroscene__label heroscene__label--status" y="30">AVAILABLE</text>
+            </g>
+            <g class="heroscene__node is-constrained" data-node="singapore" transform="translate(179,514)">
+              <circle class="pulsering" r="13"></circle>
+              <circle class="ring" r="13"></circle>
+              <circle class="core" r="8"></circle>
+              <circle class="dot" r="3"></circle>
+              <text class="heroscene__label" y="-24">SINGAPORE</text>
+              <text class="heroscene__label heroscene__label--status" y="30">CONSTRAINED</text>
+            </g>
+            <g class="heroscene__node is-available" data-node="tokyo" transform="translate(92,246)">
+              <circle class="pulsering" r="13"></circle>
+              <circle class="ring" r="13"></circle>
+              <circle class="core" r="8"></circle>
+              <circle class="dot" r="3"></circle>
+              <text class="heroscene__label" y="-24">TOKYO</text>
+              <text class="heroscene__label heroscene__label--status" y="30">AVAILABLE</text>
+            </g>
+
+            <g class="heroscene__core" transform="translate(320,320)">
+              <circle class="ring2 spin" r="94" stroke-dasharray="2 7"></circle>
+              <circle class="ring1 pulse" r="72"></circle>
+              <circle class="core" r="46"></circle>
+              <circle class="dot" r="4"></circle>
+              <text class="heroscene__core-title" y="-3">Helicyn</text>
+              <text class="heroscene__label heroscene__label--status" y="13">Coordinating</text>
+            </g>
+          </svg>
         </div>
       </div>
     </div>
@@ -98,103 +177,44 @@
   </div>
 </section>
 
-<!-- ===================== WHY THIS MATTERS ====================== -->
-<section class="section section--line whymatters" id="why" data-screen-label="why-this-matters">
-  <div class="wrap whymatters__grid">
-    <div class="whymatters__head" data-reveal>
-      <span class="eyebrow">Why this matters</span>
+<!-- ============ ARCHITECTURE STACK (interactive) =============== -->
+<section class="section section--line archstack" id="architecture" data-screen-label="architecture-stack">
+  <div class="wrap">
+    <div class="sec-head archstack__head" data-reveal>
+      <span class="eyebrow">Why this matters · one coordinated stack</span>
       <h2>AI infrastructure is no longer a single-site problem.</h2>
+      <p class="archstack__lead">Training, inference, cooling, power, and grid conditions now move on different clocks. A cluster may have spare GPUs but no cooling headroom. A region may have cheap power but high carbon intensity. Helicyn coordinates eight layers together instead of optimizing each in isolation. Select a layer to see what it contributes.</p>
     </div>
-    <div class="whymatters__body" data-reveal style="--i:1">
-      <p>Training, inference, cooling, power, and grid conditions now move on different clocks. A cluster may have available GPUs but limited cooling headroom. A region may have cheap power but high carbon intensity. A training job may be flexible, while an inference workload cannot move.</p>
-      <p class="lift">Helicyn coordinates these constraints together instead of optimizing each layer in isolation.</p>
-    </div>
-  </div>
-</section>
 
-<!-- ===================== SYSTEM ARCHITECTURE ================== -->
-<section class="section section--line arch" id="architecture" data-screen-label="architecture">
-  <div class="wrap">
-    <div class="sec-head arch__head" data-reveal>
-      <span class="eyebrow">System architecture</span>
-      <h2>Inputs, coordination, and verified outputs.</h2>
-    </div>
-    <div class="arch__grid" data-reveal style="--i:1">
-      <article class="arch__col">
-        <span class="arch__tag">Inputs</span>
-        <p class="arch__lead">Signals the coordinator ingests.</p>
-        <ul class="arch__list">
-          <li>Workload queues</li>
-          <li>GPU utilization</li>
-          <li>Power prices</li>
-          <li>Carbon intensity</li>
-          <li>Cooling telemetry</li>
-          <li>Thermal headroom</li>
-          <li>SLA constraints</li>
-        </ul>
-      </article>
-      <span class="arch__arr" aria-hidden="true">→</span>
-      <article class="arch__col arch__col--engine">
-        <span class="arch__tag">Coordination engine</span>
-        <p class="arch__lead">Where placement decisions are formed.</p>
-        <ul class="arch__list">
-          <li>Forecast constraints</li>
-          <li>Score placement options</li>
-          <li>Simulate tradeoffs</li>
-          <li>Generate operator-approved recommendations</li>
-        </ul>
-      </article>
-      <span class="arch__arr" aria-hidden="true">→</span>
-      <article class="arch__col">
-        <span class="arch__tag">Outputs</span>
-        <p class="arch__lead">Actions, pending operator approval.</p>
-        <ul class="arch__list">
-          <li>Shift</li>
-          <li>Defer</li>
-          <li>Reroute</li>
-          <li>Rebalance</li>
-          <li>Adjust setpoints</li>
-          <li>Verify projected impact</li>
-        </ul>
-      </article>
-    </div>
-  </div>
-</section>
+    <div class="archstack__body" data-reveal style="--i:1">
+      <ol class="archstack__layers" role="tablist" aria-label="Infrastructure coordination layers">
+        <li><button type="button" class="archstack__layer is-active" data-layer="workload" role="tab" aria-selected="true"><span class="i">01</span><span class="l">Workload</span></button></li>
+        <li><button type="button" class="archstack__layer" data-layer="compute" role="tab" aria-selected="false"><span class="i">02</span><span class="l">Compute</span></button></li>
+        <li><button type="button" class="archstack__layer" data-layer="region" role="tab" aria-selected="false"><span class="i">03</span><span class="l">Region</span></button></li>
+        <li><button type="button" class="archstack__layer" data-layer="facility" role="tab" aria-selected="false"><span class="i">04</span><span class="l">Facility</span></button></li>
+        <li><button type="button" class="archstack__layer" data-layer="power" role="tab" aria-selected="false"><span class="i">05</span><span class="l">Power</span></button></li>
+        <li><button type="button" class="archstack__layer" data-layer="thermal" role="tab" aria-selected="false"><span class="i">06</span><span class="l">Thermal</span></button></li>
+        <li><button type="button" class="archstack__layer" data-layer="cooling" role="tab" aria-selected="false"><span class="i">07</span><span class="l">Cooling</span></button></li>
+        <li><button type="button" class="archstack__layer" data-layer="operator" role="tab" aria-selected="false"><span class="i">08</span><span class="l">Operator</span></button></li>
+      </ol>
 
-<!-- ================== ONE SYSTEM, MANY LAYERS ================== -->
-<section class="section section--line stack" id="layers" data-screen-label="layers">
-  <div class="wrap">
-    <div class="sec-head stack__head" data-reveal>
-      <span class="eyebrow">Coordinate first · optimize everywhere</span>
-      <h2>One system. Many layers.</h2>
-    </div>
-    <div class="stack__grid" data-reveal style="--i:1">
-      <div class="stack__layers">
-        <ol class="layerflow">
-          <li class="layerflow__node layerflow__node--start"><span class="i">01</span><span class="l">Workload</span></li>
-          <li class="layerflow__node"><span class="i">02</span><span class="l">Fleet</span></li>
-          <li class="layerflow__node"><span class="i">03</span><span class="l">Regions</span></li>
-          <li class="layerflow__node"><span class="i">04</span><span class="l">Data centers</span></li>
-          <li class="layerflow__node"><span class="i">05</span><span class="l">Power</span></li>
-          <li class="layerflow__node"><span class="i">06</span><span class="l">Thermal</span></li>
-          <li class="layerflow__node"><span class="i">07</span><span class="l">Cooling</span></li>
-          <li class="layerflow__node layerflow__node--end"><span class="i">08</span><span class="l">Hardware</span></li>
-        </ol>
-        <p class="stack__note">Work is the first control surface. Local optimization is the final&nbsp;layer of coordination.</p>
-      </div>
-      <aside class="stack__loop">
-        <span class="stack__looplabel">The coordination loop</span>
-        <div class="loop">
-          <span class="loop__step">Detect</span>
-          <span class="loop__arr" aria-hidden="true">→</span>
-          <span class="loop__step">Coordinate</span>
-          <span class="loop__arr" aria-hidden="true">→</span>
-          <span class="loop__step">Optimize</span>
-          <span class="loop__arr" aria-hidden="true">→</span>
-          <span class="loop__step">Verify</span>
+      <div class="archstack__panel" role="tabpanel" aria-live="polite">
+        <span class="archstack__panelidx" data-archstack-idx>01 / 08 · First control surface</span>
+        <p class="archstack__paneltext" data-archstack-text>Training, inference, and batch jobs enter with priority, SLA flexibility, and deadline constraints already attached. This is where a coordination decision starts.</p>
+        <div class="archstack__panelmeta">
+          <span class="archstack__tag" data-archstack-tag>Not cooling-only</span>
         </div>
-        <p class="stack__loopsub">Helicyn continuously surfaces constraints, coordinates systems, recommends actions, and verifies&nbsp;outcomes.</p>
-      </aside>
+      </div>
+    </div>
+
+    <div class="loop archstack__loop" data-reveal style="--i:2" aria-label="The coordination loop">
+      <span class="loop__step">Detect</span>
+      <span class="loop__arr" aria-hidden="true">→</span>
+      <span class="loop__step">Coordinate</span>
+      <span class="loop__arr" aria-hidden="true">→</span>
+      <span class="loop__step">Optimize</span>
+      <span class="loop__arr" aria-hidden="true">→</span>
+      <span class="loop__step">Verify</span>
     </div>
   </div>
 </section>
@@ -281,6 +301,11 @@
           <li>Improves local metrics such as PUE and thermal stability</li>
         </ul>
       </article>
+      <div class="compare__divider" aria-hidden="true">
+        <span class="line"></span>
+        <span class="arrow">→</span>
+        <span class="lbl">Coordinate</span>
+      </div>
       <article class="compare__col compare__col--accent">
         <span class="compare__tag">Helicyn coordination layer</span>
         <ul class="compare__list">
@@ -292,27 +317,6 @@
       </article>
     </div>
     <p class="compare__note" data-reveal style="--i:2">Local optimization still matters. Helicyn simply treats it as one layer inside a larger coordination problem.</p>
-  </div>
-</section>
-
-<!-- ================ PRODUCT CATEGORY CLARIFIERS =============== -->
-<section class="section section--line category" id="category" data-screen-label="category">
-  <div class="wrap">
-    <div class="sec-head category__head" data-reveal>
-      <span class="eyebrow">Why data centers first</span>
-      <h2>AI data centers expose the coordination problem clearly.</h2>
-      <p class="category__lead">Flexible training jobs, latency-critical inference, power-price volatility, carbon variability, cooling limits, and GPU utilization all interact in real&nbsp;time.</p>
-    </div>
-    <div class="category__grid" data-reveal style="--i:1">
-      <article class="category__card">
-        <span class="category__tag">Not cooling-only</span>
-        <p>Helicyn is not a cooling-only optimizer. Cooling is one downstream effect of workload placement, power timing, thermal headroom, and facility control.</p>
-      </article>
-      <article class="category__card">
-        <span class="category__tag">Not scheduler-only</span>
-        <p>Helicyn is not only a workload scheduler. It treats workload placement as the first control surface in a larger physical system that includes power, cooling, carbon, and thermal risk.</p>
-      </article>
-    </div>
   </div>
 </section>
 
@@ -365,6 +369,10 @@
         <div class="cpcta__bar"><span class="r">US-WEST</span><span class="track"><span class="fill warn" style="width:84%"></span></span></div>
         <div class="cpcta__bar"><span class="r">US-CENTRAL</span><span class="track"><span class="fill" style="width:61%"></span></span></div>
         <div class="cpcta__bar"><span class="r">EU-WEST</span><span class="track"><span class="fill" style="width:58%"></span></span></div>
+      </div>
+      <div class="cpcta__rec">
+        <span class="cpcta__reclabel"><span class="d" aria-hidden="true"></span>Recommended · pending approval</span>
+        <p>Shift <strong>18%</strong> of flexible training from US-WEST to US-CENTRAL during peak grid load.</p>
       </div>
       <span class="cpcta__open">Enter the simulation <span class="arr" aria-hidden="true">→</span></span>
     </a>

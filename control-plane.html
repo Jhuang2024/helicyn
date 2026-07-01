@@ -69,10 +69,10 @@
   <div class="demo-wrap cp-secnav__inner">
     <a href="#top" data-secnav>Overview</a>
     <a href="#metrics" data-secnav>Metrics</a>
+    <a href="#topology" data-secnav>Topology</a>
     <a href="#regions" data-secnav>Regions</a>
-    <a href="#workloads" data-secnav>Workloads</a>
     <a href="#recommendations" data-secnav>Recommendations</a>
-    <a href="#controls" data-secnav>Controls</a>
+    <a href="#workloads" data-secnav>Workloads</a>
     <a href="#assumptions" data-secnav>Assumptions</a>
   </div>
 </nav>
@@ -93,22 +93,14 @@
       <span class="cp-opbadge__seg">Simulated telemetry</span>
       <span class="cp-opbadge__seg">Approval required</span>
     </div>
-    <p class="control-head__sub" data-reveal style="--i:2">Interactive product demonstration</p>
-
-    <div class="control-head__intro" data-reveal style="--i:3">
-      <p class="sub">This simulated control plane illustrates how Helicyn coordinates workloads, cooling, power, and carbon signals across distributed AI infrastructure.</p>
-    </div>
+    <p class="control-head__sub" data-reveal style="--i:2">Pick a scenario below. Every module on this page — topology, regions, recommendations, workloads, telemetry — updates from the same simulated fleet state.</p>
 
     <div class="control-statusrow" data-reveal style="--i:4">
       <span class="control-chip"><span class="control-badge--opt control-badge" style="border:0;padding:0;"><span class="d"></span></span><span class="label">Mode</span><span class="val">Simulation</span></span>
-      <span class="control-chip"><span class="label">Build</span><span class="val">v0.1.1</span></span>
+      <span class="control-chip"><span class="label">Build</span><span class="val">v0.2.0</span></span>
       <span class="control-chip"><span class="label">Region</span><span class="val">Global</span></span>
       <span class="control-chip"><span class="label">System</span><span class="val">Nominal</span></span>
       <span class="control-chip"><span class="label">Sync</span><span class="val live" data-clock>initializing</span></span>
-    </div>
-
-    <div class="cp-orient" data-reveal style="--i:5">
-      <p>This simulation is organized from <strong>system-level coordination</strong> down to <strong>local optimization</strong>. Sections <span class="mono-acc">01–05</span> show how Helicyn decides where work should run. Sections <span class="mono-acc">06–10</span> show how those decisions affect facility telemetry, cooling load, PUE, cost, and operator recommendations.</p>
     </div>
 
     <div class="cp-simnotice" data-reveal style="--i:6" role="note">
@@ -174,7 +166,7 @@
       <span class="demo-clock"><span class="demo-clock__dot" aria-hidden="true"></span><span data-day-clock>00:00 UTC</span></span>
     </div>
 
-    <p class="demo-caption" data-reveal><strong>These totals accumulate from 00:00 UTC</strong> and tick up live as the day progresses; the sparkline under each card shows today&rsquo;s curve: <strong>solid</strong> is what&rsquo;s accumulated up to the &ldquo;now&rdquo; line, <strong>dashed</strong> is the projected rest of the day. Each metric moves because workload placement, cooling load, grid timing, and utilization are coordinated together.</p>
+    <p class="demo-caption" data-reveal><strong>These totals accumulate from 00:00 UTC</strong> and tick up live; the sparkline under each card shows today&rsquo;s curve: <strong>solid</strong> is accumulated, <strong>dashed</strong> is projected.</p>
 
     <div class="cp-viewtoggle" data-reveal role="group" aria-label="Metric view">
       <span class="cp-viewtoggle__label">View</span>
@@ -194,7 +186,6 @@
         </linearGradient>
       </defs></svg>
 
-      <!-- each card: label · value(+unit) · trend · context · filled area sparkline -->
       <article class="demo-metric">
         <span class="demo-metric__label">Modeled energy saved<button type="button" class="demo-tip" aria-label="About modeled energy saved">i<span class="demo-tip__pop" role="tooltip"><b>Modeled Energy Saved.</b> Simulated energy saved by coordinating workload placement, scheduling, and cooling instead of running each system independently.</span></button></span>
         <div class="demo-metric__value"><span data-metric="energy">18.7</span><span class="unit">MWh</span></div>
@@ -270,82 +261,11 @@
   </div>
 </section>
 
-<!-- ============ COORDINATION EVENTS + DECISION TRACE ========== -->
-<section class="demo-section demo-section--line" aria-label="Coordination">
+<!-- ================= REGIONAL COORDINATION (moved up) =========== -->
+<section class="demo-section demo-section--line" aria-label="Regional coordination" id="topology">
   <div class="demo-wrap">
     <div class="demo-modlabel" data-reveal>
       <span class="tick">02</span>
-      <h2>How it was coordinated</h2>
-      <span class="demo-modnote">Detect → reason → act → verify → save</span>
-    </div>
-
-    <p class="demo-caption" data-reveal>Reasoning and decision traces behind each coordinated action.</p>
-
-    <div class="demo-split demo-split--7-5" data-reveal style="--i:1">
-      <!-- coordination events feed -->
-      <div class="demo-panel cp-feed">
-        <div class="cp-feed__head">
-          <span class="ttl">Coordination events</span>
-          <span class="live"><span class="d" aria-hidden="true"></span>Simulated</span>
-        </div>
-        <ul class="cp-feed__list" id="cp-feed"></ul>
-      </div>
-
-      <!-- decision trace -->
-      <div class="demo-panel cp-trace" id="cp-trace">
-        <div class="cp-trace__head">
-          <span class="cp-trace__action" data-trace="action">ACTION #184</span>
-          <span class="cp-trace__tag">Decision trace</span>
-        </div>
-        <div class="cp-trace__block cp-trace__block--detected">
-          <span class="lbl"><span class="d"></span>Detected</span>
-          <p data-trace="detected"></p>
-        </div>
-        <div class="cp-trace__block cp-trace__block--reasoning">
-          <span class="lbl"><span class="d"></span>Reasoning</span>
-          <p data-trace="reasoning"></p>
-        </div>
-        <div class="cp-trace__block cp-trace__block--response">
-          <span class="lbl"><span class="d"></span>Response</span>
-          <p data-trace="response"></p>
-        </div>
-        <div class="cp-trace__block cp-trace__block--verified">
-          <span class="lbl"><span class="d"></span>Verified result</span>
-          <p data-trace="verified"></p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= DECISION HIERARCHY ======================= -->
-<section class="demo-section demo-section--line" aria-label="Decision hierarchy">
-  <div class="demo-wrap">
-    <div class="demo-modlabel" data-reveal>
-      <span class="tick">·</span>
-      <h2>From system to local: the decision hierarchy</h2>
-      <span class="demo-modnote">System level → local level</span>
-    </div>
-    <p class="demo-caption" data-reveal>Each coordinated action descends through the same layers, starting from the work itself and ending at a verified local result.</p>
-    <div class="cp-hier" data-reveal style="--i:1">
-      <div class="cp-hier__axis"><span>System level</span><span>Local level</span></div>
-      <ol class="cp-hier__track">
-        <li class="cp-hier__step"><span class="i">01</span><span class="n">Workload</span><span class="d">Which jobs can move, hold, or defer</span></li>
-        <li class="cp-hier__step"><span class="i">02</span><span class="n">Region</span><span class="d">Where capacity, carbon, and price align</span></li>
-        <li class="cp-hier__step"><span class="i">03</span><span class="n">Facility</span><span class="d">Which data center absorbs the work</span></li>
-        <li class="cp-hier__step"><span class="i">04</span><span class="n">Zone</span><span class="d">Which thermal zone holds headroom</span></li>
-        <li class="cp-hier__step"><span class="i">05</span><span class="n">Cooling action</span><span class="d">Setpoints and sequencing, locally</span></li>
-        <li class="cp-hier__step cp-hier__step--verify"><span class="i">06</span><span class="n">Verified result</span><span class="d">Confirm savings and SLA</span></li>
-      </ol>
-    </div>
-  </div>
-</section>
-
-<!-- ================= REGIONAL COORDINATION ==================== -->
-<section class="demo-section demo-section--line" aria-label="Regional coordination">
-  <div class="demo-wrap">
-    <div class="demo-modlabel" data-reveal>
-      <span class="tick">03</span>
       <h2>Regional coordination</h2>
       <span class="demo-modnote">5 regions · carbon-aware routing</span>
     </div>
@@ -356,7 +276,6 @@
       <div class="cp-topo__map">
         <svg viewBox="0 0 1000 383" preserveAspectRatio="xMidYMid meet" role="img" aria-label="World map showing workload coordination flows between five regions">
           <g id="cp-map"></g>
-          <!-- flow paths: id'd so dashed overlay matches exactly -->
           <g id="cp-flows"></g>
           <g id="cp-nodes"></g>
         </svg>
@@ -378,7 +297,7 @@
 <section class="demo-section demo-section--line" aria-label="Regional infrastructure" id="regions">
   <div class="demo-wrap">
     <div class="demo-modlabel" data-reveal>
-      <span class="tick">04</span>
+      <span class="tick">03</span>
       <h2>Regional infrastructure</h2>
       <span class="demo-modnote">5 regions · simulated telemetry</span>
     </div>
@@ -386,7 +305,6 @@
     <p class="demo-caption" data-reveal>Simulated telemetry per region (GPU load, carbon intensity, and cooling risk), downstream of routing decisions. Select a region for detail.</p>
 
     <div class="demo-regions" data-reveal style="--i:1">
-      <!-- US-WEST: recomputed live (shift source) -->
       <article class="demo-region" data-region="us-west">
         <div class="demo-region__top">
           <span class="demo-region__name">US-WEST</span>
@@ -402,7 +320,6 @@
         </div>
       </article>
 
-      <!-- US-CENTRAL: recomputed live (shift target) -->
       <article class="demo-region" data-region="us-central">
         <div class="demo-region__top">
           <span class="demo-region__name">US-CENTRAL</span>
@@ -466,235 +383,32 @@
   </div>
 </section>
 
-<!-- ============= 4 · WORKLOAD ORCHESTRATION TABLE ============== -->
-<section class="demo-section demo-section--line" aria-label="Workload orchestration" id="workloads">
-  <div class="demo-wrap">
-    <div class="demo-modlabel" data-reveal>
-      <span class="tick">05</span>
-      <h2>Workload orchestration</h2>
-      <span class="demo-modnote" data-wl-note>Scheduler · 4 active</span>
-    </div>
-
-    <p class="demo-caption" data-reveal>Helicyn treats work as the first control surface. Flexible jobs can move, critical inference can hold, and batch workloads can defer when energy or thermal conditions change.</p>
-
-    <div class="demo-tablewrap" data-reveal style="--i:1">
-      <div class="demo-tablescroll">
-        <table class="demo-table">
-          <thead>
-            <tr>
-              <th scope="col">Workload</th>
-              <th scope="col">Priority</th>
-              <th scope="col">Region</th>
-              <th scope="col">Power draw</th>
-              <th scope="col">Thermal risk</th>
-              <th scope="col">Recommended action<button type="button" class="demo-tip demo-tip--end" aria-label="About recommended action">i<span class="demo-tip__pop" role="tooltip"><b>Recommended Action.</b> The coordinator's proposed move for each workload: shift to another region, hold in place, defer to a better window, or reroute away from risk. Each one needs operator approval.</span></button></th>
-              <th scope="col">Why</th>
-            </tr>
-          </thead>
-          <tbody id="wl-tbody">
-            <tr>
-              <td><span class="wl-name">LLM Training · Batch A17</span><span class="wl-sub">Training Cluster · 1,024 GPU</span></td>
-              <td><span class="demo-prio demo-prio--flexible">Flexible</span></td>
-              <td><span class="mono">US-WEST</span></td>
-              <td><span class="mono">2.4 MW</span></td>
-              <td><span class="demo-risk demo-risk--med"><span class="d"></span>Medium</span></td>
-              <td><button type="button" class="wl-action wl-action--btn" data-wl-apply="Shift 18% · US-WEST to US-CENTRAL" data-wl-rec="REC-01">Shift 18% <span class="arr" aria-hidden="true">→</span></button></td>
-              <td><span class="wl-why">Medium thermal risk; cheaper, lower-risk capacity in US-CENTRAL</span></td>
-            </tr>
-            <tr>
-              <td><span class="wl-name">Inference Cluster 04</span><span class="wl-sub">Inference Pool · realtime</span></td>
-              <td><span class="demo-prio demo-prio--critical">Critical</span></td>
-              <td><span class="mono">US-EAST</span></td>
-              <td><span class="mono">1.1 MW</span></td>
-              <td><span class="demo-risk demo-risk--low"><span class="d"></span>Low</span></td>
-              <td><span class="wl-action">Hold</span></td>
-              <td><span class="wl-why">Critical real-time inference, SLA protected</span></td>
-            </tr>
-            <tr>
-              <td><span class="wl-name">Embedding Refresh</span><span class="wl-sub">Batch Scheduler · nightly</span></td>
-              <td><span class="demo-prio demo-prio--flexible">Flexible</span></td>
-              <td><span class="mono">EU-WEST</span></td>
-              <td><span class="mono">0.7 MW</span></td>
-              <td><span class="demo-risk demo-risk--low"><span class="d"></span>Low</span></td>
-              <td><button type="button" class="wl-action wl-action--btn" data-wl-apply="Defer 42 min · Embedding Refresh" data-wl-rec="REC-02">Defer 42 min <span class="arr" aria-hidden="true">→</span></button></td>
-              <td><span class="wl-why">Flexible batch aligned to a cleaner, cheaper window</span></td>
-            </tr>
-            <tr>
-              <td><span class="wl-name">Vision Model Training</span><span class="wl-sub">GPU Pods · 512 GPU</span></td>
-              <td><span class="demo-prio demo-prio--standard">Standard</span></td>
-              <td><span class="mono">US-CENTRAL</span></td>
-              <td><span class="mono">1.8 MW</span></td>
-              <td><span class="demo-risk demo-risk--high"><span class="d"></span>High</span></td>
-              <td><button type="button" class="wl-action wl-action--btn" data-wl-apply="Reroute · Vision Model Training" data-wl-rec="REC-03">Reroute <span class="arr" aria-hidden="true">→</span></button></td>
-              <td><span class="wl-why">High thermal risk in current region</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- staged actions (populated as recommendations are staged) -->
-    <div class="wl-staged" id="wl-staged" data-reveal style="--i:2" hidden>
-      <div class="wl-staged__head">
-        <span class="wl-staged__title">Staged actions</span>
-        <span class="wl-staged__note"><span class="d" aria-hidden="true"></span><span data-staged-count>0</span> staged in simulation</span>
-      </div>
-      <div class="wl-staged__list" id="wl-staged-list">
-        <p class="wl-staged__empty" data-staged-empty>No actions staged yet. Stage a recommended action above to add it here.</p>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- ================ 6 · CHARTS / VISUAL PANELS ================= -->
-<section class="demo-section demo-section--line" aria-label="Telemetry">
-  <div class="demo-wrap">
-    <div class="demo-modlabel" data-reveal>
-      <span class="tick">06</span>
-      <h2>Telemetry</h2>
-      <span class="demo-modnote">Vanilla render · no libraries</span>
-    </div>
-
-    <p class="demo-caption" data-reveal>After fleet-level decisions are made, Helicyn verifies local facility impact. This is the local optimization layer, downstream of coordination.</p>
-
-    <div class="demo-split demo-split--7-5" data-reveal style="--i:1">
-      <!-- power demand over time -->
-      <div class="demo-panel demo-chart">
-        <div class="demo-chart__head">
-          <span class="demo-chart__title">Power demand · total facility</span>
-          <span class="demo-chart__note" data-power-now>11.4 MW</span>
-        </div>
-        <svg id="demo-power" class="demo-linechart" viewBox="0 0 600 180" preserveAspectRatio="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="demoPowerGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="var(--signal)" stop-opacity="0.22"></stop>
-              <stop offset="100%" stop-color="var(--signal)" stop-opacity="0"></stop>
-            </linearGradient>
-          </defs>
-          <g class="grid">
-            <line x1="0" y1="45" x2="600" y2="45"></line>
-            <line x1="0" y1="90" x2="600" y2="90"></line>
-            <line x1="0" y1="135" x2="600" y2="135"></line>
-          </g>
-          <path class="area" d=""></path>
-          <path class="line" d=""></path>
-          <circle class="now" r="3" cx="0" cy="0"></circle>
-          <text class="axis" x="2" y="14">16 MW</text>
-          <text class="axis" x="2" y="176">7 MW</text>
-        </svg>
-      </div>
-
-      <!-- cooling load by zone -->
-      <div class="demo-panel demo-chart">
-        <div class="demo-chart__head">
-          <span class="demo-chart__title">Cooling load by zone</span>
-          <span class="demo-chart__note">% capacity</span>
-        </div>
-        <div class="demo-zones">
-          <div class="demo-zone"><span class="z">Zone A</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="72" style="width:0%"></div></div><span class="v">72%</span></div>
-          <div class="demo-zone"><span class="z">Zone B</span><div class="demo-bar"><div class="demo-bar__fill warn" data-zone-target="88" style="width:0%"></div></div><span class="v">88%</span></div>
-          <div class="demo-zone"><span class="z">Zone C</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="64" style="width:0%"></div></div><span class="v">64%</span></div>
-          <div class="demo-zone"><span class="z">Zone D</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="41" style="width:0%"></div></div><span class="v">41%</span></div>
-          <div class="demo-zone"><span class="z">Zone E</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="55" style="width:0%"></div></div><span class="v">55%</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- before / after comparison -->
-    <div class="demo-panel demo-chart" data-reveal style="--i:2; margin-top:1.2rem;">
-      <div class="demo-chart__head">
-        <span class="demo-chart__title">Before / after optimization</span>
-        <span class="demo-chart__note">baseline → coordinated</span>
-      </div>
-      <div class="demo-compare">
-        <div class="demo-cmp" data-cmp="peak">
-          <div class="demo-cmp__head"><span class="k">Peak power: </span><span class="delta">−10%</span></div>
-          <div class="demo-cmp__bars">
-            <div class="demo-cmp__bar before"><span class="lbl">Before</span><div class="track"><div class="fill"></div></div><span class="num">14.2</span></div>
-            <div class="demo-cmp__bar after"><span class="lbl">After</span><div class="track"><div class="fill"></div></div><span class="num">12.8</span></div>
-          </div>
-        </div>
-        <div class="demo-cmp" data-cmp="carbon">
-          <div class="demo-cmp__head"><span class="k">Carbon / hr (tCO₂e)</span><span class="delta">−32%</span></div>
-          <div class="demo-cmp__bars">
-            <div class="demo-cmp__bar before"><span class="lbl">Before</span><div class="track"><div class="fill"></div></div><span class="num">9.1</span></div>
-            <div class="demo-cmp__bar after"><span class="lbl">After</span><div class="track"><div class="fill"></div></div><span class="num">6.2</span></div>
-          </div>
-        </div>
-        <div class="demo-cmp" data-cmp="pue">
-          <div class="demo-cmp__head"><span class="k">PUE: </span><span class="delta">−10%</span></div>
-          <div class="demo-cmp__bars">
-            <div class="demo-cmp__bar before"><span class="lbl">Before</span><div class="track"><div class="fill"></div></div><span class="num">1.31</span></div>
-            <div class="demo-cmp__bar after"><span class="lbl">After</span><div class="track"><div class="fill"></div></div><span class="num">1.18</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ================= BEFORE vs AFTER HELICYN ================== -->
-<section class="demo-section demo-section--line" aria-label="Before and after Helicyn">
-  <div class="demo-wrap">
-    <div class="demo-modlabel" data-reveal>
-      <span class="tick">07</span>
-      <h2>Before / after Helicyn</h2>
-      <span class="demo-modnote">Same facility · one day</span>
-    </div>
-
-    <div class="cp-ba" data-reveal style="--i:1">
-      <div class="cp-ba__col cp-ba__col--before">
-        <span class="cp-ba__label"><span class="d"></span>Before Helicyn</span>
-        <div class="cp-ba__rows">
-          <div class="cp-ba__row"><span class="k">Average PUE: </span><span class="v" data-ba="before-pue">1.31</span></div>
-          <div class="cp-ba__row"><span class="k">Cooling load: </span><span class="v" data-ba="before-cooling">100%</span></div>
-          <div class="cp-ba__row"><span class="k">Thermal variance: </span><span class="v" data-ba="before-variance">9.8°C<button type="button" class="demo-tip" aria-label="About thermal variance">i<span class="demo-tip__pop" role="tooltip"><b>Thermal Variance.</b> The spread between hottest and coolest racks. Lower variance means more even cooling and less hotspot risk.</span></button></span></div>
-          <div class="cp-ba__row"><span class="k">Hotspot risk: </span><span class="v" data-ba="before-risk">Elevated</span></div>
-          <div class="cp-ba__row"><span class="k">Daily cost: </span><span class="v" data-ba="before-cost">$38,700</span></div>
-        </div>
-      </div>
-      <div class="cp-ba__col cp-ba__col--after">
-        <span class="cp-ba__label"><span class="d"></span>After Helicyn</span>
-        <div class="cp-ba__rows">
-          <div class="cp-ba__row"><span class="k">Average PUE: </span><span class="v" data-ba="after-pue">1.18</span></div>
-          <div class="cp-ba__row"><span class="k">Cooling load: </span><span class="v" data-ba="after-cooling">88.4%</span></div>
-          <div class="cp-ba__row"><span class="k">Thermal variance: </span><span class="v" data-ba="after-variance">4.2°C</span></div>
-          <div class="cp-ba__row"><span class="k">Hotspot risk: </span><span class="v" data-ba="after-risk">Stable</span></div>
-          <div class="cp-ba__row"><span class="k">Daily cost: </span><span class="v" data-ba="after-cost">$33,706</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 5 + 7 · RECOMMENDATIONS & CONTROLS ============ -->
+<!-- ============ 4 + 5 · RECOMMENDATIONS & CONTROLS (moved up) ==== -->
 <section class="demo-section demo-section--line" aria-label="Optimization" id="recommendations">
   <div class="demo-wrap">
     <div class="demo-split demo-split--7-5">
 
-      <!-- 5 · recommendations -->
       <div>
         <div class="demo-modlabel" data-reveal>
-          <span class="tick">08</span>
+          <span class="tick">04</span>
           <h2>Recommendations</h2>
           <span class="demo-modnote">Operator approval required</span>
         </div>
 
-        <p class="demo-caption" data-reveal>Workload, timing, and thermal actions. Approve an action in simulation to unlock it, then simulate to file it to the operator queue. Each approval generates the next recommendation.</p>
+        <p class="demo-caption" data-reveal>Approve to stage an action, simulate to file it, or reject to dismiss it. Every approval generates the next recommendation.</p>
 
         <div class="demo-recs" id="demo-recs" style="grid-template-columns:1fr; --i:1;" data-reveal></div>
       </div>
 
-      <!-- 7 · simulation controls -->
       <div id="controls">
         <div class="demo-modlabel" data-reveal>
-          <span class="tick">09</span>
+          <span class="tick">05</span>
           <h2>Simulation controls</h2>
         </div>
 
         <p class="demo-caption" data-reveal>Operators define the boundaries. Helicyn proposes actions inside them.</p>
 
         <div class="demo-panel control-deck" data-reveal style="--i:1">
-          <!-- optimization mode -->
           <div class="control-field">
             <div class="control-field__label"><span class="k">Optimization mode</span></div>
             <div class="control-seg" data-control="mode" role="group" aria-label="Optimization mode">
@@ -704,7 +418,6 @@
             </div>
           </div>
 
-          <!-- carbon priority -->
           <div class="control-field">
             <div class="control-field__label"><span class="k">Carbon priority</span></div>
             <div class="control-seg" data-control="carbon" role="group" aria-label="Carbon priority">
@@ -714,7 +427,6 @@
             </div>
           </div>
 
-          <!-- SLA protection: locked -->
           <div class="control-field">
             <div class="control-field__label"><span class="k">SLA protection<button type="button" class="demo-tip demo-tip--end" aria-label="About SLA protection">i<span class="demo-tip__pop" role="tooltip"><b>SLA Protection.</b> A hard boundary: latency-critical and deadline-bound workloads are never moved or throttled in a way that breaches their service-level agreement.</span></button></span></div>
             <div class="control-locked" aria-disabled="true">
@@ -726,14 +438,12 @@
             </div>
           </div>
 
-          <!-- workload flexibility -->
           <div class="control-field">
             <div class="control-field__label"><span class="k">Workload flexibility<button type="button" class="demo-tip demo-tip--end" aria-label="About workload flexibility">i<span class="demo-tip__pop" role="tooltip"><b>Workload Flexibility.</b> How much load is eligible to move or defer. Higher flexibility gives the coordinator more room to shift work toward cleaner, cheaper, cooler conditions.</span></button></span><span class="v" data-flex-val>60%</span></div>
             <input id="control-flex" class="control-range" type="range" min="0" max="100" step="1" value="60" aria-label="Workload flexibility" />
             <div class="control-scale"><span>Rigid</span><span>Elastic</span></div>
           </div>
 
-          <!-- cooling risk tolerance -->
           <div class="control-field">
             <div class="control-field__label"><span class="k">Cooling risk tolerance<button type="button" class="demo-tip demo-tip--end" aria-label="About cooling risk tolerance">i<span class="demo-tip__pop" role="tooltip"><b>Cooling Risk Tolerance.</b> How close to thermal limits the system is allowed to operate. Higher tolerance unlocks more savings but leaves less headroom against hotspots.</span></button></span></div>
             <div class="control-seg" data-control="cooling" role="group" aria-label="Cooling risk tolerance">
@@ -809,6 +519,280 @@
   </div>
 </section>
 
+<!-- ============= 6 · WORKLOAD ORCHESTRATION TABLE ============== -->
+<section class="demo-section demo-section--line" aria-label="Workload orchestration" id="workloads">
+  <div class="demo-wrap">
+    <div class="demo-modlabel" data-reveal>
+      <span class="tick">06</span>
+      <h2>Workload orchestration</h2>
+      <span class="demo-modnote" data-wl-note>Scheduler · 4 active</span>
+    </div>
+
+    <p class="demo-caption" data-reveal>Helicyn treats work as the first control surface. Flexible jobs can move, critical inference can hold, and batch workloads can defer when energy or thermal conditions change.</p>
+
+    <div class="wl-filters" data-wl-filters role="group" aria-label="Filter workloads" data-reveal>
+      <button type="button" class="wl-filter is-active" data-wl-filter="all">All</button>
+      <button type="button" class="wl-filter" data-wl-filter="movable">Movable</button>
+      <button type="button" class="wl-filter" data-wl-filter="training">Training</button>
+      <button type="button" class="wl-filter" data-wl-filter="batch">Batch</button>
+      <button type="button" class="wl-filter" data-wl-filter="constrained">Constrained</button>
+    </div>
+
+    <div class="demo-tablewrap" data-reveal style="--i:1">
+      <div class="demo-tablescroll">
+        <table class="demo-table">
+          <thead>
+            <tr>
+              <th scope="col">Workload</th>
+              <th scope="col">Priority</th>
+              <th scope="col">Region</th>
+              <th scope="col">Power draw</th>
+              <th scope="col">Thermal risk</th>
+              <th scope="col">Recommended action<button type="button" class="demo-tip demo-tip--end" aria-label="About recommended action">i<span class="demo-tip__pop" role="tooltip"><b>Recommended Action.</b> The coordinator's proposed move for each workload: shift to another region, hold in place, defer to a better window, or reroute away from risk. Each one needs operator approval.</span></button></th>
+              <th scope="col">Why</th>
+            </tr>
+          </thead>
+          <tbody id="wl-tbody">
+            <tr>
+              <td><span class="wl-name">LLM Training · Batch A17</span><span class="wl-sub">Training Cluster · 1,024 GPU</span></td>
+              <td><span class="demo-prio demo-prio--flexible">Flexible</span></td>
+              <td><span class="mono">US-WEST</span></td>
+              <td><span class="mono">2.4 MW</span></td>
+              <td><span class="demo-risk demo-risk--med"><span class="d"></span>Medium</span></td>
+              <td><button type="button" class="wl-action wl-action--btn" data-wl-apply="Shift 18% · US-WEST to US-CENTRAL" data-wl-rec="REC-01">Shift 18% <span class="arr" aria-hidden="true">→</span></button></td>
+              <td><span class="wl-why">Medium thermal risk; cheaper, lower-risk capacity in US-CENTRAL</span></td>
+            </tr>
+            <tr>
+              <td><span class="wl-name">Inference Cluster 04</span><span class="wl-sub">Inference Pool · realtime</span></td>
+              <td><span class="demo-prio demo-prio--critical">Critical</span></td>
+              <td><span class="mono">US-EAST</span></td>
+              <td><span class="mono">1.1 MW</span></td>
+              <td><span class="demo-risk demo-risk--low"><span class="d"></span>Low</span></td>
+              <td><span class="wl-action">Hold</span></td>
+              <td><span class="wl-why">Critical real-time inference, SLA protected</span></td>
+            </tr>
+            <tr>
+              <td><span class="wl-name">Embedding Refresh</span><span class="wl-sub">Batch Scheduler · nightly</span></td>
+              <td><span class="demo-prio demo-prio--flexible">Flexible</span></td>
+              <td><span class="mono">EU-WEST</span></td>
+              <td><span class="mono">0.7 MW</span></td>
+              <td><span class="demo-risk demo-risk--low"><span class="d"></span>Low</span></td>
+              <td><button type="button" class="wl-action wl-action--btn" data-wl-apply="Defer 42 min · Embedding Refresh" data-wl-rec="REC-02">Defer 42 min <span class="arr" aria-hidden="true">→</span></button></td>
+              <td><span class="wl-why">Flexible batch aligned to a cleaner, cheaper window</span></td>
+            </tr>
+            <tr>
+              <td><span class="wl-name">Vision Model Training</span><span class="wl-sub">GPU Pods · 512 GPU</span></td>
+              <td><span class="demo-prio demo-prio--standard">Standard</span></td>
+              <td><span class="mono">US-CENTRAL</span></td>
+              <td><span class="mono">1.8 MW</span></td>
+              <td><span class="demo-risk demo-risk--high"><span class="d"></span>High</span></td>
+              <td><button type="button" class="wl-action wl-action--btn" data-wl-apply="Reroute · Vision Model Training" data-wl-rec="REC-03">Reroute <span class="arr" aria-hidden="true">→</span></button></td>
+              <td><span class="wl-why">High thermal risk in current region</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="wl-staged" id="wl-staged" data-reveal style="--i:2" hidden>
+      <div class="wl-staged__head">
+        <span class="wl-staged__title">Staged actions</span>
+        <span class="wl-staged__note"><span class="d" aria-hidden="true"></span><span data-staged-count>0</span> staged in simulation</span>
+      </div>
+      <div class="wl-staged__list" id="wl-staged-list">
+        <p class="wl-staged__empty" data-staged-empty>No actions staged yet. Stage a recommended action above to add it here.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COORDINATION EVENTS + DECISION TRACE ========== -->
+<section class="demo-section demo-section--line" aria-label="Coordination reasoning">
+  <div class="demo-wrap">
+    <div class="demo-modlabel" data-reveal>
+      <span class="tick">07</span>
+      <h2>How it was coordinated</h2>
+      <span class="demo-modnote">Detect → reason → act → verify → save</span>
+    </div>
+
+    <p class="demo-caption" data-reveal>Reasoning and decision traces behind each coordinated action.</p>
+
+    <div class="demo-split demo-split--7-5" data-reveal style="--i:1">
+      <div class="demo-panel cp-feed">
+        <div class="cp-feed__head">
+          <span class="ttl">Coordination events</span>
+          <span class="live"><span class="d" aria-hidden="true"></span>Simulated</span>
+        </div>
+        <ul class="cp-feed__list" id="cp-feed"></ul>
+      </div>
+
+      <div class="demo-panel cp-trace" id="cp-trace">
+        <div class="cp-trace__head">
+          <span class="cp-trace__action" data-trace="action">ACTION #184</span>
+          <span class="cp-trace__tag">Decision trace</span>
+        </div>
+        <div class="cp-trace__block cp-trace__block--detected">
+          <span class="lbl"><span class="d"></span>Detected</span>
+          <p data-trace="detected"></p>
+        </div>
+        <div class="cp-trace__block cp-trace__block--reasoning">
+          <span class="lbl"><span class="d"></span>Reasoning</span>
+          <p data-trace="reasoning"></p>
+        </div>
+        <div class="cp-trace__block cp-trace__block--response">
+          <span class="lbl"><span class="d"></span>Response</span>
+          <p data-trace="response"></p>
+        </div>
+        <div class="cp-trace__block cp-trace__block--verified">
+          <span class="lbl"><span class="d"></span>Verified result</span>
+          <p data-trace="verified"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DECISION HIERARCHY ======================= -->
+<section class="demo-section demo-section--line" aria-label="Decision hierarchy">
+  <div class="demo-wrap">
+    <div class="demo-modlabel" data-reveal>
+      <span class="tick">·</span>
+      <h2>From system to local: the decision hierarchy</h2>
+      <span class="demo-modnote">System level → local level</span>
+    </div>
+    <p class="demo-caption" data-reveal>Each coordinated action descends through the same layers, starting from the work itself and ending at a verified local result.</p>
+    <div class="cp-hier" data-reveal style="--i:1">
+      <div class="cp-hier__axis"><span>System level</span><span>Local level</span></div>
+      <ol class="cp-hier__track">
+        <li class="cp-hier__step"><span class="i">01</span><span class="n">Workload</span><span class="d">Which jobs can move, hold, or defer</span></li>
+        <li class="cp-hier__step"><span class="i">02</span><span class="n">Region</span><span class="d">Where capacity, carbon, and price align</span></li>
+        <li class="cp-hier__step"><span class="i">03</span><span class="n">Facility</span><span class="d">Which data center absorbs the work</span></li>
+        <li class="cp-hier__step"><span class="i">04</span><span class="n">Zone</span><span class="d">Which thermal zone holds headroom</span></li>
+        <li class="cp-hier__step"><span class="i">05</span><span class="n">Cooling action</span><span class="d">Setpoints and sequencing, locally</span></li>
+        <li class="cp-hier__step cp-hier__step--verify"><span class="i">06</span><span class="n">Verified result</span><span class="d">Confirm savings and SLA</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ================ 8 · CHARTS / VISUAL PANELS ================= -->
+<section class="demo-section demo-section--line" aria-label="Telemetry">
+  <div class="demo-wrap">
+    <div class="demo-modlabel" data-reveal>
+      <span class="tick">08</span>
+      <h2>Telemetry</h2>
+      <span class="demo-modnote">Vanilla render · no libraries</span>
+    </div>
+
+    <p class="demo-caption" data-reveal>After fleet-level decisions are made, Helicyn verifies local facility impact. This is the local optimization layer, downstream of coordination.</p>
+
+    <div class="demo-split demo-split--7-5" data-reveal style="--i:1">
+      <div class="demo-panel demo-chart">
+        <div class="demo-chart__head">
+          <span class="demo-chart__title">Power demand · total facility</span>
+          <span class="demo-chart__note" data-power-now>11.4 MW</span>
+        </div>
+        <svg id="demo-power" class="demo-linechart" viewBox="0 0 600 180" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="demoPowerGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--signal)" stop-opacity="0.22"></stop>
+              <stop offset="100%" stop-color="var(--signal)" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+          <g class="grid">
+            <line x1="0" y1="45" x2="600" y2="45"></line>
+            <line x1="0" y1="90" x2="600" y2="90"></line>
+            <line x1="0" y1="135" x2="600" y2="135"></line>
+          </g>
+          <path class="area" d=""></path>
+          <path class="line" d=""></path>
+          <circle class="now" r="3" cx="0" cy="0"></circle>
+          <text class="axis" x="2" y="14">16 MW</text>
+          <text class="axis" x="2" y="176">7 MW</text>
+        </svg>
+      </div>
+
+      <div class="demo-panel demo-chart">
+        <div class="demo-chart__head">
+          <span class="demo-chart__title">Cooling load by zone</span>
+          <span class="demo-chart__note">% capacity</span>
+        </div>
+        <div class="demo-zones">
+          <div class="demo-zone"><span class="z">Zone A</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="72" style="width:0%"></div></div><span class="v">72%</span></div>
+          <div class="demo-zone"><span class="z">Zone B</span><div class="demo-bar"><div class="demo-bar__fill warn" data-zone-target="88" style="width:0%"></div></div><span class="v">88%</span></div>
+          <div class="demo-zone"><span class="z">Zone C</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="64" style="width:0%"></div></div><span class="v">64%</span></div>
+          <div class="demo-zone"><span class="z">Zone D</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="41" style="width:0%"></div></div><span class="v">41%</span></div>
+          <div class="demo-zone"><span class="z">Zone E</span><div class="demo-bar"><div class="demo-bar__fill" data-zone-target="55" style="width:0%"></div></div><span class="v">55%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel demo-chart" data-reveal style="--i:2; margin-top:1.2rem;">
+      <div class="demo-chart__head">
+        <span class="demo-chart__title">Before / after optimization</span>
+        <span class="demo-chart__note">baseline → coordinated</span>
+      </div>
+      <div class="demo-compare">
+        <div class="demo-cmp" data-cmp="peak">
+          <div class="demo-cmp__head"><span class="k">Peak power: </span><span class="delta">−10%</span></div>
+          <div class="demo-cmp__bars">
+            <div class="demo-cmp__bar before"><span class="lbl">Before</span><div class="track"><div class="fill"></div></div><span class="num">14.2</span></div>
+            <div class="demo-cmp__bar after"><span class="lbl">After</span><div class="track"><div class="fill"></div></div><span class="num">12.8</span></div>
+          </div>
+        </div>
+        <div class="demo-cmp" data-cmp="carbon">
+          <div class="demo-cmp__head"><span class="k">Carbon / hr (tCO₂e)</span><span class="delta">−32%</span></div>
+          <div class="demo-cmp__bars">
+            <div class="demo-cmp__bar before"><span class="lbl">Before</span><div class="track"><div class="fill"></div></div><span class="num">9.1</span></div>
+            <div class="demo-cmp__bar after"><span class="lbl">After</span><div class="track"><div class="fill"></div></div><span class="num">6.2</span></div>
+          </div>
+        </div>
+        <div class="demo-cmp" data-cmp="pue">
+          <div class="demo-cmp__head"><span class="k">PUE: </span><span class="delta">−10%</span></div>
+          <div class="demo-cmp__bars">
+            <div class="demo-cmp__bar before"><span class="lbl">Before</span><div class="track"><div class="fill"></div></div><span class="num">1.31</span></div>
+            <div class="demo-cmp__bar after"><span class="lbl">After</span><div class="track"><div class="fill"></div></div><span class="num">1.18</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BEFORE vs AFTER HELICYN ================== -->
+<section class="demo-section demo-section--line" aria-label="Before and after Helicyn">
+  <div class="demo-wrap">
+    <div class="demo-modlabel" data-reveal>
+      <span class="tick">09</span>
+      <h2>Before / after Helicyn</h2>
+      <span class="demo-modnote">Same facility · one day</span>
+    </div>
+
+    <div class="cp-ba" data-reveal style="--i:1">
+      <div class="cp-ba__col cp-ba__col--before">
+        <span class="cp-ba__label"><span class="d"></span>Before Helicyn</span>
+        <div class="cp-ba__rows">
+          <div class="cp-ba__row"><span class="k">Average PUE: </span><span class="v" data-ba="before-pue">1.31</span></div>
+          <div class="cp-ba__row"><span class="k">Cooling load: </span><span class="v" data-ba="before-cooling">100%</span></div>
+          <div class="cp-ba__row"><span class="k">Thermal variance: </span><span class="v" data-ba="before-variance">9.8°C<button type="button" class="demo-tip" aria-label="About thermal variance">i<span class="demo-tip__pop" role="tooltip"><b>Thermal Variance.</b> The spread between hottest and coolest racks. Lower variance means more even cooling and less hotspot risk.</span></button></span></div>
+          <div class="cp-ba__row"><span class="k">Hotspot risk: </span><span class="v" data-ba="before-risk">Elevated</span></div>
+          <div class="cp-ba__row"><span class="k">Daily cost: </span><span class="v" data-ba="before-cost">$38,700</span></div>
+        </div>
+      </div>
+      <div class="cp-ba__col cp-ba__col--after">
+        <span class="cp-ba__label"><span class="d"></span>After Helicyn</span>
+        <div class="cp-ba__rows">
+          <div class="cp-ba__row"><span class="k">Average PUE: </span><span class="v" data-ba="after-pue">1.18</span></div>
+          <div class="cp-ba__row"><span class="k">Cooling load: </span><span class="v" data-ba="after-cooling">88.4%</span></div>
+          <div class="cp-ba__row"><span class="k">Thermal variance: </span><span class="v" data-ba="after-variance">4.2°C</span></div>
+          <div class="cp-ba__row"><span class="k">Hotspot risk: </span><span class="v" data-ba="after-risk">Stable</span></div>
+          <div class="cp-ba__row"><span class="k">Daily cost: </span><span class="v" data-ba="after-cost">$33,706</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- =============== LIFETIME OPTIMIZATION IMPACT =============== -->
 <section class="demo-section demo-section--line" aria-label="Lifetime optimization impact">
   <div class="demo-wrap">
@@ -849,7 +833,7 @@
 <!-- ===================== ASSUMPTIONS DRAWER =================== -->
 <section class="demo-section demo-section--line" aria-label="Simulation assumptions" id="assumptions">
   <div class="demo-wrap">
-    <details class="cp-assume" data-reveal>
+    <details class="cp-assume" data-reveal open>
       <summary class="cp-assume__summary">
         <span class="cp-assume__title"><span class="tick">·</span>Simulation assumptions</span>
         <span class="cp-assume__hint">What this demo does and does not model</span>
@@ -868,7 +852,7 @@
   </div>
 </section>
 
-<!-- ==================== 8 · CLOSING THESIS ===================== -->
+<!-- ==================== CLOSING THESIS ===================== -->
 <section class="demo-thesis" id="thesis" data-screen-label="thesis">
   <div class="demo-wrap">
     <span class="eyebrow" data-reveal>The role we play</span>
@@ -915,8 +899,8 @@
 
     <div class="footer__base">
       <span class="mono">© 2026 Helicyn · All rights reserved</span>
-      <span class="statusband__item"><span class="statusdot" aria-hidden="true"></span><span class="mono">Simulation · Build v0.1.1</span></span>
-      <span class="mono">Interactive demo · build v0.1.1</span>
+      <span class="statusband__item"><span class="statusdot" aria-hidden="true"></span><span class="mono">Simulation · Build v0.2.0</span></span>
+      <span class="mono">v0.2.0 / build 2026.07.01</span>
     </div>
   </div>
 </footer>

@@ -49,7 +49,7 @@
     }
 
     /* ---- per-card spotlight (cursor-tracked sheen) -------- */
-    const CARD_SEL = '.demo-metric, .demo-region, .demo-rec, .cp-lifecell, .cp-rnode, .wl-staged__card, .demo-panel, .cp-queue__list li, .cp-assume, .arch__col, .category__card, .compare__col, .cpcta__panel, .cap';
+    const CARD_SEL = '.demo-metric, .demo-region, .demo-rec, .cp-lifecell, .cp-rnode, .wl-staged__card, .demo-panel, .cp-queue__list li, .cp-assume, .archstack__panel, .compare__col, .cpcta__panel, .cap';
     let cardRaf = 0, lastEvt = null;
     function spot() {
       cardRaf = 0;

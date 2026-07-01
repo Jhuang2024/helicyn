@@ -436,17 +436,27 @@
     }).join('');
   }
 
+  const RING_R = 15, RING_C = 2 * Math.PI * RING_R;
+  const RING_MOD = { ok: '', opt: '', warn: 'is-warn', crit: 'is-crit' };
   function renderRegionCards(scn) {
     if (!rcards) return;
     const badge = { ok: 'control-badge--ok', opt: 'control-badge--opt', warn: 'control-badge--warn', crit: 'control-badge--crit' };
     const statusText = { ok: 'Nominal', opt: 'Optimizing', warn: 'Strained', crit: 'Alert' };
     rcards.innerHTML = scn.regions.map((reg) => {
       const pos = NODE_POS[reg.id];
+      const offset = RING_C * (1 - Math.max(0, Math.min(100, reg.util)) / 100);
       return (
         '<article class="cp-rnode" data-region-id="' + reg.id + '">' +
           '<div class="cp-rnode__top">' +
-            '<span class="cp-rnode__name">' + (pos ? pos.label : reg.id) + '</span>' +
-            '<span class="control-badge ' + badge[reg.status] + '"><span class="d"></span>' + statusText[reg.status] + '</span>' +
+            '<div class="cp-rnode__ring ' + RING_MOD[reg.status] + '" aria-hidden="true">' +
+              '<svg viewBox="0 0 36 36"><circle class="track" cx="18" cy="18" r="' + RING_R + '"></circle>' +
+              '<circle class="fill" cx="18" cy="18" r="' + RING_R + '" stroke-dasharray="' + RING_C.toFixed(1) + '" stroke-dashoffset="' + offset.toFixed(1) + '"></circle></svg>' +
+              '<span class="val">' + reg.util + '</span>' +
+            '</div>' +
+            '<div class="cp-rnode__topmeta">' +
+              '<span class="cp-rnode__name">' + (pos ? pos.label : reg.id) + '</span>' +
+              '<span class="control-badge ' + badge[reg.status] + '"><span class="d"></span>' + statusText[reg.status] + '</span>' +
+            '</div>' +
           '</div>' +
           '<div class="cp-rnode__rows">' +
             '<div class="cp-rnode__row"><span class="k">Utilization</span><span class="v">' + reg.util + '%</span></div>' +

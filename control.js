@@ -650,6 +650,7 @@
         '<div class="demo-rec__actions">' +
           '<button class="control-btn control-btn--primary" data-act="approve"><span class="t">Approve in simulation</span></button>' +
           '<button class="control-btn" data-act="simulate" disabled title="Approve in simulation first"><span class="t">Simulate</span></button>' +
+          '<button class="control-btn control-btn--ghost" data-act="explain" title="Jump to the decision trace behind this recommendation"><span class="t">Explain</span></button>' +
           '<button class="control-btn control-btn--ghost" data-act="reject" title="Reject recommendation"><span class="t">Reject</span></button>' +
         '</div>' +
       '</article>';
@@ -683,6 +684,16 @@
       const badge = $('.demo-rec__statebadge', rec);
       const simBtn = $('[data-act="simulate"]', rec);
       const appBtn = $('[data-act="approve"]', rec);
+
+      if (btn.dataset.act === 'explain') {
+        const trace = $('#cp-trace');
+        if (trace) {
+          trace.scrollIntoView({ behavior: prm ? 'auto' : 'smooth', block: 'center' });
+          flash(trace);
+        }
+        toast('Reasoning shown in the decision trace panel', true);
+        return;
+      }
 
       if (btn.dataset.act === 'reject') {
         if (rec.classList.contains('is-simulated') || rec.classList.contains('is-rejected')) return;
@@ -848,10 +859,19 @@
     let displayed = [0, 1, 2, 3];
     let ptr = 4;
     let staged = 0;
+    let activeFilter = 'all';
 
+    function typesFor(w) {
+      const t = [];
+      if (w.prio === 'Flexible') t.push('movable');
+      if (/training|gpu pods/i.test(w.sub)) t.push('training');
+      if (/batch/i.test(w.sub)) t.push('batch');
+      if (w.risk === 'high') t.push('constrained');
+      return t.join(' ');
+    }
     function rowHTML(i) {
       const w = POOL[i];
-      return '<tr data-wl-slot>' +
+      return '<tr data-wl-slot data-wl-type="' + typesFor(w) + '">' +
         '<td><span class="wl-name">' + w.name + '</span><span class="wl-sub">' + w.sub + '</span></td>' +
         '<td><span class="demo-prio ' + PRIOC[w.prio] + '">' + w.prio + '</span></td>' +
         '<td><span class="mono">' + w.region + '</span></td>' +
@@ -861,10 +881,27 @@
         '<td><span class="wl-why">' + w.why + '</span></td>' +
         '</tr>';
     }
+    function applyRowFilter() {
+      $$('tr[data-wl-slot]', tbody).forEach((tr) => {
+        const types = (tr.dataset.wlType || '').split(' ');
+        tr.hidden = activeFilter !== 'all' && !types.includes(activeFilter);
+      });
+    }
     function render() {
       tbody.innerHTML = displayed.map(rowHTML).join('');
       const note = $('[data-wl-note]');
       if (note) note.textContent = 'Scheduler · 4 active';
+      applyRowFilter();
+    }
+    const filterBar = $('[data-wl-filters]');
+    if (filterBar) {
+      filterBar.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-wl-filter]');
+        if (!btn) return;
+        activeFilter = btn.dataset.wlFilter;
+        $$('[data-wl-filter]', filterBar).forEach((b) => b.classList.toggle('is-active', b === btn));
+        applyRowFilter();
+      });
     }
     function addStaged(w) {
       const panel = $('#wl-staged-list');

@@ -273,6 +273,15 @@
 /* ============================================================
    4 · WORKLOAD ORCHESTRATION TABLE
    ============================================================ */
+.wl-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: -0.4rem 0 1.1rem; }
+.wl-filter {
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.5rem 0.85rem; border: 1px solid var(--line-2); border-radius: 100px;
+  background: color-mix(in srgb, var(--bg-raise) 55%, transparent); color: var(--text-faint);
+  cursor: pointer; transition: border-color 0.3s var(--ease), color 0.3s var(--ease), background 0.3s var(--ease);
+}
+.wl-filter:hover { color: var(--text-dim); border-color: var(--line-2); }
+.wl-filter.is-active { color: var(--text); border-color: var(--cyan-line); background: var(--cyan-soft); }
 .demo-tablewrap { border: 1px solid var(--line); border-radius: 4px; overflow: hidden; background: var(--panel); }
 .demo-tablescroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .demo-table { width: 100%; border-collapse: collapse; min-width: 760px; }
@@ -736,8 +745,19 @@
 .cp-topo__cards { display: grid; gap: 1px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); background: var(--line); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
 .cp-rnode { background: var(--panel); padding: 1rem 1.05rem; display: grid; gap: 0.6rem; align-content: start; transition: background 0.4s var(--ease); }
 .cp-rnode:hover { background: var(--panel-2); }
-.cp-rnode__top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.cp-rnode__top { display: flex; align-items: center; gap: 0.6rem; }
 .cp-rnode__name { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.1em; color: var(--text); }
+.cp-rnode__topmeta { display: grid; gap: 0.35rem; flex: 1; min-width: 0; }
+.cp-rnode__ring { position: relative; width: 34px; height: 34px; flex: none; }
+.cp-rnode__ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.cp-rnode__ring .track { fill: none; stroke: var(--line-2); stroke-width: 3; }
+.cp-rnode__ring .fill { fill: none; stroke: var(--cyan); stroke-width: 3; stroke-linecap: round; transition: stroke-dashoffset 0.9s var(--ease), stroke 0.4s var(--ease); }
+.cp-rnode__ring.is-warn .fill { stroke: var(--warn); }
+.cp-rnode__ring.is-crit .fill { stroke: var(--crit); }
+.cp-rnode__ring .val {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-family: var(--font-mono); font-size: 0.5rem; color: var(--text-dim); font-variant-numeric: tabular-nums;
+}
 .cp-rnode__rows { display: grid; gap: 0.32rem; }
 .cp-rnode__row { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
 .cp-rnode__row .k { font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-ghost); }
