@@ -600,7 +600,7 @@
     const sbC = $('[data-sb="constrained"]'); if (sbC) sbC.textContent = String(constrained);
     pushEvent({ time: nowClock(), type: 'acted', text: 'Applied ' + recId + ' · regional load rebalanced in simulation' });
   }
-  window.CPScene = { applyRecPatch };
+  window.CPScene = { applyRecPatch, pushEvent };
 
   /* ---- custom themed dropdown (replaces native select) ---- */
   const selRoot = $('#cp-scenario');

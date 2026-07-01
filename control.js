@@ -459,6 +459,16 @@
     pending.appendChild(item);
     refreshQueueCounts();
   }
+  function queueRemovePending(id) {
+    const pending = $('#cp-queue-pending');
+    if (!pending) return;
+    const item = pending.querySelector('[data-queue-item="' + id + '"]');
+    if (item) item.parentNode.removeChild(item);
+    if (!pending.querySelector('[data-queue-item]')) {
+      pending.innerHTML = '<li class="cp-queue__empty" data-pending-empty>No actions awaiting simulation.</li>';
+    }
+    refreshQueueCounts();
+  }
   function queueMoveApproved(id) {
     const pending = $('#cp-queue-pending');
     const approved = $('#cp-queue-approved');
@@ -640,6 +650,7 @@
         '<div class="demo-rec__actions">' +
           '<button class="control-btn control-btn--primary" data-act="approve"><span class="t">Approve in simulation</span></button>' +
           '<button class="control-btn" data-act="simulate" disabled title="Approve in simulation first"><span class="t">Simulate</span></button>' +
+          '<button class="control-btn control-btn--ghost" data-act="reject" title="Reject recommendation"><span class="t">Reject</span></button>' +
         '</div>' +
       '</article>';
     }
@@ -672,6 +683,24 @@
       const badge = $('.demo-rec__statebadge', rec);
       const simBtn = $('[data-act="simulate"]', rec);
       const appBtn = $('[data-act="approve"]', rec);
+
+      if (btn.dataset.act === 'reject') {
+        if (rec.classList.contains('is-simulated') || rec.classList.contains('is-rejected')) return;
+        rec.classList.add('is-rejected');
+        appBtn.disabled = true;
+        simBtn.disabled = true;
+        btn.disabled = true;
+        if (badge) { badge.className = 'demo-rec__statebadge control-badge control-badge--crit'; badge.innerHTML = '<span class="d"></span>Rejected'; }
+        queueRemovePending(id);
+        toast('Rejected · removed from operator queue', false);
+        if (window.CPScene && window.CPScene.pushEvent) {
+          const d = new Date();
+          const time = String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0');
+          window.CPScene.pushEvent({ time, type: 'rejected', text: 'Operator rejected ' + id + ' · ' + r.cat + ' recommendation' });
+        }
+        setTimeout(() => regenerate(rec), 900);
+        return;
+      }
 
       if (btn.dataset.act === 'approve') {
         if (rec.classList.contains('is-approved')) return;

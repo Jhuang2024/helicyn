@@ -857,10 +857,12 @@
       </summary>
       <div class="cp-assume__grid">
         <div class="cp-assume__item"><span class="k">Fleet</span><p>Five illustrative regions with mixed training and inference demand.</p></div>
+        <div class="cp-assume__item"><span class="k">Workload model</span><p>Priority, SLA flexibility, and thermal/energy sensitivity are assigned per workload to determine what can shift, defer, or must hold.</p></div>
         <div class="cp-assume__item"><span class="k">Energy model</span><p>Energy savings are estimated from workload shifting, cooling load reduction, and avoided peak demand.</p></div>
         <div class="cp-assume__item"><span class="k">Carbon model</span><p>Carbon impact is estimated using illustrative regional carbon intensity values.</p></div>
         <div class="cp-assume__item"><span class="k">Thermal model</span><p>Cooling risk is represented as a simplified function of compute load, zone utilization, and thermal headroom.</p></div>
-        <div class="cp-assume__item cp-assume__item--limit"><span class="k">Limitations</span><p>This demo is illustrative and is not connected to live telemetry or customer infrastructure.</p></div>
+        <div class="cp-assume__item"><span class="k">Operator model</span><p>Every action requires explicit approval before it is simulated as filed. Rejecting or ignoring a recommendation has no effect on the fleet.</p></div>
+        <div class="cp-assume__item cp-assume__item--limit"><span class="k">Limitations</span><p>This demo is illustrative and is not connected to live telemetry or customer infrastructure. Production validation would require live fleet integration, measured (not modeled) telemetry, and operator review over a real deployment window.</p></div>
       </div>
     </details>
   </div>

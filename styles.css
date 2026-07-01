@@ -263,6 +263,19 @@ h1, h2, h3 { overflow-wrap: break-word; }
 
 .hero__cta { display: flex; align-items: center; gap: 1.6rem; flex-wrap: wrap; margin-top: 0.4rem; }
 
+/* illustrative status pills - honestly labeled simulation state, not live telemetry */
+.hero__status { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: clamp(1.4rem, 3vh, 2rem); }
+.hero__pill {
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--line); border-radius: 100px;
+  background: color-mix(in srgb, var(--bg-raise) 55%, transparent);
+  font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.09em;
+  color: var(--text-dim); white-space: nowrap;
+}
+.hero__pill .d { width: 5px; height: 5px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 8px var(--signal-glow); flex: none; }
+@media (max-width: 720px) { .hero__pill--fade { display: none; } }
+
 .btn {
   position: relative;
   display: inline-flex; align-items: center; gap: 0.7rem;
@@ -669,6 +682,9 @@ section { position: relative; }
   .hero h1 br, .hero h1 { hyphens: none; }
   .hero__sub { font-size: 1.02rem; }
   .hero__cta { gap: 1rem 1.4rem; }
+  /* pill row is a desktop bonus; on short mobile viewports it risks
+     crowding the scroll cue, so it drops out with hero__coords */
+  .hero__status { display: none; }
   .btn { padding: 0.95rem 1.3rem; }
 
   .scrollcue { left: var(--gutter); }

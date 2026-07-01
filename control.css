@@ -342,6 +342,12 @@
 .control-btn[aria-pressed="true"], .control-btn.is-done { color: color-mix(in srgb, var(--ok) 80%, var(--text)); border-color: var(--ok-soft); background: var(--ok-soft); }
 .control-btn:disabled { opacity: 0.5; cursor: default; }
 .control-btn:disabled:hover { border-color: var(--line-2); color: var(--text-dim); background: color-mix(in srgb, var(--bg-raise) 60%, transparent); }
+.control-btn--ghost { flex: none; border-color: transparent; background: transparent; color: var(--text-faint); }
+.control-btn--ghost:hover { border-color: var(--crit-soft); color: color-mix(in srgb, var(--crit) 82%, var(--text)); background: transparent; }
+
+/* rejected recommendation: dims and reads as closed, still readable until it's replaced */
+.demo-rec.is-rejected { border-color: var(--crit-soft); opacity: 0.6; }
+.demo-rec.is-rejected .demo-rec__actions { pointer-events: none; }
 
 /* rec card regeneration transitions */
 .demo-rec { transition: opacity 0.4s var(--ease), transform 0.4s var(--ease); }
@@ -637,6 +643,7 @@
 .cp-event__type--acted    { color: color-mix(in srgb, var(--cyan) 88%, var(--text)); }
 .cp-event__type--verified { color: color-mix(in srgb, var(--ok) 82%, var(--text)); }
 .cp-event__type--saved    { color: color-mix(in srgb, var(--ok) 90%, var(--text)); }
+.cp-event__type--rejected { color: color-mix(in srgb, var(--crit) 85%, var(--text)); }
 .cp-event__text { font-size: 0.82rem; color: var(--text); line-height: 1.4; }
 .cp-event__text b { color: var(--text); font-weight: 500; }
 @media (prefers-reduced-motion: no-preference) {
