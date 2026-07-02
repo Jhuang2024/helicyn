@@ -56,18 +56,29 @@ python -m helicyn_ml recommend --state examples/fleet_state_example.json \
 python -m helicyn_ml serve --models artifacts/models --host 127.0.0.1 --port 8765
 ```
 
-Or the one-command smoke test:
+Or the one-command smoke test (**not research-quality training** - see below):
 
 ```bash
 python -m helicyn_ml demo
+python -m helicyn_ml status   # <- always run this after: honest per-model readiness verdict
 ```
 
-`demo` attempts real small-dataset downloads first, tops up with clearly
-labeled synthetic samples if a download fails or a real dataset lacks a
-needed field (e.g. BurstGPT has no job runtime, since it's an LLM request
-trace), then ingests, splits, trains every model, evaluates, and produces
-one recommendation. Its final line always states honestly whether real or
-sample data was used.
+`demo` is a SMOKE-TEST / DEMO PIPELINE, not a research-quality training run.
+It attempts real small-dataset downloads first, tops up with clearly labeled
+synthetic samples if a download fails or a real dataset lacks a needed field
+(e.g. BurstGPT has no job runtime, since it's an LLM request trace), then
+ingests, splits, trains every model at smoke-test scale, evaluates, and
+produces one recommendation. Its final message always states honestly
+whether real or sample data was used and points you at `status`.
+
+`status` is the honest readiness check: it reports, per model, what actually
+trained, on what dataset, with what label type (real / weak / synthetic /
+teacher-imitation / analytical-fallback), and whether it clears the bar for
+`research_usable` - `yes`, `partial`, or `no`, with a reason. On a
+BurstGPT-only run today that is typically: WorkloadForecaster partially
+usable (some targets beat baseline, others are zero-variance because
+BurstGPT has no CPU/memory fields); everything else `no` - see
+`docs/limitations.md` and `docs/evaluation.md` for exactly why, per model.
 
 ## Individual commands
 
@@ -109,6 +120,16 @@ python -m helicyn_ml train all
 ```bash
 python -m helicyn_ml evaluate --models artifacts/models --splits data/splits --out artifacts/eval
 ```
+
+**Status (honest model readiness)**
+```bash
+python -m helicyn_ml status
+```
+Reports, per model: trained/skipped/degenerate/fallback status, which
+dataset(s) it actually trained on, label type (real/weak/synthetic/teacher/
+fallback), and `research_usable` (yes/partial/no) with a reason. This reads
+whatever is already on disk - run it after `train all` or `demo`, not
+instead of them.
 
 **Recommend**
 ```bash

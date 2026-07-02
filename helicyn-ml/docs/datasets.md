@@ -16,17 +16,33 @@ Full field-level detail is also available at runtime via
   direct `wget`; only a small in-repo CSV sample auto-downloads.
 - **Automatic download**: partial (small sample only; full trace is manual).
 
-## Azure Public Dataset (`azure-public`, `azure-llm-2024`)
+## Azure Public Dataset (`azure-public`, `azure-llm-2024`, `azure-functions-2019`)
 
 - **Source**: https://github.com/Azure/AzurePublicDataset
-- **Purpose**: cloud VM lifetime traces and real LLM inference request traces.
-- **Teaches Helicyn**: VM lifetime/resource demand, request burstiness,
-  LLM input/output token patterns, serverless/online workload shape.
+- **Purpose**: cloud VM lifetime traces, serverless invocation traces, and
+  real LLM inference request traces.
+- **Teaches Helicyn**: VM lifetime/resource demand (`azure-public`, has real
+  `duration_seconds` via start/end VM timestamps - a candidate for
+  `RuntimePredictor` training once downloaded), request burstiness
+  (`azure-functions-2019`), LLM input/output token patterns
+  (`azure-llm-2024`).
 - **Columns expected**: VM traces - `vmId`, `starttime`/`endtime`, core count
-  bucket. LLM traces - `Timestamp`, `ContextTokens`, `GeneratedTokens`.
-- **Limitations**: VM/Functions traces are large CSVs on Azure Storage, not
-  auto-downloadable; only the LLM inference CSVs (checked into GitHub) are.
-- **Automatic download**: yes for `azure-llm-2024`; manual for `azure-public`.
+  bucket. Functions traces - `HashFunction`, `Trigger`, 1440 per-minute
+  invocation-count columns. LLM traces - `Timestamp`, `ContextTokens`,
+  `GeneratedTokens`.
+- **Limitations**:
+  - `azure-public` (VM traces): 235GB / 156GB compressed across 198 files on
+    Azure Blob Storage - not fetchable via a single URL, manual only.
+  - `azure-functions-2019`: distributed as a single GitHub Release `.tar.xz`
+    asset; some network policies block GitHub Release downloads even when
+    plain-file GitHub raw access works (this project's own sandboxed CI is
+    one such environment - the download code is correct and will succeed
+    elsewhere). A coarse per-function daily aggregate, not per-invocation
+    events.
+  - `azure-llm-2024`: no CPU/GPU/memory/duration fields at all (same gap as
+    BurstGPT for those models).
+- **Automatic download**: yes for `azure-llm-2024` and `azure-functions-2019`
+  (network policy permitting); manual for `azure-public`.
 
 ## Google ClusterData 2019 (`google-2019-local`)
 
@@ -49,9 +65,20 @@ Full field-level detail is also available at runtime via
 - **Teaches Helicyn**: bursty LLM serving demand, request arrival patterns,
   input/output token length distributions, model mix.
 - **Columns expected**: `Timestamp`, `Model`, `Request tokens`, `Response tokens`.
+- **Model support**:
+  - **Supports**: `WorkloadForecaster` (LLM demand/arrival forecasting - this is
+    what BurstGPT is actually good for).
+  - **Does NOT support**: `RuntimePredictor` (no duration/start-end fields),
+    `ResourcePredictor` (no CPU/GPU/memory usage fields), a trustworthy
+    `SLARiskModel` (no real duration means the weak-label queueing simulation
+    degenerates - see `docs/model_design.md`), `PowerPredictor` (no power
+    measurements), or full `PolicyRanker` training diversity on its own
+    (100% of jobs are `latency_sensitive`, which used to eliminate all delay
+    candidates until the short-delay-budget fix - see `docs/model_design.md`).
+  - Run `python -m helicyn_ml status` after training to see the exact,
+    current per-model verdict rather than relying on this static list.
 - **Limitations**: no GPU type, batch size, or facility power info; no job
-  "runtime" concept (it's a request trace, not a job trace), so it cannot
-  train the runtime predictor or resource-usage predictor by itself.
+  "runtime" concept (it's a request trace, not a job trace).
 - **Automatic download**: yes.
 
 ## Electricity Maps (`electricity-maps-sample`, `electricity-maps`)

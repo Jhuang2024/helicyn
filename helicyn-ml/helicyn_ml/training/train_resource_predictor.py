@@ -8,8 +8,8 @@ import pandas as pd
 from helicyn_ml.config import EVAL_DIR, MODELS_DIR, SPLITS_DIR
 from helicyn_ml.models import resource_predictor as rsp
 from helicyn_ml.preprocessing.feature_engineering import build_runtime_resource_features
-from helicyn_ml.training.card_utils import write_model_card
-from helicyn_ml.utils.io import ensure_dir, load_parquet, save_json, save_parquet
+from helicyn_ml.training.card_utils import remove_stale_card, write_model_card
+from helicyn_ml.utils.io import ensure_dir, load_parquet, remove_dir_if_exists, save_json, save_parquet
 from helicyn_ml.utils.logging import get_logger
 from helicyn_ml.utils.metrics import regression_metrics
 from helicyn_ml.utils.plotting import plot_pred_vs_actual
@@ -27,16 +27,25 @@ def _load_split(splits_dir: Path, split: str) -> pd.DataFrame:
 
 def run(splits_dir: Path = SPLITS_DIR, models_dir: Path = MODELS_DIR, eval_dir: Path = EVAL_DIR, seed: int = 42) -> Dict:
     set_all_seeds(seed)
+    model_cards_dir = Path(eval_dir).parent / "reports" / "model_cards"
     train_raw, val_raw, test_raw = (_load_split(splits_dir, s) for s in ("train", "val", "test"))
 
     if train_raw.empty:
         logger.warning("[resource_predictor] no training data found; skipping.")
+        remove_dir_if_exists(Path(models_dir) / rsp.MODEL_NAME)
+        remove_dir_if_exists(Path(eval_dir) / rsp.MODEL_NAME)
+        remove_stale_card(rsp.MODEL_NAME, model_cards_dir)
         return {"status": "skipped", "reason": "no training data"}
 
     train = build_runtime_resource_features(train_raw)
     val = build_runtime_resource_features(val_raw) if not val_raw.empty else pd.DataFrame()
     test = build_runtime_resource_features(test_raw) if not test_raw.empty else pd.DataFrame()
 
+    # Clear any stale per-target artifacts from a previous run before
+    # retraining - otherwise a target that no longer clears the coverage
+    # threshold on this run's data could leave a stale model.joblib behind
+    # that `status` would mistake for a currently-valid model.
+    remove_dir_if_exists(Path(models_dir) / rsp.MODEL_NAME)
     out_dir = ensure_dir(Path(models_dir) / rsp.MODEL_NAME)
     eval_out = ensure_dir(Path(eval_dir) / rsp.MODEL_NAME)
 
@@ -81,11 +90,13 @@ def run(splits_dir: Path = SPLITS_DIR, models_dir: Path = MODELS_DIR, eval_dir: 
     if not trained_targets:
         logger.warning("[resource_predictor] no target had sufficient label coverage; nothing trained.")
         save_json(all_metrics, eval_out / "metrics.json")
+        remove_stale_card(rsp.MODEL_NAME, model_cards_dir)
         return {"status": "skipped", "reason": "no target met label coverage/row thresholds", "metrics": all_metrics}
 
     save_json(all_metrics, eval_out / "metrics.json")
 
     write_model_card(
+        model_cards_dir=model_cards_dir,
         model_name=rsp.MODEL_NAME,
         version="v1",
         datasets_used=sorted(train["source_dataset"].unique().tolist()),

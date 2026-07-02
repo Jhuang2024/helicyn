@@ -19,6 +19,10 @@ datasets:
     input: data/raw/azure/llm-2024
     out: data/processed/workloads/azure_llm_2024.parquet
 
+  - dataset_id: azure-functions-2019
+    input: data/raw/azure/functions-2019
+    out: data/processed/workloads/azure_functions_2019.parquet
+
   - dataset_id: google-2019-local
     input: data/raw/google/clusterdata2019_sample
     out: data/processed/workloads/google_2019_sample.parquet

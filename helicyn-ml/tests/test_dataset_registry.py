@@ -5,6 +5,7 @@ EXPECTED_IDS = {
     "alibaba-gpu-v2020",
     "azure-public",
     "azure-llm-2024",
+    "azure-functions-2019",
     "google-2019-local",
     "burstgpt",
     "electricity-maps-sample",

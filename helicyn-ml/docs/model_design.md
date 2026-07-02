@@ -46,7 +46,7 @@ plain string templates over the top two score terms.
   threshold** (`MIN_LABEL_COVERAGE = 5%`); targets below that are skipped
   with an explicit warning, never trained on mostly-absent data.
 
-## 4. SLARiskModel (`sla_risk_model.py`) - **weak-label classifier**
+## 4. SLARiskModel (`sla_risk_model.py`) - **weak-label classifier, gated**
 
 - **Target**: `deadline_miss` (binary).
 - Public traces do not carry ground-truth SLA outcomes. This model uses a
@@ -57,6 +57,19 @@ plain string templates over the top two score terms.
   have been missed. This is an engineering approximation, not a real SLA
   outcome - the model card for this model states that explicitly, and it
   must never be presented as a real breach-risk indicator.
+- **Degeneracy gate**: if the resulting weak-label positive rate is `>95%`
+  or `<5%` of training rows, `train_sla_risk_model.py` refuses to train or
+  save a classifier at all - a classifier trained on a near-single-class
+  label would report misleadingly high accuracy (99%+) while carrying zero
+  real signal. It writes `artifacts/eval/sla_risk_model/degenerate_report.json`
+  instead and any previously-saved model artifact is deleted so `status`
+  never reports a stale model as current. This is exactly what happens on a
+  BurstGPT-only run: BurstGPT has no real duration field, so every request
+  gets the same synthetic default duration, and the toy queueing simulation
+  saturates almost completely.
+- Even when the gate passes and a classifier does train, `research_usable`
+  is hard-capped at `no` in `python -m helicyn_ml status` - weak labels are
+  never treated as research evidence regardless of held-out metrics.
 
 ## 5. PowerPredictor (`power_predictor.py`) - **trained model or analytical fallback**
 
@@ -69,6 +82,12 @@ plain string templates over the top two score terms.
   `metadata.json`/model card say `analytical_fallback: true` and its
   coefficients are stated as illustrative engineering assumptions, not
   calibrated hardware measurements.
+- Even when it *does* train a real regressor, `python -m helicyn_ml status`
+  only reports `research_usable: yes/partial` if real (non-`synthetic_sample`)
+  rows are the majority of its training data - a model trained purely on
+  generated `synthetic_sample` power data is never treated as evidence about
+  real hardware, regardless of how good its test R² looks (it would just be
+  recovering the sample generator's own formula).
 
 ## 6. PolicyRanker (`policy_ranker.py`) - **imitation-learned, v1**
 
@@ -86,6 +105,29 @@ plain string templates over the top two score terms.
   imitation, not learning from real operator decisions**. A future simulator
   is expected to generate rollout-based labels for a v2 that learns from
   actual counterfactual outcomes instead.
+- **Diagnostics, not just metrics**: every training run writes
+  `artifacts/eval/policy_ranker/diagnostics.json` (see `training/diagnostics.py`)
+  reporting per-feature variance, target variance, duplicate-row percentage,
+  train/val/test distribution comparison, and the candidate action-type
+  distribution. This exists because an earlier version of this table
+  construction silently collapsed to near-constant features (fixed synthetic
+  server utilization, grid/weather signals matched by absolute-nearest
+  timestamp against a trace from an unrelated calendar year, and a job that
+  was `latency_sensitive` being made unconditionally non-delayable so 3/8
+  candidate types were filtered out entirely for 100%-latency-sensitive
+  datasets like BurstGPT) - it produced R² ≈ 0.01 with byte-identical
+  val/test metrics, a classic duplicate-table symptom. The fix (independent
+  per-resource utilization draws per job, hour-of-day signal matching,
+  `dvfs_state` added as an actual model feature, and a short delay budget
+  for latency-sensitive jobs instead of an outright ban) brought held-out R²
+  to ~0.998 on a real BurstGPT-derived table - but that number reflects how
+  well the model reproduces a *deterministic formula* (the heuristic
+  teacher), not decision quality, which is why `research_usable` stays
+  hard-capped at `no` regardless.
+- `python -m helicyn_ml status` always reports PolicyRanker's
+  `research_usable` as `no` ("experimental until simulator rollout
+  evaluation exists") - this is a fixed policy decision, not a metric
+  threshold that could someday flip it to `yes` on its own.
 
 See `docs/policy_design.md` for the full candidate-action / constraint /
 scoring pipeline this model sits inside.

@@ -1,19 +1,23 @@
 """Alibaba ClusterData loader.
 
 Source: https://github.com/alibaba/clusterdata
-The full traces (cluster-trace-v2018, cluster-trace-gpu-v2020/2023/2025/2026)
-are distributed as large files via Aliyun OSS links documented in each
-trace's README (e.g. cluster-trace-v2018/trace_2018.md). They are not
-directly `wget`-able without following the OSS instructions in that README,
-and the GPU traces in particular are tens of GB. This loader:
-
-  * attempts to fetch the small in-repo CSV samples used for schema testing
-  * falls back to printing exact manual download instructions if that fails
-  * ingests whatever CSV/parquet files it finds under the target raw folder,
-    using the documented v2018 batch_task / cluster-trace-gpu-v2020 schemas
+The full traces are distributed as .tar.gz files on Aliyun OSS
+(oss-cn-beijing.aliyuncs.com), documented via each trace's own fetch script:
+  * cluster-trace-v2018/fetchData.sh -> http://aliopentrace.oss-cn-beijing.aliyuncs.com/v2018Traces/*.tar.gz
+    (6 tables; batch_task.tar.gz is the smallest at ~125MB, full set ~48GB)
+  * cluster-trace-gpu-v2020/README.md -> https://aliopentrace.oss-cn-beijing.aliyuncs.com/v2020GPUTraces/*.tar.gz
+    (7 tables; pai_job_table.tar.gz is the job-level table, smallest of the set)
+Neither requires the optional survey mentioned in the v2018 README - that is
+an alternate contact-collection path, not a gate on the direct OSS links.
+This loader attempts the smallest real table for each trace directly via
+those OSS URLs (auto-extracting the .tar.gz on success), and falls back to
+printing the exact manual command if the download fails (e.g. a network
+policy that blocks the aliyuncs.com host, as in some sandboxed CI
+environments) or the full trace is wanted.
 """
 from __future__ import annotations
 
+import tarfile
 import uuid
 from pathlib import Path
 from typing import Dict
@@ -27,6 +31,8 @@ from helicyn_ml.utils.logging import get_logger
 logger = get_logger(__name__)
 
 REPO_URL = "https://github.com/alibaba/clusterdata"
+_OSS_V2018 = "http://aliopentrace.oss-cn-beijing.aliyuncs.com/v2018Traces"
+_OSS_GPU_V2020 = "https://aliopentrace.oss-cn-beijing.aliyuncs.com/v2020GPUTraces"
 
 CARDS: Dict[str, DatasetCard] = {
     "alibaba-v2018": DatasetCard(
@@ -43,15 +49,17 @@ CARDS: Dict[str, DatasetCard] = {
         limitations=[
             "No GPU fields (CPU/memory cluster only).",
             "Anonymized machine/job IDs; no real facility power or thermal data.",
-            "Full trace is large; only the in-repo CSV sample downloads automatically.",
+            "Full trace is 4000 machines over 8 days (~48GB/6 tables, ~280GB extracted); "
+            "only the smallest single table (batch_task.tar.gz, ~125MB) downloads automatically.",
         ],
         requires_credentials=False,
         is_huge=True,
         auto_download_supported=True,
         manual_instructions=(
-            "Full trace: follow cluster-trace-v2018/trace_2018.md in "
-            f"{REPO_URL} for the Aliyun OSS download links, then place the "
-            "batch_task.csv / batch_instance.csv files under data/raw/alibaba/v2018/."
+            f"Smallest table: {_OSS_V2018}/batch_task.tar.gz (~125MB), extract and place "
+            "batch_task.csv under data/raw/alibaba/v2018/. Full trace (6 tables, ~48GB): run "
+            "`bash cluster-trace-v2018/fetchData.sh` from a checkout of "
+            f"{REPO_URL} (pulls all 6 tables from the same OSS bucket)."
         ),
         ingest_target="workloads/alibaba_v2018.parquet",
         kind="workload",
@@ -69,18 +77,20 @@ CARDS: Dict[str, DatasetCard] = {
             "machine/task structure and fragmentation",
         ],
         limitations=[
-            "Trace is tens of GB; requires manual OSS download for the full dataset.",
+            "Full trace (7 tables: job/task/instance/sensor/group_tag/machine_spec/machine_metric) is "
+            "tens of GB; only the smallest table (pai_job_table.tar.gz, job-level) downloads automatically.",
             "No facility-level power, PUE, or thermal telemetry.",
             "Job semantics (train vs inference) are inferred from task naming heuristics, not ground truth labels.",
         ],
         requires_credentials=False,
         is_huge=True,
-        auto_download_supported=False,
+        auto_download_supported=True,
         manual_instructions=(
-            "See cluster-trace-gpu-v2020/README.md in "
-            f"{REPO_URL} for OSS download links (df.csv, pai_task_table.csv, "
-            "pai_instance_table.csv, pai_group_tag_table.csv). Place downloaded "
-            "CSVs under data/raw/alibaba/gpu-v2020/."
+            f"Smallest table: {_OSS_GPU_V2020}/pai_job_table.tar.gz, extract and place "
+            "pai_job_table.csv under data/raw/alibaba/gpu-v2020/. Full trace: see "
+            f"cluster-trace-gpu-v2020/README.md in {REPO_URL} for all 7 table URLs "
+            "(pai_task_table, pai_instance_table, pai_sensor_table, pai_group_tag_table, "
+            "pai_machine_spec, pai_machine_metric, same OSS bucket)."
         ),
         ingest_target="workloads/alibaba_gpu_v2020.parquet",
         kind="workload",
@@ -88,11 +98,30 @@ CARDS: Dict[str, DatasetCard] = {
 }
 CARD = CARDS["alibaba-gpu-v2020"]
 
-# Small CSV samples kept in the alibaba/clusterdata repo for schema testing.
+# Smallest real table per trace - not survey-gated, but hosted on Aliyun OSS,
+# which some network policies (including this project's own sandboxed CI)
+# block outright. The download attempt is real; the fallback is expected
+# there.
 _SAMPLE_URLS = {
-    "alibaba-v2018": "https://raw.githubusercontent.com/alibaba/clusterdata/master/cluster-trace-v2018/sample_data/batch_task.csv",
-    "alibaba-gpu-v2020": "https://raw.githubusercontent.com/alibaba/clusterdata/master/cluster-trace-gpu-v2020/sample_data/pai_task_table.csv",
+    "alibaba-v2018": f"{_OSS_V2018}/batch_task.tar.gz",
+    "alibaba-gpu-v2020": f"{_OSS_GPU_V2020}/pai_job_table.tar.gz",
 }
+
+
+def _safe_extract_tar(tar_path: Path, dest_dir: Path) -> bool:
+    try:
+        with tarfile.open(tar_path) as tar:
+            for member in tar.getmembers():
+                # Reject path traversal / absolute paths before extracting anything.
+                member_path = (dest_dir / member.name).resolve()
+                if not str(member_path).startswith(str(dest_dir.resolve())):
+                    logger.warning(f"[alibaba] refusing to extract unsafe path in archive: {member.name}")
+                    return False
+            tar.extractall(dest_dir)
+        return True
+    except Exception as exc:  # noqa: BLE001
+        logger.warning(f"[alibaba] failed to extract {tar_path}: {exc}")
+        return False
 
 
 def download(out_dir: Path, dataset_id: str = "alibaba-v2018") -> DownloadResult:
@@ -101,11 +130,21 @@ def download(out_dir: Path, dataset_id: str = "alibaba-v2018") -> DownloadResult
     card = CARDS.get(dataset_id, CARD)
     if url is None:
         return DownloadResult(dataset_id, False, "no automatic sample URL known", card.manual_instructions)
-    result = fetch_url(url, out_dir / "sample.csv")
+
+    archive_path = out_dir / Path(url).name
+    result = fetch_url(url, archive_path)
     if not result.success:
         result.manual_instructions = card.manual_instructions
         logger.warning(f"[alibaba:{dataset_id}] {result.reason}")
         logger.warning(f"[alibaba:{dataset_id}] manual: {result.manual_instructions}")
+        return result
+
+    if _safe_extract_tar(archive_path, out_dir):
+        logger.info(f"[alibaba:{dataset_id}] extracted {archive_path.name} into {out_dir}")
+    else:
+        result.success = False
+        result.reason = f"downloaded {archive_path.name} but failed to extract it"
+        result.manual_instructions = f"Manually run: tar xzf {archive_path} -C {out_dir}"
     return result
 
 
@@ -123,6 +162,14 @@ def ingest(input_dir: Path, dataset_id: str = "alibaba-v2018") -> pd.DataFrame:
     Returns an empty DataFrame (with a warning) if nothing is found.
     """
     input_dir = Path(input_dir)
+
+    # If a .tar.gz was placed manually (e.g. downloaded outside of `datasets
+    # download`) without being extracted, extract it here rather than
+    # reporting "no data found".
+    for archive in input_dir.glob("*.tar.gz"):
+        if _safe_extract_tar(archive, input_dir):
+            logger.info(f"[alibaba:{dataset_id}] extracted {archive.name} found under {input_dir}")
+
     csvs = sorted(input_dir.glob("*.csv"))
     if not csvs:
         logger.warning(f"[alibaba:{dataset_id}] no raw CSVs found under {input_dir}; skipping.")

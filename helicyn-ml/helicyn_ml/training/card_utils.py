@@ -9,6 +9,21 @@ from helicyn_ml.schemas import ModelCard
 from helicyn_ml.utils.io import ensure_dir
 
 
+def remove_stale_card(model_name: str, model_cards_dir: Path = None) -> None:
+    """Deletes a previously-written model card when the current run skips,
+    degenerates, or otherwise fails to train this model. Without this, a
+    model card from an earlier successful run stays on disk describing a
+    model that no longer exists / no longer reflects the current data,
+    which is exactly the kind of staleness this whole readiness-reporting
+    effort exists to prevent.
+    """
+    cards_dir = Path(model_cards_dir) if model_cards_dir is not None else MODEL_CARDS_DIR
+    for suffix in (".json", ".md"):
+        path = cards_dir / f"{model_name}{suffix}"
+        if path.exists():
+            path.unlink()
+
+
 def write_model_card(
     model_name: str,
     version: str,
@@ -25,7 +40,18 @@ def write_model_card(
     val_range: str = None,
     test_range: str = None,
     extra_notes: str = None,
+    model_cards_dir: Path = None,
 ) -> Path:
+    """Writes <model_cards_dir>/<model_name>.{json,md}.
+
+    model_cards_dir defaults to the project's real artifacts/reports/model_cards
+    (config.MODEL_CARDS_DIR) ONLY when not given. Callers that pass a custom
+    eval_dir (e.g. pytest smoke tests writing into tmp_path) must derive and
+    pass their own model_cards_dir, otherwise a test run would silently
+    overwrite the real project's model cards with throwaway smoke-test
+    descriptions - see training/train_*.py for the derivation pattern
+    (Path(eval_dir).parent / "reports" / "model_cards").
+    """
     card = ModelCard(
         model_name=model_name,
         version=version,
@@ -44,11 +70,12 @@ def write_model_card(
         non_intended_use=non_intended_use,
         extra_notes=extra_notes,
     )
-    ensure_dir(MODEL_CARDS_DIR)
-    out_path = MODEL_CARDS_DIR / f"{model_name}.json"
+    cards_dir = Path(model_cards_dir) if model_cards_dir is not None else MODEL_CARDS_DIR
+    ensure_dir(cards_dir)
+    out_path = cards_dir / f"{model_name}.json"
     out_path.write_text(card.model_dump_json(indent=2))
 
-    md_path = MODEL_CARDS_DIR / f"{model_name}.md"
+    md_path = cards_dir / f"{model_name}.md"
     md_path.write_text(_render_markdown(card))
     return out_path
 

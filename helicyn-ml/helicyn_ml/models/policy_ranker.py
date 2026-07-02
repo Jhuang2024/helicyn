@@ -39,7 +39,7 @@ NUMERIC_FEATURES = [
     "consolidation_score",
     "delay_minutes",
 ]
-CATEGORICAL_FEATURES = ["action_type", "workload_type"]
+CATEGORICAL_FEATURES = ["action_type", "workload_type", "dvfs_state"]
 
 
 def build_estimator():

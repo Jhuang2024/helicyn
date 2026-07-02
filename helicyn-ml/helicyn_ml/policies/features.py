@@ -120,6 +120,7 @@ def compute_action_features(
         "delay_minutes": delay_minutes,
         "action_type": action.action_type.value,
         "workload_type": workload_type,
+        "dvfs_state": action.dvfs_state or "none",
         # teacher-only normalized inputs:
         "sla_risk": predicted_sla_risk,
         "predicted_power_delta": predicted_power_delta_kw,

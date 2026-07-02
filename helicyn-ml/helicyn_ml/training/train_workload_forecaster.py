@@ -41,6 +41,7 @@ def run(splits_dir: Path = SPLITS_DIR, models_dir: Path = MODELS_DIR, eval_dir: 
 
     out_dir = ensure_dir(Path(models_dir) / wf.MODEL_NAME)
     eval_out = ensure_dir(Path(eval_dir) / wf.MODEL_NAME)
+    model_cards_dir = Path(eval_dir).parent / "reports" / "model_cards"
 
     all_metrics = {}
     for target in wf.TARGETS:
@@ -77,6 +78,7 @@ def run(splits_dir: Path = SPLITS_DIR, models_dir: Path = MODELS_DIR, eval_dir: 
     save_json(all_metrics, eval_out / "metrics.json")
 
     write_model_card(
+        model_cards_dir=model_cards_dir,
         model_name=wf.MODEL_NAME,
         version="v1",
         datasets_used=sorted(train["source_dataset"].unique().tolist()) if "source_dataset" in train.columns else [],

@@ -25,6 +25,7 @@ _MODULES = {
     "alibaba-gpu-v2020": alibaba_clusterdata,
     "azure-public": azure_public_dataset,
     "azure-llm-2024": azure_public_dataset,
+    "azure-functions-2019": azure_public_dataset,
     "google-2019-local": google_clusterdata_2019,
     "burstgpt": burstgpt,
     "electricity-maps-sample": electricity_maps,

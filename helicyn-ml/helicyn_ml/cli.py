@@ -176,6 +176,7 @@ def _default_ingest_entries():
         {"dataset_id": "alibaba-v2018", "input": RAW_DIR / "alibaba" / "v2018", "out": PROCESSED_DIR / "workloads" / "alibaba_v2018.parquet"},
         {"dataset_id": "alibaba-gpu-v2020", "input": RAW_DIR / "alibaba" / "gpu-v2020", "out": PROCESSED_DIR / "workloads" / "alibaba_gpu_v2020.parquet"},
         {"dataset_id": "azure-llm-2024", "input": RAW_DIR / "azure" / "llm-2024", "out": PROCESSED_DIR / "workloads" / "azure_llm_2024.parquet"},
+        {"dataset_id": "azure-functions-2019", "input": RAW_DIR / "azure" / "functions-2019", "out": PROCESSED_DIR / "workloads" / "azure_functions_2019.parquet"},
         {"dataset_id": "google-2019-local", "input": RAW_DIR / "google" / "clusterdata2019_sample", "out": PROCESSED_DIR / "workloads" / "google_2019_sample.parquet"},
         {"dataset_id": "electricity-maps-sample", "input": RAW_DIR / "electricity_maps", "out": PROCESSED_DIR / "grid" / "electricity_maps.parquet"},
         {"dataset_id": "gridstatus", "input": RAW_DIR / "gridstatus", "out": PROCESSED_DIR / "grid" / "gridstatus.parquet"},
@@ -336,6 +337,56 @@ def evaluate_cmd(
         console.print(f"  {name}: {info['status']}")
 
 
+# --------------------------------------------------------------------------- status
+@app.command("status")
+def status_cmd(
+    models: Path = typer.Option(MODELS_DIR, "--models"),
+    eval_dir: Path = typer.Option(EVAL_DIR, "--eval"),
+    splits: Path = typer.Option(SPLITS_DIR, "--splits"),
+):
+    """Prints an honest model-readiness table: what actually trained, on what
+    data, with what label type, and whether it's usable for research - not
+    what the pipeline was designed to do. Read docs/limitations.md alongside
+    this; usable_for_research="no" does not mean broken, it means "not yet
+    validated as more than a smoke test."
+    """
+    from helicyn_ml.training.readiness import assess_all
+
+    rows = assess_all(models_dir=models, eval_dir=eval_dir, splits_dir=splits)
+
+    table = Table(title="Helicyn ML Model Readiness", show_lines=True)
+    table.add_column("model")
+    table.add_column("status")
+    table.add_column("dataset used")
+    table.add_column("label type")
+    table.add_column("research usable")
+    table.add_column("reason (truncated - see eval/<model>/*.json for full detail)", overflow="ellipsis", max_width=70, no_wrap=True)
+
+    usable_color = {"yes": "green", "partial": "yellow", "no": "red"}
+    for row in rows:
+        color = usable_color.get(row["usable_for_research"], "white")
+        reason = row["reason"]
+        short_reason = reason if len(reason) <= 200 else reason[:197] + "..."
+        table.add_row(
+            row["model"],
+            row["status"],
+            row["dataset_used"],
+            row["label_type"],
+            f"[{color}]{row['usable_for_research']}[/{color}]",
+            short_reason,
+        )
+    console.print(table)
+    console.print(
+        "\n[bold]Legend[/bold]: label type real=measured outcomes, weak=synthetic-deadline queueing simulation, "
+        "synthetic=generated sample data, teacher=heuristic-teacher imitation labels, fallback=analytical formula "
+        "(no trained model). research_usable=partial means some but not all targets/metrics clear the bar - see reason."
+    )
+    console.print(
+        "[dim]This command reports what is actually on disk; it does not train or download anything. "
+        "Run `python -m helicyn_ml demo` or the full pipeline first.[/dim]"
+    )
+
+
 # --------------------------------------------------------------------------- recommend
 @app.command("recommend")
 def recommend_cmd(
@@ -396,11 +447,23 @@ def generate_sample_data(out: Path = typer.Option(SAMPLES_DIR, "--out")):
 # --------------------------------------------------------------------------- demo
 @app.command("demo")
 def demo_cmd():
-    """Runs the smallest possible end-to-end pipeline: download-or-sample,
-    ingest, split, train small smoke-test models, evaluate, and produce one
-    recommendation. Honest about sample-data use in its final message.
+    """SMOKE-TEST / DEMO PIPELINE - NOT RESEARCH-QUALITY TRAINING.
+
+    Runs the smallest possible end-to-end pipeline (download-or-sample,
+    ingest, split, train, evaluate, one recommendation) to prove the plumbing
+    works end-to-end. It is intentionally small and uses whatever mix of
+    real/synthetic data is available in the current environment - it is NOT
+    meant to produce research-usable models. After it finishes, run
+    `python -m helicyn_ml status` to see exactly which trained models (if
+    any) actually clear the research-usable bar on THIS run's data.
     """
-    console.print("[bold]Helicyn ML demo: end-to-end smoke pipeline[/bold]")
+    console.print(
+        "[bold on yellow] SMOKE-TEST / DEMO PIPELINE - NOT RESEARCH-QUALITY TRAINING [/bold on yellow]"
+    )
+    console.print(
+        "[dim]This proves the pipeline runs end-to-end; it does not by itself produce research-usable models. "
+        "Run `python -m helicyn_ml status` afterward for an honest per-model readiness verdict.[/dim]"
+    )
 
     console.print("\n[bold]Step 1/6: attempting small public dataset downloads...[/bold]")
     for dataset_id in ALL_SMALL_DATASET_IDS:
@@ -419,7 +482,7 @@ def demo_cmd():
         SPLITS_DIR,
     )
 
-    console.print("\n[bold]Step 4/6: training models...[/bold]")
+    console.print("\n[bold]Step 4/6: training models (smoke-test scale)...[/bold]")
     train_all()
 
     console.print("\n[bold]Step 5/6: evaluating...[/bold]")
@@ -432,9 +495,13 @@ def demo_cmd():
         recommend_cmd(example_state, MODELS_DIR, example_out)
 
     console.print(
-        "\n[bold yellow]Demo used sample/small data (real public downloads may have partially failed in this "
-        "environment; missing pieces were topped up with clearly-labeled synthetic_sample data). "
-        "For research-quality training, run the full dataset commands in README.md.[/bold yellow]"
+        "\n[bold on yellow] SMOKE-TEST / DEMO COMPLETE - NOT RESEARCH-QUALITY TRAINING [/bold on yellow]\n"
+        "[bold yellow]This run used whatever mix of real/small-sample/synthetic data was available in this "
+        "environment (real public downloads may have partially failed; missing pieces were topped up with "
+        "clearly-labeled synthetic_sample data - see the SKIP/NOTE lines above). It proves the pipeline works "
+        "end-to-end; it is NOT evidence that any model is ready for research use.[/bold yellow]\n"
+        "[bold]Run `python -m helicyn_ml status` now[/bold] for an honest per-model readiness verdict on what "
+        "this run actually produced. For research-quality training, run the full dataset commands in README.md."
     )
 
 

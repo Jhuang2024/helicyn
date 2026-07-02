@@ -5,6 +5,16 @@ writes `artifacts/eval/evaluation_summary.{json,md}`, aggregating each
 model's `artifacts/eval/<model>/metrics.json` plus `data/splits/split_summary.json`
 (dataset sizes and train/val/test time ranges).
 
+**This page explains how to read individual metrics. For the honest
+top-level verdict on whether a model is usable at all, run
+`python -m helicyn_ml status` instead** - it applies the readiness gates in
+`helicyn_ml/training/readiness.py` (real labels, non-degenerate target, beats
+baseline, enough rows, no constant-target collapse) plus hard policy caps
+(SLARiskModel and PolicyRanker are never `research_usable` regardless of
+metrics - see `docs/limitations.md`) and reports `yes`/`partial`/`no` with a
+reason per model. A good `r2` on this page does not by itself mean `status`
+will say `yes`.
+
 ## Regression metrics (`utils/metrics.py::regression_metrics`)
 
 `mae`, `rmse`, `median_ae`, `p90_ae`, `mape_pct` (only computed over

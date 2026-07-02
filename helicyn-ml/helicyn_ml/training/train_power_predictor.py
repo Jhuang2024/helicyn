@@ -32,6 +32,7 @@ def run(splits_dir: Path = SPLITS_DIR, models_dir: Path = MODELS_DIR, eval_dir: 
 
     out_dir = ensure_dir(Path(models_dir) / pp.MODEL_NAME)
     eval_out = ensure_dir(Path(eval_dir) / pp.MODEL_NAME)
+    model_cards_dir = Path(eval_dir).parent / "reports" / "model_cards"
 
     if len(train) < MIN_ROWS_FOR_TRAINING:
         logger.warning(
@@ -45,6 +46,7 @@ def run(splits_dir: Path = SPLITS_DIR, models_dir: Path = MODELS_DIR, eval_dir: 
         save_json(metrics, eval_out / "metrics.json")
         save_json({"analytical_fallback": True, "coefficients": pp.ANALYTICAL_FALLBACK_COEFFICIENTS}, out_dir / "metadata.json")
         write_model_card(
+            model_cards_dir=model_cards_dir,
             model_name=pp.MODEL_NAME,
             version="v1-analytical-fallback",
             datasets_used=sorted(train["source_dataset"].unique().tolist()) if not train.empty else [],
@@ -84,6 +86,7 @@ def run(splits_dir: Path = SPLITS_DIR, models_dir: Path = MODELS_DIR, eval_dir: 
     save_json(metrics, eval_out / "metrics.json")
 
     write_model_card(
+        model_cards_dir=model_cards_dir,
         model_name=pp.MODEL_NAME,
         version="v1",
         datasets_used=sorted(train["source_dataset"].unique().tolist()),

@@ -71,19 +71,30 @@ class TabularModel:
     def feature_columns(self) -> List[str]:
         return self.numeric_cols + self.categorical_cols
 
+    def _align_columns(self, X: pd.DataFrame) -> pd.DataFrame:
+        """Guarantees every declared feature column is present, adding any
+        genuinely-missing ones as null. The internal ColumnTransformer
+        selects its numeric_cols/categorical_cols by name regardless of what
+        the caller passed in, so silently dropping a missing column here
+        (rather than adding it as null) would raise deep inside sklearn
+        instead of being handled by the imputers like any other missing value.
+        """
+        X = X.copy()
+        for col in self.feature_columns:
+            if col not in X.columns:
+                X[col] = None
+        return X[self.feature_columns]
+
     def fit(self, X: pd.DataFrame, y: pd.Series) -> "TabularModel":
-        cols = [c for c in self.feature_columns if c in X.columns]
-        self.pipeline.fit(X[cols], y)
+        self.pipeline.fit(self._align_columns(X), y)
         self.is_fitted = True
         return self
 
     def predict(self, X: pd.DataFrame) -> np.ndarray:
-        cols = [c for c in self.feature_columns if c in X.columns]
-        return self.pipeline.predict(X[cols])
+        return self.pipeline.predict(self._align_columns(X))
 
     def predict_proba(self, X: pd.DataFrame) -> np.ndarray:
-        cols = [c for c in self.feature_columns if c in X.columns]
-        return self.pipeline.predict_proba(X[cols])[:, 1]
+        return self.pipeline.predict_proba(self._align_columns(X))[:, 1]
 
     def save(self, out_dir: Path, extra_metadata: Optional[Dict[str, Any]] = None, seed: int = DEFAULT_SEED) -> None:
         out_dir = ensure_dir(Path(out_dir))

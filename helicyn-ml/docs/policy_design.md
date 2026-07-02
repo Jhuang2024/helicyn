@@ -80,6 +80,13 @@ the final call, but note the breakdown terms won't sum to exactly `score` in
 that case (they will when no ranker is trained and the teacher score is used
 directly, i.e. `Recommendation.is_fallback == True`).
 
+`Recommendation.is_fallback == False` (a trained ranker was used) is not the
+same as the ranker being trustworthy - `python -m helicyn_ml status` always
+reports PolicyRanker as `research_usable: no` regardless, since it imitates
+a fixed heuristic formula rather than real decisions. See
+`artifacts/eval/policy_ranker/diagnostics.json` for feature-variance and
+duplicate-row diagnostics on the training table itself.
+
 ## Recommendation output
 
 `timestamp`, `selected_actions`, `ranked_actions` (all candidates, valid and

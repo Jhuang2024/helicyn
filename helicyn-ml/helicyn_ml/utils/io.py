@@ -1,5 +1,6 @@
 import hashlib
 import json
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +12,17 @@ def ensure_dir(path: Path) -> Path:
     path = Path(path)
     path.mkdir(parents=True, exist_ok=True)
     return path
+
+
+def remove_dir_if_exists(path: Path) -> None:
+    """Deletes a directory tree if present. Used when a training run skips
+    or degenerates so a stale model artifact from an earlier run (on
+    possibly different data) doesn't linger and mislead `status`/`evaluate`
+    into thinking a model is currently trained.
+    """
+    path = Path(path)
+    if path.exists():
+        shutil.rmtree(path)
 
 
 def load_yaml(path: Path) -> dict:

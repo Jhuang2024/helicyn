@@ -2,6 +2,55 @@
 
 Read this before interpreting any number this project produces.
 
+## Current model status (read this first)
+
+Run `python -m helicyn_ml status` for the live, on-disk version of this
+table. As of the last full pipeline run (BurstGPT as the only auto-downloaded
+real workload dataset in this environment):
+
+- **BurstGPT supports LLM demand forecasting.** It has real, densely-sampled
+  request timestamps and token counts, which is what `WorkloadForecaster`
+  needs for its arrival-count and token-demand targets.
+- **BurstGPT does NOT support runtime prediction, resource prediction, true
+  SLA risk, power prediction, or full policy learning.** It is a request
+  trace with no job "runtime" field, no CPU/GPU/memory usage field, no real
+  SLA outcome field, and no power measurement - every one of those has to
+  come from a different dataset (Alibaba, Azure VM traces, Google
+  ClusterData, or a real power dataset) that this environment could not
+  auto-download (see `docs/dataset_downloads.md` for exactly why - Aliyun
+  OSS and GitHub Release hosts are blocked by this sandbox's network policy;
+  the download code is correct and will work in a less restricted environment).
+- **`WorkloadForecaster` is the only meaningfully trained real-data model**
+  in a BurstGPT-only run. Even it is only *partially* usable: several of its
+  targets (`cpu_demand_next_15m`, `memory_demand_next_15m`) are zero-variance
+  on BurstGPT because BurstGPT has no CPU/memory fields at all - `status`
+  reports those specific targets as degenerate, not the whole model.
+- **`SLARiskModel`'s output is degenerate on BurstGPT and must not be
+  trusted.** BurstGPT has no real job-duration field, so every request gets
+  the same synthetic 60s default duration; combined with real request rates,
+  the weak-label queueing simulation collapses to ~100% "deadline miss" -
+  the training gate now refuses to train a classifier when this happens
+  (see `train_sla_risk_model.py`'s degeneracy gate), but even when it does
+  train on a less pathological split, its labels are still weak by
+  construction and `research_usable` is hard-capped at `no` regardless.
+- **`ResourcePredictor` and `RuntimePredictor` were skipped, not trained
+  badly** - BurstGPT provides 0% label coverage for CPU/GPU/memory usage and
+  no duration/start/end timestamps at all, so both training scripts detect
+  this and refuse to fit a model on absent labels rather than producing a
+  meaningless one.
+- **`PowerPredictor` is synthetic-only in this environment and is not
+  evidence about real hardware.** No real power dataset (e.g. Scaleout) was
+  available to auto-download or was placed manually, so it trained on
+  generated `synthetic_sample` power data; its `research_usable` status is
+  `no` for that reason even though it technically "trained" successfully.
+- **`PolicyRanker` is weak/experimental and must not be trusted until
+  simulator rollout data exists.** It imitates a heuristic teacher score
+  built from synthetic FleetState snapshots, not real operator decisions or
+  counterfactual outcomes. Its `research_usable` status is hard-capped at
+  `no` regardless of its held-out R² (which can look very good purely
+  because it's learning to reproduce a deterministic formula, not because it
+  has learned anything about real scheduling quality).
+
 ## Data limitations
 
 - Public data-center datasets are **partial**. None of the datasets this

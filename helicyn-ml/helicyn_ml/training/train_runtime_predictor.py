@@ -8,8 +8,8 @@ import pandas as pd
 from helicyn_ml.config import EVAL_DIR, MODELS_DIR, SPLITS_DIR
 from helicyn_ml.models import runtime_predictor as rp
 from helicyn_ml.preprocessing.feature_engineering import build_runtime_resource_features
-from helicyn_ml.training.card_utils import write_model_card
-from helicyn_ml.utils.io import ensure_dir, load_parquet, save_json, save_parquet
+from helicyn_ml.training.card_utils import remove_stale_card, write_model_card
+from helicyn_ml.utils.io import ensure_dir, load_parquet, remove_dir_if_exists, save_json, save_parquet
 from helicyn_ml.utils.logging import get_logger
 from helicyn_ml.utils.metrics import regression_metrics
 from helicyn_ml.utils.plotting import plot_pred_vs_actual
@@ -27,10 +27,14 @@ def _load_split(splits_dir: Path, split: str) -> pd.DataFrame:
 
 def run(splits_dir: Path = SPLITS_DIR, models_dir: Path = MODELS_DIR, eval_dir: Path = EVAL_DIR, seed: int = 42) -> Dict:
     set_all_seeds(seed)
+    model_cards_dir = Path(eval_dir).parent / "reports" / "model_cards"
     train_raw, val_raw, test_raw = (_load_split(splits_dir, s) for s in ("train", "val", "test"))
 
     if train_raw.empty:
         logger.warning("[runtime_predictor] no training data found; skipping.")
+        remove_dir_if_exists(Path(models_dir) / rp.MODEL_NAME)
+        remove_dir_if_exists(Path(eval_dir) / rp.MODEL_NAME)
+        remove_stale_card(rp.MODEL_NAME, model_cards_dir)
         return {"status": "skipped", "reason": "no training data"}
 
     train = rp.usable_rows(build_runtime_resource_features(train_raw))
@@ -39,6 +43,9 @@ def run(splits_dir: Path = SPLITS_DIR, models_dir: Path = MODELS_DIR, eval_dir: 
 
     if len(train) < 20:
         logger.warning(f"[runtime_predictor] insufficient rows with real duration ({len(train)}); skipping.")
+        remove_dir_if_exists(Path(models_dir) / rp.MODEL_NAME)
+        remove_dir_if_exists(Path(eval_dir) / rp.MODEL_NAME)
+        remove_stale_card(rp.MODEL_NAME, model_cards_dir)
         return {"status": "skipped", "reason": "insufficient labeled rows"}
 
     out_dir = ensure_dir(Path(models_dir) / rp.MODEL_NAME)
@@ -69,6 +76,7 @@ def run(splits_dir: Path = SPLITS_DIR, models_dir: Path = MODELS_DIR, eval_dir: 
     save_json(metrics, eval_out / "metrics.json")
 
     write_model_card(
+        model_cards_dir=model_cards_dir,
         model_name=rp.MODEL_NAME,
         version="v1",
         datasets_used=sorted(train["source_dataset"].unique().tolist()),
