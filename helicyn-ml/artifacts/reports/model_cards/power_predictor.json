@@ -1,7 +1,7 @@
 {
   "model_name": "power_predictor",
   "version": "v1",
-  "date_trained": "2026-07-02T05:55:20.316154Z",
+  "date_trained": "2026-07-02T09:40:30.346856Z",
   "datasets_used": [
     "synthetic_sample"
   ],

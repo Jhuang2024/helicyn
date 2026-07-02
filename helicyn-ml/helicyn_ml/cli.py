@@ -614,11 +614,11 @@ def train_v1_no_manual_github():
     evaluate_cmd(MODELS_DIR, SPLITS_DIR, EVAL_DIR)
 
     console.print("\n[bold]Step 6/6: status[/bold]")
-    status_cmd()
+    status_cmd(MODELS_DIR, EVAL_DIR, SPLITS_DIR)
 
     from helicyn_ml.training.readiness import assess_all
 
-    rows = assess_all()
+    rows = assess_all(models_dir=MODELS_DIR, eval_dir=EVAL_DIR, splits_dir=SPLITS_DIR)
     rp_row = next(r for r in rows if r["model"] == "resource_predictor")
 
     console.print("\n[bold on blue] train-v1-no-manual-github: FINAL REPORT [/bold on blue]")

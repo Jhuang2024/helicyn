@@ -1,7 +1,7 @@
 # Model Card: policy_ranker
 
 - **Version**: v1
-- **Date trained**: 2026-07-02T05:55:36.745819+00:00
+- **Date trained**: 2026-07-02T09:40:46.814848+00:00
 - **Datasets used**: burstgpt
 - **Rows used**: 9000
 - **Label provenance**: teacher_generated
