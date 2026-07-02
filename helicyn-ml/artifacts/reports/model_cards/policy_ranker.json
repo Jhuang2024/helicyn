@@ -1,7 +1,7 @@
 {
   "model_name": "policy_ranker",
   "version": "v1",
-  "date_trained": "2026-07-02T05:38:57.077351Z",
+  "date_trained": "2026-07-02T05:55:36.745819Z",
   "datasets_used": [
     "burstgpt"
   ],
