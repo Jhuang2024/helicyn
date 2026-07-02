@@ -70,27 +70,6 @@
   <div class="wrap">
     <div id="configNotice"></div>
 
-    <div id="authGate" class="authnotice authnotice--info centerwrap" hidden>
-      <span class="authnotice__title">Sign in required</span>
-      <p>You need a founding partner account before submitting an application (so you can view its status later in the partner portal). This takes under a minute.</p>
-      <div class="pagehead__cta" style="margin-top:0.6rem;">
-        <a class="btn" href="login.html" data-magnetic="0.2">Sign in or create an account <span class="arr" aria-hidden="true">→</span></a>
-      </div>
-    </div>
-
-    <div id="alreadySubmitted" class="authnotice authnotice--ok centerwrap" hidden>
-      <span class="authnotice__title">Application already submitted</span>
-      <p>You already have a founding partner application on file. View or track it in the <a href="partner-portal.html" style="text-decoration:underline;">partner portal</a>.</p>
-    </div>
-
-    <div id="successView" class="authnotice authnotice--ok centerwrap" hidden>
-      <span class="authnotice__title">Application submitted</span>
-      <p>Thanks. Your founding partner application has been submitted. You can view its status in the partner portal.</p>
-      <div class="pagehead__cta" style="margin-top:0.6rem;">
-        <a class="btn" href="partner-portal.html" data-magnetic="0.2">Go to partner portal <span class="arr" aria-hidden="true">→</span></a>
-      </div>
-    </div>
-
     <div class="onboardgrid">
     <div>
     <nav class="stepper" aria-label="Application sections">
@@ -104,6 +83,27 @@
       <span class="stepper__connector" aria-hidden="true"></span>
       <span class="stepper__step" data-step-for="step-consent"><span class="n">5</span><span class="lbl">Consent</span></span>
     </nav>
+
+    <div id="authGate" class="authnotice authnotice--info" style="margin:1.75rem 0 2rem;" hidden>
+      <span class="authnotice__title">Sign in required</span>
+      <p>You need a founding partner account before submitting an application (so you can view its status later in the partner portal). This takes under a minute.</p>
+      <div class="pagehead__cta" style="margin-top:0.6rem;">
+        <a class="btn" href="login.html" data-magnetic="0.2">Sign in or create an account <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <div id="alreadySubmitted" class="authnotice authnotice--ok" style="margin:1.75rem 0 2rem;" hidden>
+      <span class="authnotice__title">Application already submitted</span>
+      <p>You already have a founding partner application on file. View or track it in the <a href="partner-portal.html" style="text-decoration:underline;">partner portal</a>.</p>
+    </div>
+
+    <div id="successView" class="authnotice authnotice--ok" style="margin:1.75rem 0 2rem;" hidden>
+      <span class="authnotice__title">Application submitted</span>
+      <p>Thanks. Your founding partner application has been submitted. You can view its status in the partner portal.</p>
+      <div class="pagehead__cta" style="margin-top:0.6rem;">
+        <a class="btn" href="partner-portal.html" data-magnetic="0.2">Go to partner portal <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+    </div>
 
     <form id="onboardingForm" class="formgrid" novalidate>
       <div class="formsection" id="step-company">
