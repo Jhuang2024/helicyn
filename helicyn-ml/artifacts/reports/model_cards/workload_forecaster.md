@@ -1,7 +1,7 @@
 # Model Card: workload_forecaster
 
 - **Version**: v1
-- **Date trained**: 2026-07-02T05:28:18.040916+00:00
+- **Date trained**: 2026-07-02T05:37:47.982441+00:00
 - **Datasets used**: burstgpt
 - **Rows used**: 1000815
 - **Label provenance**: real
