@@ -50,6 +50,15 @@
 <main id="main" tabindex="-1">
 <section class="section pagehead">
   <div class="orbfield" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
+  <svg class="constellation" aria-hidden="true" viewBox="0 0 320 280" preserveAspectRatio="xMidYMid meet">
+    <g class="constellation__link"><path d="M260,40 L170,100"></path></g>
+    <g class="constellation__link is-signal"><path d="M170,100 L50,70" style="animation-delay:-0.7s"></path></g>
+    <g class="constellation__link"><path d="M170,100 L210,220"></path></g>
+    <g class="constellation__node" transform="translate(260,40)"><circle class="ring" r="6"></circle><circle class="dot" r="2"></circle></g>
+    <g class="constellation__node is-signal" transform="translate(170,100)"><circle class="ring" r="8"></circle><circle class="dot" r="2.5" style="animation-delay:-1.1s"></circle></g>
+    <g class="constellation__node" transform="translate(50,70)"><circle class="ring" r="6"></circle><circle class="dot" r="2"></circle></g>
+    <g class="constellation__node" transform="translate(210,220)"><circle class="ring" r="6"></circle><circle class="dot" r="2"></circle></g>
+  </svg>
   <div class="wrap">
     <span class="eyebrow" data-reveal style="--i:0">Founding partner application</span>
     <h1 data-reveal="mask" style="--i:1">Apply as a founding partner</h1>

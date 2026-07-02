@@ -22,6 +22,8 @@
 
 .pagehead { position: relative; padding-top: clamp(7rem, 14vh, 10rem); padding-bottom: clamp(2rem, 5vh, 3rem); overflow: clip; }
 .pagehead > .wrap { position: relative; z-index: 1; }
+.pagehead .constellation { right: 2%; top: 12%; width: min(26vw, 320px); height: auto; opacity: 0.5; z-index: 0; }
+@media (max-width: 980px) { .pagehead .constellation { display: none; } }
 .pagehead .eyebrow { margin-bottom: 1rem; }
 .pagehead h1 { position: relative; z-index: 1; font-weight: 500; font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.05; letter-spacing: -0.03em; text-wrap: balance; }
 .pagehead p { position: relative; z-index: 1; margin-top: 1.1rem; max-width: 62ch; color: var(--text-dim); font-size: 1.05rem; line-height: 1.6; }
