@@ -25,7 +25,8 @@ class DatasetCard:
     auto_download_supported: bool = False
     manual_instructions: str = ""
     ingest_target: str = ""  # relative to data/processed/
-    kind: str = "workload"  # workload | grid | weather | power
+    source_repo: Optional[str] = None
+    kind: str = "workload"  # workload | grid | weather | power | resource
 
     def raw_path(self, raw_root: Path) -> Path:
         return raw_root / self.raw_subdir

@@ -8,10 +8,12 @@ import pandas as pd
 
 from helicyn_ml.datasets import (
     alibaba_clusterdata,
+    azure_cpu_small,
     azure_public_dataset,
     burstgpt,
     electricity_maps,
     google_clusterdata_2019,
+    google_cpu_memory,
     gridstatus_loader,
     open_meteo_loader,
     scaleout_power,
@@ -27,6 +29,8 @@ _MODULES = {
     "azure-llm-2024": azure_public_dataset,
     "azure-functions-2019": azure_public_dataset,
     "google-2019-local": google_clusterdata_2019,
+    "google-cluster-cpu-memory-preprocessed": google_cpu_memory,
+    "azure-cpu-usage-small": azure_cpu_small,
     "burstgpt": burstgpt,
     "electricity-maps-sample": electricity_maps,
     "electricity-maps": electricity_maps,

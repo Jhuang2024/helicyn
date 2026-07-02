@@ -38,9 +38,11 @@ def regression_metrics(y_true, y_pred, baseline_pred: Optional[np.ndarray] = Non
     if baseline_pred is not None:
         baseline_pred = np.asarray(baseline_pred, dtype=float)
         out["baseline_mae"] = float(mean_absolute_error(y_true, baseline_pred))
+        out["baseline_rmse"] = float(np.sqrt(np.mean((y_true - baseline_pred) ** 2)))
         out["skill_vs_baseline"] = (
             1.0 - mae / out["baseline_mae"] if out["baseline_mae"] > 0 else None
         )
+        out["beats_baseline"] = bool(out["skill_vs_baseline"] is not None and out["skill_vs_baseline"] > 0)
     return out
 
 

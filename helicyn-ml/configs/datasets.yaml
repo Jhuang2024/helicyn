@@ -27,6 +27,14 @@ datasets:
     input: data/raw/google/clusterdata2019_sample
     out: data/processed/workloads/google_2019_sample.parquet
 
+  - dataset_id: google-cluster-cpu-memory-preprocessed
+    input: data/raw/google_cpu_memory
+    out: data/processed/resources/google_cpu_memory.parquet
+
+  - dataset_id: azure-cpu-usage-small
+    input: data/raw/azure_cpu_small
+    out: data/processed/resources/azure_cpu_small.parquet
+
   - dataset_id: electricity-maps-sample
     input: data/raw/electricity_maps
     out: data/processed/grid/electricity_maps.parquet

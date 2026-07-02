@@ -131,6 +131,36 @@ Full field-level detail is also available at runtime via
   real data (see `docs/model_design.md`).
 - **Automatic download**: no.
 
+## Google ClusterData CPU/Memory Utilization, preprocessed (`google-cluster-cpu-memory-preprocessed`)
+
+- **Source**: https://github.com/HiPro-IT/CPU-and-Memory-resource-usage-from-Google-Cluster-Data
+- **Purpose**: real per-VM CPU and memory utilization time series for training `ResourcePredictor`.
+- **Teaches Helicyn**: real CPU and memory utilization patterns per VM at 5-minute resolution over 24 hours.
+- **Columns expected**: 2 whitespace-delimited columns per file, no header (`cpu_usage_percent`, `memory_usage_percent`).
+- **Limitations**: pre-aggregated (summed per 5-minute window) from the original Google ClusterData by the paper's
+  authors, not the raw per-task trace; pre-filtered to 5-90% utilization; no real calendar timestamps (each VM is a
+  self-contained 24h/288-row sequence - normalized with `timestamp_is_relative=true`); no GPU, no resource
+  *requests* (usage only); no SLA/power/PUE data. See `docs/google_cpu_memory_preprocessed.md` for full detail.
+- **Automatic download**: yes (verified working - see `artifacts/reports/github_resource_dataset_recon.md`).
+
+## Azure VM Aggregate CPU Usage, small (`azure-cpu-usage-small`)
+
+- **Source**: https://github.com/amcs1729/Predicting-cloud-CPU-usage-on-Azure-data
+- **Purpose**: CPU-only supplementary time series for `ResourcePredictor` / demand forecasting.
+- **Teaches Helicyn**: real min/max/avg CPU demand time series at 5-minute resolution over 30 real calendar days.
+- **Columns expected**: `timestamp, min cpu, max cpu, avg cpu` (comma-delimited, header row).
+- **Limitations**: CPU-only (no memory, no GPU); single aggregate series, not per-VM; **values are NOT a bounded
+  0-100 percentage** despite the column naming - unit is unconfirmed (discovered during recon, not fabricated
+  around) and stored as-is, never rescaled.
+- **Automatic download**: yes (verified working - see `artifacts/reports/github_resource_dataset_recon.md`).
+
+## Alibaba Cluster Usage Traces 2018, preprocessed - NOT USABLE (`MertYILDIZ19/Alibaba_cluster_usage_traces_2018`)
+
+- **Source**: https://github.com/MertYILDIZ19/Alibaba_cluster_usage_traces_2018
+- **Status**: recon only, **not implemented**. The GitHub repo contains only a README; the actual preprocessed
+  data files are hosted on Google Drive, which is blocked by this environment's network policy and is a
+  manual/interactive download path in general. See `artifacts/reports/github_resource_dataset_recon.md`.
+
 ## SustainCluster / SustainDC (`sustain-cluster`)
 
 - **Source**: https://github.com/HewlettPackard/dc-rl

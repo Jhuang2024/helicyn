@@ -36,6 +36,12 @@ def build_preprocessor(numeric_cols: List[str], categorical_cols: List[str]) -> 
             ("cat", categorical_pipeline, categorical_cols),
         ],
         remainder="drop",
+        # Force dense output always: with low-cardinality categoricals
+        # ColumnTransformer's sparsity heuristic already returns dense, but
+        # a higher-cardinality categorical (e.g. resource_predictor's
+        # vm_id_bucket, 64 levels) can push it to sparse, which this
+        # sklearn version's HistGradientBoosting estimators reject outright.
+        sparse_threshold=0,
     )
 
 

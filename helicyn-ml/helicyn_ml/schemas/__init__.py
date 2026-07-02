@@ -2,6 +2,7 @@ from helicyn_ml.schemas.normalized_workload import NormalizedWorkloadRecord, Wor
 from helicyn_ml.schemas.normalized_grid import NormalizedGridRecord
 from helicyn_ml.schemas.normalized_weather import NormalizedWeatherRecord
 from helicyn_ml.schemas.normalized_power import NormalizedPowerRecord
+from helicyn_ml.schemas.normalized_resource_timeseries import NormalizedResourceTimeseriesRecord
 from helicyn_ml.schemas.fleet_state import (
     FleetState,
     Site,
@@ -22,6 +23,7 @@ __all__ = [
     "NormalizedGridRecord",
     "NormalizedWeatherRecord",
     "NormalizedPowerRecord",
+    "NormalizedResourceTimeseriesRecord",
     "FleetState",
     "Site",
     "Rack",

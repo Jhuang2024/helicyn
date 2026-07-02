@@ -176,3 +176,85 @@ def feature_columns_runtime_resource() -> List[str]:
         "day_of_week",
         "is_weekend",
     ]
+
+
+_RESOURCE_LAG_STEPS = (1, 4, 12)
+_STEPS_PER_DAY_5MIN = 288  # 24h * 60 / 5-minute interval, per NormalizedResourceTimeseriesRecord
+
+
+def _vm_id_bucket(vm_id: pd.Series, n_buckets: int = 64) -> pd.Series:
+    """Deterministic low-cardinality hash bucket for vm_id (there can be
+    thousands of distinct VMs - a raw one-hot over vm_id itself would blow
+    up the categorical feature space for no real benefit). Uses a stable
+    hash (not Python's randomized str hash) so buckets are reproducible
+    across runs/processes.
+    """
+    import hashlib
+
+    def bucket(v) -> str:
+        digest = hashlib.md5(str(v).encode("utf-8")).hexdigest()
+        return f"bucket_{int(digest, 16) % n_buckets}"
+
+    return vm_id.fillna("unknown").astype(str).map(bucket)
+
+
+def build_resource_features(df: pd.DataFrame) -> pd.DataFrame:
+    """Features for ResourcePredictor when trained on
+    NormalizedResourceTimeseriesRecord data (real/preprocessed CPU/memory
+    utilization traces) rather than workload request/usage columns.
+    Lag/rolling features are computed strictly within each
+    (source_dataset, vm_id) group so one VM's history never leaks into
+    another VM's features, and never across the train/val/test split
+    boundary (features are built per-split, after splitting - see
+    training/train_resource_predictor.py).
+    """
+    df = df.copy()
+    group_cols = [c for c in ("source_dataset", "vm_id") if c in df.columns]
+    sort_col = "time_index" if "time_index" in df.columns else None
+    if sort_col:
+        df = df.sort_values(group_cols + [sort_col]).reset_index(drop=True)
+
+    grouped = df.groupby(group_cols) if group_cols else None
+    for col in ("cpu_usage_percent", "memory_usage_percent"):
+        if col not in df.columns:
+            df[col] = np.nan
+        for lag in _RESOURCE_LAG_STEPS:
+            df[f"lag_{col}_{lag}"] = grouped[col].shift(lag) if grouped is not None else df[col].shift(lag)
+        rolling = (
+            grouped[col].transform(lambda s: s.rolling(12, min_periods=1).mean())
+            if grouped is not None
+            else df[col].rolling(12, min_periods=1).mean()
+        )
+        df[f"rolling_{col}_1h"] = rolling
+
+    time_index = pd.to_numeric(df.get("time_index"), errors="coerce").fillna(0)
+    cycle_pos = (time_index % _STEPS_PER_DAY_5MIN) / _STEPS_PER_DAY_5MIN * 2 * np.pi
+    df["time_sin"] = np.sin(cycle_pos)
+    df["time_cos"] = np.cos(cycle_pos)
+
+    df["vm_id_bucket"] = _vm_id_bucket(df["vm_id"]) if "vm_id" in df.columns else "unknown"
+
+    return df
+
+
+def resource_persistence_baseline(df: pd.DataFrame, target_col: str) -> pd.Series:
+    """y_hat = previous value of the same target, within the same
+    (source_dataset, vm_id) group, in time_index order. The standard
+    baseline for time-series regression - a model that can't beat "predict
+    the last observed value" has learned nothing useful.
+    """
+    group_cols = [c for c in ("source_dataset", "vm_id") if c in df.columns]
+    if not group_cols:
+        return df[target_col].shift(1)
+    return df.groupby(group_cols)[target_col].shift(1)
+
+
+def resource_feature_columns() -> List[str]:
+    numeric = (
+        ["time_index", "interval_minutes"]
+        + [f"lag_cpu_usage_percent_{lag}" for lag in _RESOURCE_LAG_STEPS]
+        + [f"lag_memory_usage_percent_{lag}" for lag in _RESOURCE_LAG_STEPS]
+        + ["rolling_cpu_usage_percent_1h", "rolling_memory_usage_percent_1h", "time_sin", "time_cos"]
+    )
+    categorical = ["source_dataset", "vm_id_bucket"]
+    return numeric + categorical

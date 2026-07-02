@@ -1,7 +1,7 @@
 # Model Card: workload_forecaster
 
 - **Version**: v1
-- **Date trained**: 2026-07-02T05:54:28.172215+00:00
+- **Date trained**: 2026-07-02T09:35:34.623773+00:00
 - **Datasets used**: burstgpt
 - **Rows used**: 1000815
 - **Label provenance**: real
@@ -29,7 +29,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": 0.5699883613439886,
       "n": 214461,
       "baseline_mae": 1798.551721788753,
-      "skill_vs_baseline": 0.6417543325461595
+      "baseline_rmse": 2286.387558328124,
+      "skill_vs_baseline": 0.6417543325461595,
+      "beats_baseline": true
     },
     "test": {
       "mae": 982.9004902167374,
@@ -40,7 +42,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": -2.795618684033616,
       "n": 214461,
       "baseline_mae": 1228.3230549466955,
-      "skill_vs_baseline": 0.19980294576544322
+      "baseline_rmse": 1372.55240061779,
+      "skill_vs_baseline": 0.19980294576544322,
+      "beats_baseline": true
     }
   },
   "arrivals_next_1h": {
@@ -54,7 +58,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": 8.027204062699411e-05,
       "n": 214461,
       "baseline_mae": 5043.125100332834,
-      "skill_vs_baseline": 0.5977476704095397
+      "baseline_rmse": 5329.714838129339,
+      "skill_vs_baseline": 0.5977476704095397,
+      "beats_baseline": true
     },
     "test": {
       "mae": 3343.6970813663206,
@@ -65,7 +71,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": -8.823839035574185,
       "n": 214461,
       "baseline_mae": 4808.172903258002,
-      "skill_vs_baseline": 0.3045805239032393
+      "baseline_rmse": 5062.487410976273,
+      "skill_vs_baseline": 0.3045805239032393,
+      "beats_baseline": true
     }
   },
   "cpu_demand_next_15m": {
@@ -79,7 +87,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": null,
       "n": 214461,
       "baseline_mae": 0.0,
-      "skill_vs_baseline": null
+      "baseline_rmse": 0.0,
+      "skill_vs_baseline": null,
+      "beats_baseline": false
     },
     "test": {
       "mae": 0.0,
@@ -90,7 +100,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": null,
       "n": 214461,
       "baseline_mae": 0.0,
-      "skill_vs_baseline": null
+      "baseline_rmse": 0.0,
+      "skill_vs_baseline": null,
+      "beats_baseline": false
     }
   },
   "gpu_demand_next_15m": {
@@ -104,7 +116,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": 0.5699883613439886,
       "n": 214461,
       "baseline_mae": 1798.551721788753,
-      "skill_vs_baseline": 0.6417543325461595
+      "baseline_rmse": 2286.387558328124,
+      "skill_vs_baseline": 0.6417543325461595,
+      "beats_baseline": true
     },
     "test": {
       "mae": 982.9004902167374,
@@ -115,7 +129,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": -2.795618684033616,
       "n": 214461,
       "baseline_mae": 1228.3230549466955,
-      "skill_vs_baseline": 0.19980294576544322
+      "baseline_rmse": 1372.55240061779,
+      "skill_vs_baseline": 0.19980294576544322,
+      "beats_baseline": true
     }
   },
   "memory_demand_next_15m": {
@@ -129,7 +145,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": null,
       "n": 214461,
       "baseline_mae": 0.0,
-      "skill_vs_baseline": null
+      "baseline_rmse": 0.0,
+      "skill_vs_baseline": null,
+      "beats_baseline": false
     },
     "test": {
       "mae": 0.0,
@@ -140,7 +158,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": null,
       "n": 214461,
       "baseline_mae": 0.0,
-      "skill_vs_baseline": null
+      "baseline_rmse": 0.0,
+      "skill_vs_baseline": null,
+      "beats_baseline": false
     }
   },
   "input_tokens_next_15m": {
@@ -154,7 +174,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": 0.682734237839618,
       "n": 214461,
       "baseline_mae": 582407.4983593789,
-      "skill_vs_baseline": 0.5965233182456633
+      "baseline_rmse": 728624.7507809702,
+      "skill_vs_baseline": 0.5965233182456633,
+      "beats_baseline": true
     },
     "test": {
       "mae": 195549.96439130607,
@@ -165,7 +187,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": -0.8673254367825629,
       "n": 214461,
       "baseline_mae": 586623.2577839583,
-      "skill_vs_baseline": 0.6666515318025061
+      "baseline_rmse": 611538.2759595796,
+      "skill_vs_baseline": 0.6666515318025061,
+      "beats_baseline": true
     }
   },
   "output_tokens_next_15m": {
@@ -179,7 +203,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": 0.6044758327071947,
       "n": 214461,
       "baseline_mae": 133517.00928502902,
-      "skill_vs_baseline": 0.7297845365516359
+      "baseline_rmse": 140276.1029734687,
+      "skill_vs_baseline": 0.7297845365516359,
+      "beats_baseline": true
     },
     "test": {
       "mae": 18582.29470157358,
@@ -190,7 +216,9 @@ arrivals_next_15m, arrivals_next_1h, cpu_demand_next_15m, gpu_demand_next_15m, m
       "r2": -5.971229643315431,
       "n": 214461,
       "baseline_mae": 140552.96415571537,
-      "skill_vs_baseline": 0.8677915132334976
+      "baseline_rmse": 140980.5999256157,
+      "skill_vs_baseline": 0.8677915132334976,
+      "beats_baseline": true
     }
   }
 }

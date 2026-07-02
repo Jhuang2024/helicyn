@@ -54,6 +54,50 @@ def time_split(df: pd.DataFrame, ratios=DEFAULT_RATIOS, group_col: str = "source
     return {"train": concat(train_parts), "val": concat(val_parts), "test": concat(test_parts)}
 
 
+def resource_time_split(df: pd.DataFrame, ratios=DEFAULT_RATIOS) -> Dict[str, pd.DataFrame]:
+    """Time-ordered split for NormalizedResourceTimeseriesRecord data.
+
+    Unlike workload/grid/weather/power (one shared timeline per
+    source_dataset), a resource dataset can contain many independent VM
+    traces (e.g. 1,600 VMs in google-cluster-cpu-memory-preprocessed), each
+    with its own relative time_index rather than a shared calendar
+    timestamp. Splitting must therefore happen within each
+    (source_dataset, vm_id) group, sorted by real timestamp when available
+    and by time_index otherwise - never mixing one VM's early steps into
+    another VM's split, and never treating a relative index as if it were
+    comparable across VMs or to a real clock time.
+    """
+    if df.empty:
+        return {"train": df, "val": df, "test": df}
+
+    group_cols = [c for c in ("source_dataset", "vm_id") if c in df.columns]
+    if not group_cols:
+        group_cols = None
+
+    train_parts, val_parts, test_parts = [], [], []
+    group_iter = df.groupby(group_cols) if group_cols else [(None, df)]
+    for _, group in group_iter:
+        is_relative = bool(group["timestamp_is_relative"].iloc[0]) if "timestamp_is_relative" in group.columns else True
+        has_real_timestamp = "timestamp" in group.columns and group["timestamp"].notna().any()
+        sort_col = "timestamp" if (has_real_timestamp and not is_relative) else "time_index"
+        group = group.sort_values(sort_col).reset_index(drop=True)
+
+        n = len(group)
+        n_train = int(n * ratios[0])
+        n_val = int(n * (ratios[0] + ratios[1])) - n_train
+        train_parts.append(group.iloc[:n_train])
+        val_parts.append(group.iloc[n_train : n_train + n_val])
+        test_parts.append(group.iloc[n_train + n_val :])
+
+    def concat(parts):
+        parts = [p for p in parts if len(p)]
+        if not parts:
+            return df.iloc[0:0]
+        return pd.concat(parts, ignore_index=True)
+
+    return {"train": concat(train_parts), "val": concat(val_parts), "test": concat(test_parts)}
+
+
 def _range_str(df: pd.DataFrame) -> Optional[str]:
     if df.empty or "timestamp" not in df.columns:
         return None
@@ -67,6 +111,7 @@ def run_split(
     power_dir: Path,
     out_dir: Path,
     ratios=DEFAULT_RATIOS,
+    resources_dir: Optional[Path] = None,
 ) -> Dict:
     out_dir = Path(out_dir)
     sources = {
@@ -75,6 +120,8 @@ def run_split(
         "weather": _load_all_parquet(weather_dir),
         "power": _load_all_parquet(power_dir),
     }
+    if resources_dir is not None:
+        sources["resources"] = _load_all_parquet(resources_dir)
 
     split_summary = {"ratios": {"train": ratios[0], "val": ratios[1], "test": ratios[2]}}
     dataset_summary = {}
@@ -85,7 +132,7 @@ def run_split(
             split_summary[kind] = {"status": "missing", "n_records": 0}
             continue
 
-        splits = time_split(df, ratios=ratios)
+        splits = resource_time_split(df, ratios=ratios) if kind == "resources" else time_split(df, ratios=ratios)
         for split_name, split_df in splits.items():
             ensure_dir(out_dir / split_name)
             save_parquet(split_df, out_dir / split_name / f"{kind}.parquet")

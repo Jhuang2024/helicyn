@@ -28,6 +28,7 @@ from helicyn_ml.datasets.registry import (
 )
 from helicyn_ml.preprocessing.normalize_grid import normalize_grid_dataset
 from helicyn_ml.preprocessing.normalize_power import normalize_power_dataset
+from helicyn_ml.preprocessing.normalize_resources import normalize_resource_dataset
 from helicyn_ml.preprocessing.normalize_weather import normalize_weather_dataset
 from helicyn_ml.preprocessing.normalize_workloads import normalize_workload_dataset
 from helicyn_ml.preprocessing.split import run_split
@@ -48,6 +49,7 @@ _NORMALIZERS = {
     "grid": normalize_grid_dataset,
     "weather": normalize_weather_dataset,
     "power": normalize_power_dataset,
+    "resource": normalize_resource_dataset,
 }
 
 
@@ -154,6 +156,7 @@ def ingest_all(config: Path = typer.Option(Path("configs/datasets.yaml"), "--con
     if not entries:
         entries = _default_ingest_entries()
 
+    results = []
     for entry in entries:
         dataset_id = entry["dataset_id"]
         input_dir = Path(entry["input"])
@@ -163,11 +166,25 @@ def ingest_all(config: Path = typer.Option(Path("configs/datasets.yaml"), "--con
         df = normalizer(dataset_id, input_dir)
         if df.empty:
             console.print(f"[yellow]SKIP[/yellow] {dataset_id}: no data under {input_dir}")
+            results.append({"dataset_id": dataset_id, "status": "skipped", "rows": 0, "out_path": "", "reason": f"no data under {input_dir}"})
             continue
         save_parquet(df, out_path)
         console.print(f"[green]OK[/green] {dataset_id}: {len(df)} records -> {out_path}")
+        results.append({"dataset_id": dataset_id, "status": "ingested", "rows": len(df), "out_path": str(out_path), "reason": ""})
 
     _ensure_processed_floor()
+
+    table = Table(title="ingest-all summary")
+    table.add_column("dataset_id")
+    table.add_column("status")
+    table.add_column("rows")
+    table.add_column("output path")
+    table.add_column("reason (if skipped)")
+    for r in results:
+        color = "green" if r["status"] == "ingested" else "yellow"
+        table.add_row(r["dataset_id"], f"[{color}]{r['status']}[/{color}]", str(r["rows"]), r["out_path"], r["reason"])
+    console.print(table)
+    return results
 
 
 def _default_ingest_entries():
@@ -178,6 +195,8 @@ def _default_ingest_entries():
         {"dataset_id": "azure-llm-2024", "input": RAW_DIR / "azure" / "llm-2024", "out": PROCESSED_DIR / "workloads" / "azure_llm_2024.parquet"},
         {"dataset_id": "azure-functions-2019", "input": RAW_DIR / "azure" / "functions-2019", "out": PROCESSED_DIR / "workloads" / "azure_functions_2019.parquet"},
         {"dataset_id": "google-2019-local", "input": RAW_DIR / "google" / "clusterdata2019_sample", "out": PROCESSED_DIR / "workloads" / "google_2019_sample.parquet"},
+        {"dataset_id": "google-cluster-cpu-memory-preprocessed", "input": RAW_DIR / "google_cpu_memory", "out": PROCESSED_DIR / "resources" / "google_cpu_memory.parquet"},
+        {"dataset_id": "azure-cpu-usage-small", "input": RAW_DIR / "azure_cpu_small", "out": PROCESSED_DIR / "resources" / "azure_cpu_small.parquet"},
         {"dataset_id": "electricity-maps-sample", "input": RAW_DIR / "electricity_maps", "out": PROCESSED_DIR / "grid" / "electricity_maps.parquet"},
         {"dataset_id": "gridstatus", "input": RAW_DIR / "gridstatus", "out": PROCESSED_DIR / "grid" / "gridstatus.parquet"},
         {"dataset_id": "open-meteo-sample", "input": RAW_DIR / "open_meteo", "out": PROCESSED_DIR / "weather" / "open_meteo.parquet"},
@@ -228,13 +247,14 @@ def split_cmd(
     grid: Path = typer.Option(PROCESSED_DIR / "grid", "--grid"),
     weather: Path = typer.Option(PROCESSED_DIR / "weather", "--weather"),
     power: Path = typer.Option(PROCESSED_DIR / "power", "--power"),
+    resources: Path = typer.Option(PROCESSED_DIR / "resources", "--resources"),
     config: Path = typer.Option(Path("configs/split.yaml"), "--config"),
     out: Path = typer.Option(SPLITS_DIR, "--out"),
 ):
     """Create time-ordered train/val/test splits for all processed data kinds."""
     cfg = load_yaml(config) if Path(config).exists() else {}
     ratios = tuple(cfg.get("ratios", [0.70, 0.15, 0.15]))
-    summary = run_split(workloads, grid, weather, power, out, ratios=ratios)
+    summary = run_split(workloads, grid, weather, power, out, ratios=ratios, resources_dir=resources)
     console.print("[green]Split complete.[/green]")
     console.print(json.dumps(summary, indent=2, default=str))
 
@@ -359,12 +379,16 @@ def status_cmd(
     table.add_column("status")
     table.add_column("dataset used")
     table.add_column("label type")
+    table.add_column("metric summary", overflow="ellipsis", max_width=45, no_wrap=True)
+    table.add_column("beats baseline")
     table.add_column("research usable")
     table.add_column("reason (truncated - see eval/<model>/*.json for full detail)", overflow="ellipsis", max_width=70, no_wrap=True)
 
     usable_color = {"yes": "green", "partial": "yellow", "no": "red"}
+    beats_color = {"yes": "green", "partial": "yellow", "no": "red", "n/a": "dim"}
     for row in rows:
         color = usable_color.get(row["usable_for_research"], "white")
+        bcolor = beats_color.get(row["beats_baseline"], "white")
         reason = row["reason"]
         short_reason = reason if len(reason) <= 200 else reason[:197] + "..."
         table.add_row(
@@ -372,6 +396,8 @@ def status_cmd(
             row["status"],
             row["dataset_used"],
             row["label_type"],
+            row["metric_summary"],
+            f"[{bcolor}]{row['beats_baseline']}[/{bcolor}]",
             f"[{color}]{row['usable_for_research']}[/{color}]",
             short_reason,
         )
@@ -480,6 +506,7 @@ def demo_cmd():
         PROCESSED_DIR / "weather",
         PROCESSED_DIR / "power",
         SPLITS_DIR,
+        resources_dir=PROCESSED_DIR / "resources",
     )
 
     console.print("\n[bold]Step 4/6: training models (smoke-test scale)...[/bold]")
@@ -502,6 +529,149 @@ def demo_cmd():
         "end-to-end; it is NOT evidence that any model is ready for research use.[/bold yellow]\n"
         "[bold]Run `python -m helicyn_ml status` now[/bold] for an honest per-model readiness verdict on what "
         "this run actually produced. For research-quality training, run the full dataset commands in README.md."
+    )
+
+
+# --------------------------------------------------------------------------- train-v1-no-manual-github
+# The no-manual-file, no-Kaggle, no-huge-download pipeline: every dataset
+# here is either a small GitHub-raw-hosted file or an already-existing
+# small/sample source. Explicitly excludes Alibaba OSS, Azure release
+# assets, and Bitbrains (all blocked at the network-proxy level in this
+# environment) and never substitutes a manual-upload path for them.
+NO_MANUAL_GITHUB_DATASET_IDS = [
+    "burstgpt",
+    "google-cluster-cpu-memory-preprocessed",
+    "azure-cpu-usage-small",
+    "electricity-maps-sample",
+    "open-meteo-sample",
+    "scaleout-power",
+]
+
+# These two are the entire point of this command (real CPU/memory
+# resource-timeseries data for ResourcePredictor). If either is
+# unreachable, we stop and report the exact error rather than silently
+# training on whatever else happened to download and calling it success.
+_REQUIRED_NO_MANUAL_DATASETS = [
+    "google-cluster-cpu-memory-preprocessed",
+    "azure-cpu-usage-small",
+]
+
+
+@app.command("train-v1-no-manual-github")
+def train_v1_no_manual_github():
+    """End-to-end pipeline using ONLY datasets reachable without manual file
+    placement, Kaggle credentials, or huge downloads: BurstGPT plus the two
+    GitHub-hosted preprocessed resource-utilization datasets
+    (google-cluster-cpu-memory-preprocessed, azure-cpu-usage-small), plus
+    small grid/weather/power samples.
+
+    STOPS and reports honestly (does not fake success) if either GitHub
+    resource dataset is unreachable in this environment.
+    """
+    console.print("[bold on blue] train-v1-no-manual-github: no-manual, GitHub-reachable dataset pipeline [/bold on blue]")
+
+    console.print("\n[bold]Step 1/6: downloading auto-downloadable, no-manual datasets...[/bold]")
+    download_results = {}
+    for dataset_id in NO_MANUAL_GITHUB_DATASET_IDS:
+        card = get_card(dataset_id)
+        target_dir = RAW_DIR / card.raw_subdir
+        ensure_dir(target_dir)
+        result = download_dataset(dataset_id, target_dir)
+        download_results[dataset_id] = result
+        if result.success:
+            console.print(f"[green]OK[/green] {dataset_id}: {result.reason} -> {result.out_path}")
+        else:
+            console.print(f"[yellow]SKIP[/yellow] {dataset_id}: {result.reason}")
+
+    missing_required = [d for d in _REQUIRED_NO_MANUAL_DATASETS if not download_results[d].success]
+    if missing_required:
+        console.print(
+            f"\n[bold red]STOPPING[/bold red]: required no-manual GitHub dataset(s) unreachable in this "
+            f"environment: {missing_required}. Not proceeding to ingest/split/train - that would produce "
+            "ResourcePredictor results that look trained but aren't backed by the real data this command exists "
+            "to fetch. Exact skip reason(s) are printed above; re-run this command once network access to "
+            "raw.githubusercontent.com for these repos is available."
+        )
+        raise typer.Exit(1)
+
+    console.print("\n[bold]Step 2/6: ingesting available datasets...[/bold]")
+    ingest_results = ingest_all(Path("configs/datasets.yaml"))
+
+    console.print("\n[bold]Step 3/6: creating train/val/test splits (workloads/resources/grid/weather/power)...[/bold]")
+    split_summary = run_split(
+        PROCESSED_DIR / "workloads",
+        PROCESSED_DIR / "grid",
+        PROCESSED_DIR / "weather",
+        PROCESSED_DIR / "power",
+        SPLITS_DIR,
+        resources_dir=PROCESSED_DIR / "resources",
+    )
+
+    console.print("\n[bold]Step 4/6: training all models...[/bold]")
+    train_all()
+
+    console.print("\n[bold]Step 5/6: evaluating...[/bold]")
+    evaluate_cmd(MODELS_DIR, SPLITS_DIR, EVAL_DIR)
+
+    console.print("\n[bold]Step 6/6: status[/bold]")
+    status_cmd()
+
+    from helicyn_ml.training.readiness import assess_all
+
+    rows = assess_all()
+    rp_row = next(r for r in rows if r["model"] == "resource_predictor")
+
+    console.print("\n[bold on blue] train-v1-no-manual-github: FINAL REPORT [/bold on blue]")
+
+    console.print("\n[bold]Datasets downloaded/skipped:[/bold]")
+    for dataset_id, result in download_results.items():
+        label = "[green]downloaded[/green]" if result.success else "[yellow]skipped[/yellow]"
+        console.print(f"  {dataset_id}: {label} - {result.reason}")
+
+    console.print("\n[bold]Ingestion results:[/bold]")
+    for r in ingest_results:
+        suffix = f" - {r['reason']}" if r["reason"] else ""
+        console.print(f"  {r['dataset_id']}: {r['status']} ({r['rows']} rows) -> {r['out_path']}{suffix}")
+
+    console.print(f"\n[bold]Split summary:[/bold] {json.dumps(split_summary, default=str)}")
+
+    console.print("\n[bold]Models trained/skipped:[/bold]")
+    for row in rows:
+        console.print(
+            f"  {row['model']}: status={row['status']} research_usable={row['usable_for_research']} "
+            f"beats_baseline={row['beats_baseline']}"
+        )
+
+    console.print(
+        "\n[bold]ResourcePredictor detail:[/bold] "
+        f"research_usable={rp_row['usable_for_research']}, beats_baseline={rp_row['beats_baseline']}, "
+        f"metrics: {rp_row['metric_summary']}"
+    )
+    resource_data_downloaded = all(download_results[d].success for d in _REQUIRED_NO_MANUAL_DATASETS)
+    console.print(
+        "[bold]ResourcePredictor improved by this run:[/bold] "
+        + (
+            "yes - now trains cpu_usage_percent/memory_usage_percent from real Google Cluster (and, where "
+            "coverage allows, Azure) resource-timeseries data, vs. 0% workload-derived usage-label coverage "
+            "without these datasets."
+            if resource_data_downloaded and rp_row["usable_for_research"] in ("yes", "partial")
+            else "no - resource-timeseries data did not train usable targets this run."
+        )
+    )
+
+    ready_for_simulator = rp_row["usable_for_research"] in ("yes", "partial")
+    console.print(
+        "\n[bold]Ready to proceed to simulator prototype:[/bold] "
+        + (
+            "yes for CPU/memory resource prediction (real data, beats baseline). GPU remains unavailable in any "
+            "dataset - simulator work must not fabricate GPU utilization."
+            if ready_for_simulator
+            else "no - ResourcePredictor did not reach a usable state on real resource-timeseries data this run."
+        )
+    )
+    console.print(
+        "[dim]GPU usage is not trained or predicted anywhere in this pipeline: no auto-downloadable dataset "
+        "reports GPU utilization, and none is fabricated.[/dim]"
     )
 
 

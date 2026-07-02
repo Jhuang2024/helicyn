@@ -1,0 +1,220 @@
+# Model Card: resource_predictor
+
+- **Version**: v2
+- **Date trained**: 2026-07-02T09:36:02.100153+00:00
+- **Datasets used**: azure_cpu_usage_small, burstgpt, google_cluster_cpu_memory_preprocessed
+- **Rows used**: 1328463
+- **Label provenance**: real
+- **Train range**: n/a
+- **Val range**: n/a
+- **Test range**: n/a
+
+## Features
+cpu_request, memory_request_gb, gpu_request, gpu_memory_request_gb, input_tokens, output_tokens, priority, hour_of_day, day_of_week, is_weekend, workload_type, scheduling_class, source_dataset, time_index, interval_minutes, lag_cpu_usage_percent_1, lag_cpu_usage_percent_4, lag_cpu_usage_percent_12, lag_memory_usage_percent_1, lag_memory_usage_percent_4, lag_memory_usage_percent_12, rolling_cpu_usage_percent_1h, rolling_memory_usage_percent_1h, time_sin, time_cos, vm_id_bucket
+
+## Targets
+cpu_usage_percent, memory_usage_percent, avg_cpu_usage_percent, min_cpu_usage_percent, max_cpu_usage_percent
+
+## Metrics
+```json
+{
+  "label_coverage": {
+    "cpu_usage_percent": 0.9815411661295048,
+    "memory_usage_percent": 0.9815411661295048,
+    "avg_cpu_usage_percent": 0.018458833870495166,
+    "min_cpu_usage_percent": 0.018458833870495166,
+    "max_cpu_usage_percent": 0.018458833870495166
+  },
+  "cpu_usage": {
+    "status": "skipped",
+    "reason": "label coverage 0.0% < 5%",
+    "source": "workload"
+  },
+  "memory_usage_gb": {
+    "status": "skipped",
+    "reason": "label coverage 0.0% < 5%",
+    "source": "workload"
+  },
+  "gpu_usage": {
+    "status": "skipped",
+    "reason": "label coverage 0.0% < 5%",
+    "source": "workload"
+  },
+  "gpu_memory_usage_gb": {
+    "status": "skipped",
+    "reason": "label coverage 0.0% < 5%",
+    "source": "workload"
+  },
+  "label_row_counts": {
+    "cpu_usage_percent": 321600,
+    "memory_usage_percent": 321600,
+    "avg_cpu_usage_percent": 6048,
+    "min_cpu_usage_percent": 6048,
+    "max_cpu_usage_percent": 6048
+  },
+  "cpu_usage_percent": {
+    "train_n": 321600,
+    "source": "resource_timeseries",
+    "val": {
+      "mae": 1.2683981656376078,
+      "rmse": 2.3199590798076453,
+      "median_ae": 0.6632397428918289,
+      "p90_ae": 2.9428821120195052,
+      "mape_pct": 5.714701958873218,
+      "r2": 0.975282550840285,
+      "n": 68800,
+      "baseline_mae": 1.6779900271122956,
+      "baseline_rmse": 3.61515567273919,
+      "skill_vs_baseline": 0.24409671979968017,
+      "beats_baseline": true
+    },
+    "test": {
+      "mae": 1.3038617313096441,
+      "rmse": 2.315477299103745,
+      "median_ae": 0.7122543569105457,
+      "p90_ae": 3.018873988993722,
+      "mape_pct": 6.027006115076934,
+      "r2": 0.9747152160917759,
+      "n": 70400,
+      "baseline_mae": 1.6545820198901813,
+      "baseline_rmse": 3.589173548418605,
+      "skill_vs_baseline": 0.21196911628703385,
+      "beats_baseline": true
+    }
+  },
+  "memory_usage_percent": {
+    "train_n": 321600,
+    "source": "resource_timeseries",
+    "val": {
+      "mae": 0.33687795296875134,
+      "rmse": 1.2050366285900327,
+      "median_ae": 0.0721614484505233,
+      "p90_ae": 0.6370577181463916,
+      "mape_pct": 1.50725689327215,
+      "r2": 0.9948417650292248,
+      "n": 68800,
+      "baseline_mae": 0.4823251579154679,
+      "baseline_rmse": 2.7795827015406114,
+      "skill_vs_baseline": 0.3015542576616075,
+      "beats_baseline": true
+    },
+    "test": {
+      "mae": 0.3647944944753089,
+      "rmse": 1.520290231498189,
+      "median_ae": 0.07567927176805256,
+      "p90_ae": 0.6592035794585306,
+      "mape_pct": 1.5786314514657027,
+      "r2": 0.991950620107207,
+      "n": 70400,
+      "baseline_mae": 0.5008323866664424,
+      "baseline_rmse": 2.9702086689913902,
+      "skill_vs_baseline": 0.2716235926686099,
+      "beats_baseline": true
+    }
+  },
+  "avg_cpu_usage_percent": {
+    "train_n": 6048,
+    "source": "resource_timeseries",
+    "val": {
+      "mae": 46602.95184439847,
+      "rmse": 56311.42112592196,
+      "median_ae": 42412.53537829284,
+      "p90_ae": 89766.08691099996,
+      "mape_pct": 3.8173053373448846,
+      "r2": 0.745270043083028,
+      "n": 1296,
+      "baseline_mae": 13506.035958730998,
+      "baseline_rmse": 17476.20032580969,
+      "skill_vs_baseline": -2.450527748245178,
+      "beats_baseline": false
+    },
+    "test": {
+      "mae": 91099.93815209351,
+      "rmse": 103133.591721058,
+      "median_ae": 85695.16979517671,
+      "p90_ae": 154562.62873251445,
+      "mape_pct": 6.9261994827220885,
+      "r2": 0.13120829881903473,
+      "n": 1296,
+      "baseline_mae": 13485.94636676802,
+      "baseline_rmse": 18185.426183140567,
+      "skill_vs_baseline": -5.755175771466909,
+      "beats_baseline": false
+    }
+  },
+  "min_cpu_usage_percent": {
+    "train_n": 6048,
+    "source": "resource_timeseries",
+    "val": {
+      "mae": 33510.68996731115,
+      "rmse": 40392.518339306545,
+      "median_ae": 30489.217092198494,
+      "p90_ae": 64609.98927902267,
+      "mape_pct": 4.655459173170562,
+      "r2": 0.4526470484870262,
+      "n": 1296,
+      "baseline_mae": 8066.78095238923,
+      "baseline_rmse": 10841.447443222232,
+      "skill_vs_baseline": -3.154158909866755,
+      "beats_baseline": false
+    },
+    "test": {
+      "mae": 69501.83231432368,
+      "rmse": 76877.99314946798,
+      "median_ae": 62524.94509110227,
+      "p90_ae": 117850.70737649302,
+      "mape_pct": 9.001215569600163,
+      "r2": -1.0068405248069139,
+      "n": 1296,
+      "baseline_mae": 7228.51614240682,
+      "baseline_rmse": 9842.985663076008,
+      "skill_vs_baseline": -8.614951526024015,
+      "beats_baseline": false
+    }
+  },
+  "max_cpu_usage_percent": {
+    "train_n": 6048,
+    "source": "resource_timeseries",
+    "val": {
+      "mae": 63737.8037874947,
+      "rmse": 77557.92182724914,
+      "median_ae": 58323.741551382234,
+      "p90_ae": 125124.59611246758,
+      "mape_pct": 2.902735891039355,
+      "r2": 0.7950678741687024,
+      "n": 1296,
+      "baseline_mae": 28925.74607585681,
+      "baseline_rmse": 39018.37109405949,
+      "skill_vs_baseline": -1.203497314134765,
+      "beats_baseline": false
+    },
+    "test": {
+      "mae": 130572.89560540488,
+      "rmse": 148884.0025043762,
+      "median_ae": 124947.41777772433,
+      "p90_ae": 205021.37569305557,
+      "mape_pct": 5.615659199675595,
+      "r2": 0.2683651190356483,
+      "n": 1296,
+      "baseline_mae": 31326.58542616808,
+      "baseline_rmse": 51605.27809686286,
+      "skill_vs_baseline": -3.168117713088936,
+      "beats_baseline": false
+    }
+  }
+}
+```
+
+## Known limitations
+- Usage targets from workload data (cpu_usage, gpu_usage, memory_usage_gb, gpu_memory_usage_gb) are only available in datasets that report actual utilization alongside requests; targets below the coverage threshold are skipped, not fabricated.
+- GPU usage is not trained or predicted by ResourcePredictor - no dataset currently supported (workload or resource-timeseries) reports GPU utilization, and no GPU target is fabricated.
+- CPU/memory targets (['cpu_usage_percent', 'memory_usage_percent', 'avg_cpu_usage_percent', 'min_cpu_usage_percent', 'max_cpu_usage_percent']) trained from real/preprocessed Google Cluster and/or Azure resource-timeseries traces; GPU unavailable. See docs/google_cpu_memory_preprocessed.md for exact provenance and what this data cannot support (no real calendar timestamps for the Google trace, azure.csv CPU values are not a bounded percentage despite naming).
+
+## Intended use
+Estimating actual CPU/memory resource consumption to feed the policy ranker.
+
+## Non-intended use
+Not validated as a capacity-planning or billing tool. Not a GPU usage predictor.
+
+## Notes
+GPU usage is not trained or predicted by ResourcePredictor - no dataset currently supported (workload or resource-timeseries) reports GPU utilization, and no GPU target is fabricated.

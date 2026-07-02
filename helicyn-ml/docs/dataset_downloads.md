@@ -5,6 +5,8 @@
 | dataset_id | command | notes |
 |---|---|---|
 | `burstgpt` | `python -m helicyn_ml datasets download --dataset burstgpt --out data/raw/burstgpt` | real GitHub CSV, no credentials. Confirmed working (~1.4M rows). |
+| `google-cluster-cpu-memory-preprocessed` | `python -m helicyn_ml datasets download --dataset google-cluster-cpu-memory-preprocessed --out data/raw/google_cpu_memory` | real GitHub-hosted `.tar.gz` (3.25MB), auto-extracted. **Confirmed working** - 1,600 files, 460,800 rows after ingest. Real CPU+memory usage - see `docs/google_cpu_memory_preprocessed.md`. |
+| `azure-cpu-usage-small` | `python -m helicyn_ml datasets download --dataset azure-cpu-usage-small --out data/raw/azure_cpu_small` | real GitHub-hosted CSV (633KB). **Confirmed working** - 8,640 rows after ingest. CPU-only; values are not a bounded percentage despite naming (see `docs/datasets.md`). |
 | `alibaba-v2018` | `python -m helicyn_ml datasets download --dataset alibaba-v2018 --out data/raw/alibaba/v2018` | real Aliyun OSS file (`batch_task.tar.gz`, ~125MB, auto-extracted). Blocked by network policies that don't allow the `aliyuncs.com` host (including this project's own sandboxed CI) - falls back gracefully with exact manual instructions. |
 | `electricity-maps-sample` | `python -m helicyn_ml datasets download --dataset electricity-maps-sample --out data/raw/electricity_maps` | tries the live API if `ELECTRICITY_MAPS_API_KEY` is set, else generates a synthetic sample |
 | `open-meteo-sample` | `python -m helicyn_ml datasets download --dataset open-meteo-sample --out data/raw/open_meteo` | free API, no key; falls back to synthetic sample if unreachable |
@@ -62,3 +64,16 @@ specifically because its network proxy blocks the `aliyuncs.com` and GitHub
 Release-asset hosts outright (`host_not_allowed` / 403), not because the URLs
 are wrong. In a normal developer machine or a less restrictive CI environment
 these commands are expected to succeed.
+
+The Bitbrains/GWA-T-12/T-13 official host (`atlarge-research.com`) is
+blocked the same way - see `artifacts/reports/bitbrains_recon.md`.
+
+Plain-file GitHub raw content (`raw.githubusercontent.com`) is **not**
+blocked, which is why `burstgpt`, `google-cluster-cpu-memory-preprocessed`,
+and `azure-cpu-usage-small` all work reliably in this environment - only
+`api.github.com`, `github.com` repo/release pages, and non-GitHub hosts
+like `aliyuncs.com`/`atlarge-research.com` are restricted.
+`MertYILDIZ19/Alibaba_cluster_usage_traces_2018` is reachable as a repo
+(raw README fetches fine) but its actual data lives on Google Drive, which
+*is* blocked - see `artifacts/reports/github_resource_dataset_recon.md`.
+No loader was implemented for it.

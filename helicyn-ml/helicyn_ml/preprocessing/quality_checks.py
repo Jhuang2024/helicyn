@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from helicyn_ml.schemas import (
     NormalizedGridRecord,
     NormalizedPowerRecord,
+    NormalizedResourceTimeseriesRecord,
     NormalizedWeatherRecord,
     NormalizedWorkloadRecord,
 )
@@ -21,6 +22,7 @@ SCHEMA_BY_KIND: Dict[str, Type[BaseModel]] = {
     "grid": NormalizedGridRecord,
     "weather": NormalizedWeatherRecord,
     "power": NormalizedPowerRecord,
+    "resource": NormalizedResourceTimeseriesRecord,
 }
 
 
