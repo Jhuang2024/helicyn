@@ -215,14 +215,36 @@
 .statuspill--declined, .statuspill--waitlisted { border-color: var(--warn-line); color: var(--warn); }
 .statuspill--declined .d, .statuspill--waitlisted .d { background: var(--warn); }
 
-/* ---- research page placeholders -------------------------------------- */
-
-.researchplaceholder {
-  border: 1px dashed var(--line-2); border-radius: 12px; padding: 1.4rem;
-  color: var(--text-faint); font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.6;
-  background: var(--bg-1);
+/* ---- research page "coming soon" panels -------------------------------
+   Replaces the old bracket-tag placeholder style ("[ABSTRACT] ...",
+   dashed border + monospace) which read like an unfilled CMS template.
+   Same honest meaning (nothing here is final/published), presented as
+   an intentional coming-soon panel instead. --soon = genuinely nothing
+   published yet (pulsing dot); default = preliminary content that
+   already exists but will be superseded by the paper (static dot). */
+.comingsoon {
+  position: relative; overflow: hidden;
+  border: 1px solid var(--line); border-radius: 12px; padding: clamp(1.3rem, 3vw, 1.8rem);
+  background: var(--bg-1); display: grid; gap: 0.8rem; align-content: start;
 }
-.researchplaceholder strong { color: var(--text-dim); }
+.comingsoon::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.6;
+  background: radial-gradient(420px 220px at 100% 0%, var(--signal-soft), transparent 70%);
+}
+.comingsoon__badge {
+  position: relative; z-index: 1; width: fit-content;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.4rem 0.8rem; border-radius: 100px; border: 1px solid var(--line-2);
+  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.comingsoon__badge .d { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); flex: none; }
+.comingsoon--soon .comingsoon__badge { border-color: var(--signal-line); color: var(--text); }
+.comingsoon--soon .comingsoon__badge .d { background: var(--signal); box-shadow: 0 0 8px var(--signal-glow); }
+@media (prefers-reduced-motion: no-preference) { .comingsoon--soon .comingsoon__badge .d { animation: ping 3.4s var(--ease-io) infinite; } }
+.comingsoon__title { position: relative; z-index: 1; font-weight: 500; font-size: 1.05rem; letter-spacing: -0.005em; }
+.comingsoon p { position: relative; z-index: 1; color: var(--text-dim); font-size: 0.92rem; line-height: 1.6; max-width: 68ch; }
+.comingsoon p code { font-family: var(--font-mono); font-size: 0.85em; color: var(--text-dim); }
 
 .loadingdots::after { content: "..."; display: inline-block; }
 @media (prefers-reduced-motion: no-preference) {

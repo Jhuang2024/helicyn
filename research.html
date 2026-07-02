@@ -70,12 +70,12 @@
   <div class="wrap">
     <div class="sec-head" data-reveal>
       <span class="eyebrow">Status</span>
-      <h2>Preliminary thesis · paper coming soon.</h2>
+      <h2>Preliminary thesis. Paper coming soon.</h2>
     </div>
-    <div class="researchplaceholder" style="margin-top:1.6rem;" data-reveal>
-      <strong>[PAPER_STATUS]</strong> Preliminary technical paper expected late July 2026. Not yet published.
-      <br /><strong>[PAPER_TITLE]</strong> placeholder -- replace with the final paper title.
-      <br /><strong>[PAPER_DATE]</strong> placeholder -- replace with the final paper's publication date.
+    <div class="comingsoon comingsoon--soon" style="margin-top:1.6rem;" data-reveal>
+      <span class="comingsoon__badge"><span class="d" aria-hidden="true"></span>Not yet published</span>
+      <p>Helicyn's preliminary technical paper is expected late July 2026. Its title, full abstract, and
+      publication date will appear here once it's finished and reviewed.</p>
     </div>
   </div>
 </section>
@@ -84,14 +84,15 @@
   <div class="wrap">
     <div class="sec-head" data-reveal>
       <span class="eyebrow">Abstract</span>
-      <h2>Placeholder -- replace with the final abstract.</h2>
+      <h2>The working thesis, ahead of the full abstract.</h2>
     </div>
-    <div class="researchplaceholder" style="margin-top:1.6rem;" data-reveal>
-      [ABSTRACT] This section will contain the final paper's abstract once written. Today: Helicyn's working
-      thesis is that AI data center infrastructure is increasingly constrained by coordination across compute,
-      energy, cooling, and grid conditions rather than by any single layer in isolation, and that a coordination
-      layer can reduce waste without sacrificing utilization -- evaluated so far only in an independent,
-      discrete-time simulator under documented modeling assumptions, not in production.
+    <div class="comingsoon" style="margin-top:1.6rem;" data-reveal>
+      <span class="comingsoon__badge"><span class="d" aria-hidden="true"></span>Preliminary · full abstract coming with the paper</span>
+      <p>Helicyn's working thesis is that AI data center infrastructure is increasingly constrained by
+      coordination across compute, energy, cooling, and grid conditions rather than by any single layer in
+      isolation, and that a coordination layer can reduce waste without sacrificing utilization, evaluated so
+      far only in an independent, discrete-time simulator under documented modeling assumptions, not in
+      production.</p>
     </div>
   </div>
 </section>
@@ -110,13 +111,14 @@
       <li class="enginediagram__step"><span class="i">04</span><span class="l">Policies</span></li>
       <li class="enginediagram__step enginediagram__step--verify"><span class="i">05</span><span class="l">Evidence package</span></li>
     </ol>
-    <div class="researchplaceholder" style="margin-top:1.6rem;" data-reveal>
-      [METHODOLOGY_SUMMARY] placeholder. The current evidence base is an independent, discrete-time data-center
-      scheduling simulator (helicyn-sim) that models workload placement, thermal/cooling response, energy, carbon,
-      and cost under several scheduling policies (baseline first-fit, consolidation, thermal-aware, carbon-aware,
+    <div class="comingsoon" style="margin-top:1.6rem;" data-reveal>
+      <span class="comingsoon__badge"><span class="d" aria-hidden="true"></span>Preliminary methodology summary</span>
+      <p>The current evidence base is an independent, discrete-time data-center scheduling simulator
+      (<code>helicyn-sim</code>) that models workload placement, thermal/cooling response, energy, carbon, and
+      cost under several scheduling policies (baseline first-fit, consolidation, thermal-aware, carbon-aware,
       price-aware, DVFS-aware, and an integrated-coordination policy), compared across synthetic and
-      trace-shaped scenarios. See helicyn-sim/docs/model_assumptions.md and helicyn-sim/docs/limitations.md for
-      the full assumption set. Replace this paragraph with the paper's finalized methodology summary.
+      trace-shaped scenarios. See <code>helicyn-sim/docs/model_assumptions.md</code> and
+      <code>helicyn-sim/docs/limitations.md</code> for the full assumption set.</p>
     </div>
   </div>
 </section>
@@ -125,22 +127,15 @@
   <div class="wrap">
     <div class="sec-head" data-reveal>
       <span class="eyebrow">Selected findings</span>
-      <h2>Placeholder -- replace with key findings once finalized.</h2>
+      <h2>Findings and figures are coming soon.</h2>
     </div>
-    <div class="benefitgrid" style="margin-top:1.6rem;">
-      <div class="researchplaceholder" data-reveal style="--i:0">
-        [KEY_FINDINGS] placeholder. Findings from the simulator (energy, carbon, cost, deadline misses, and thermal
-        violations by policy) are simulated under documented assumptions in a research prototype -- they are not
-        production savings or real facility validation. Once research_outputs/ has been generated (see
-        helicyn-sim's research-run / paper-figures / paper-tables commands) and reviewed, replace this section with
-        the finalized, caveated findings selected for the paper.
-      </div>
-      <div class="researchplaceholder" data-reveal style="--i:1">
-        [SELECTED_FIGURES] placeholder -- figures such as facility_energy_by_policy.png, carbon_by_policy.png,
-        cost_by_policy.png, deadline_misses_by_policy.png, and thermal_violations_by_policy.png go here once
-        selected and copied into this site's assets. All public captions must say simulated / under assumptions /
-        research prototype / concept-feasibility, and must avoid "proven," "validated," or "production savings."
-      </div>
+    <div class="comingsoon comingsoon--soon" style="margin-top:1.6rem;" data-reveal>
+      <span class="comingsoon__badge"><span class="d" aria-hidden="true"></span>Coming soon</span>
+      <h3 class="comingsoon__title">Energy, carbon, cost, and reliability comparisons across scheduling policies.</h3>
+      <p>Findings from the simulator (energy, carbon, cost, deadline misses, and thermal violations by policy)
+      and the figures that go with them will appear here once reviewed and selected for the paper. Everything
+      shown will be labeled simulated, under assumptions, and research prototype; none of it will represent
+      production savings or real facility validation.</p>
     </div>
   </div>
 </section>

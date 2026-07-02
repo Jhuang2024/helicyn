@@ -134,3 +134,30 @@ strip all degrade to their static end state under reduced motion.
   structurally and against the shared `.stagecard`/`.portalcard` styling
   already verified on `/partners`; a live Supabase session was not
   available in this environment to screenshot the populated state.
+
+## Follow-up: research page "coming soon" panels
+
+The Status/Abstract/Methodology/Selected-findings sections on
+`/research` originally showed their unfinished state as raw bracket-tag
+placeholders (`[PAPER_STATUS]`, `[ABSTRACT]`, `[METHODOLOGY_SUMMARY]`,
+`[KEY_FINDINGS]`, `[SELECTED_FIGURES]`), styled with a dashed border and
+monospace font, plus one line that was clearly an internal authoring
+note ("Replace this paragraph with the paper's finalized methodology
+summary."). That read as an unfilled CMS template rather than an
+intentional page state, so it was replaced with a new `.comingsoon`
+panel component: a status badge (pulsing dot for "genuinely nothing
+here yet" states, static dot for "preliminary content that already
+exists but will be superseded by the paper"), a heading where useful,
+and clean prose with no bracket tags or internal notes. The
+Selected-findings section's two near-duplicate placeholder blocks
+(findings text, figures list) were merged into one panel. No factual
+claims changed: same "not yet published" / "preliminary" / "simulated
+under assumptions" / "not production savings or real facility
+validation" language throughout; see the addendum to
+`docs/website_claims_audit.md`. The old `.researchplaceholder` CSS
+class (dashed border + monospace) was removed since nothing referenced
+it anymore. Also fixed the stage-rail connecting line on `/partners` so
+it runs through the center of the three stage dots instead of sitting
+in a separate row above them, and replaced the remaining `--`
+double-hyphen em-dash stand-ins in copy/comments I'd authored with real
+punctuation (commas, colons, semicolons), per feedback.
