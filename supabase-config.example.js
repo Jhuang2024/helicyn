@@ -16,5 +16,5 @@
 // instructions, including the equivalent VITE_SUPABASE_URL /
 // VITE_SUPABASE_ANON_KEY env var names if this site is ever moved to a
 // bundler-based stack.
-window.HELICYN_SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
-window.HELICYN_SUPABASE_ANON_KEY = "YOUR-PUBLIC-ANON-KEY";
+window.HELICYN_SUPABASE_URL = "https://beclmkfozwbbtftbyecs.supabase.co";
+window.HELICYN_SUPABASE_ANON_KEY = "PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE";
