@@ -1,0 +1,624 @@
+{
+  "timestamp": "2024-06-01T12:00:00Z",
+  "selected_actions": [
+    {
+      "action_type": "place",
+      "job_id": "job_391",
+      "target_site_id": "site-a",
+      "target_rack_id": null,
+      "target_server_id": null,
+      "delay_minutes": null,
+      "dvfs_state": "balanced",
+      "metadata": {
+        "reason": "place_now"
+      }
+    },
+    {
+      "action_type": "place",
+      "job_id": "job_392",
+      "target_site_id": "site-a",
+      "target_rack_id": null,
+      "target_server_id": null,
+      "delay_minutes": null,
+      "dvfs_state": "balanced",
+      "metadata": {
+        "reason": "place_now"
+      }
+    }
+  ],
+  "ranked_actions": [
+    {
+      "action": {
+        "action_type": "place",
+        "job_id": "job_391",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": null,
+        "dvfs_state": "balanced",
+        "metadata": {
+          "reason": "place_now"
+        }
+      },
+      "score": 52.516487742331876,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.09550240523760145,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 0.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.047751202618800725,
+        "carbon_delta_kg": 0.01050526457613616,
+        "cost_delta_usd": 0.0018145456995144276,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": true,
+      "rejection_reason": null
+    },
+    {
+      "action": {
+        "action_type": "place",
+        "job_id": "job_391",
+        "target_site_id": "site-b",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": null,
+        "dvfs_state": "balanced",
+        "metadata": {
+          "reason": "place_now"
+        }
+      },
+      "score": 52.516487742331876,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.08719805525813751,
+        "carbon_term": 3.5142857142857142,
+        "price_term": 1.1,
+        "thermal_term": 6.24,
+        "fragmentation_term": 0.04878048750743602,
+        "delay_term": 0.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.043599027629068754,
+        "carbon_delta_kg": 0.01787560132791819,
+        "cost_delta_usd": 0.0023979465195987813,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.52,
+        "utilization_delta": null
+      },
+      "valid": true,
+      "rejection_reason": null
+    },
+    {
+      "action": {
+        "action_type": "delay",
+        "job_id": "job_391",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": 15.0,
+        "dvfs_state": null,
+        "metadata": {
+          "reason": "delay_for_better_conditions"
+        }
+      },
+      "score": 52.516487742331876,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.09550240523760145,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 2.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.047751202618800725,
+        "carbon_delta_kg": 0.01050526457613616,
+        "cost_delta_usd": 0.0018145456995144276,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": true,
+      "rejection_reason": null
+    },
+    {
+      "action": {
+        "action_type": "delay",
+        "job_id": "job_391",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": 30.0,
+        "dvfs_state": null,
+        "metadata": {
+          "reason": "delay_for_better_conditions"
+        }
+      },
+      "score": 52.516487742331876,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.09550240523760145,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 4.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.047751202618800725,
+        "carbon_delta_kg": 0.01050526457613616,
+        "cost_delta_usd": 0.0018145456995144276,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": true,
+      "rejection_reason": null
+    },
+    {
+      "action": {
+        "action_type": "delay",
+        "job_id": "job_391",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": 60.0,
+        "dvfs_state": null,
+        "metadata": {
+          "reason": "delay_for_better_conditions"
+        }
+      },
+      "score": 52.516487742331876,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.09550240523760145,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 8.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.047751202618800725,
+        "carbon_delta_kg": 0.01050526457613616,
+        "cost_delta_usd": 0.0018145456995144276,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": false,
+      "rejection_reason": "requested delay exceeds job's max_delay_minutes"
+    },
+    {
+      "action": {
+        "action_type": "place",
+        "job_id": "job_392",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": null,
+        "dvfs_state": "balanced",
+        "metadata": {
+          "reason": "place_now"
+        }
+      },
+      "score": 52.516487742331876,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.15109955768861205,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 0.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.07554977884430603,
+        "carbon_delta_kg": 0.016620951345747325,
+        "cost_delta_usd": 0.002870891596083629,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": true,
+      "rejection_reason": null
+    },
+    {
+      "action": {
+        "action_type": "place",
+        "job_id": "job_392",
+        "target_site_id": "site-b",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": null,
+        "dvfs_state": "balanced",
+        "metadata": {
+          "reason": "place_now"
+        }
+      },
+      "score": 52.516487742331876,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.1851907284565435,
+        "carbon_term": 3.5142857142857142,
+        "price_term": 1.1,
+        "thermal_term": 6.24,
+        "fragmentation_term": 0.04878048750743602,
+        "delay_term": 0.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.09259536422827175,
+        "carbon_delta_kg": 0.03796409933359142,
+        "cost_delta_usd": 0.005092745032554946,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.52,
+        "utilization_delta": null
+      },
+      "valid": true,
+      "rejection_reason": null
+    },
+    {
+      "action": {
+        "action_type": "delay",
+        "job_id": "job_392",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": 15.0,
+        "dvfs_state": null,
+        "metadata": {
+          "reason": "delay_for_better_conditions"
+        }
+      },
+      "score": 52.516487742331876,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.15109955768861205,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 2.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.07554977884430603,
+        "carbon_delta_kg": 0.016620951345747325,
+        "cost_delta_usd": 0.002870891596083629,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": true,
+      "rejection_reason": null
+    },
+    {
+      "action": {
+        "action_type": "delay",
+        "job_id": "job_392",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": 30.0,
+        "dvfs_state": null,
+        "metadata": {
+          "reason": "delay_for_better_conditions"
+        }
+      },
+      "score": 52.516487742331876,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.15109955768861205,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 4.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.07554977884430603,
+        "carbon_delta_kg": 0.016620951345747325,
+        "cost_delta_usd": 0.002870891596083629,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": true,
+      "rejection_reason": null
+    },
+    {
+      "action": {
+        "action_type": "delay",
+        "job_id": "job_392",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": 60.0,
+        "dvfs_state": null,
+        "metadata": {
+          "reason": "delay_for_better_conditions"
+        }
+      },
+      "score": 52.516487742331876,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.15109955768861205,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 8.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.07554977884430603,
+        "carbon_delta_kg": 0.016620951345747325,
+        "cost_delta_usd": 0.002870891596083629,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": true,
+      "rejection_reason": null
+    },
+    {
+      "action": {
+        "action_type": "change_dvfs",
+        "job_id": "job_391",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": null,
+        "dvfs_state": "high_performance",
+        "metadata": {
+          "reason": "dvfs_tradeoff"
+        }
+      },
+      "score": 52.583154411258526,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.09550240523760145,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 0.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.047751202618800725,
+        "carbon_delta_kg": 0.01050526457613616,
+        "cost_delta_usd": 0.0018145456995144276,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": true,
+      "rejection_reason": null
+    },
+    {
+      "action": {
+        "action_type": "change_dvfs",
+        "job_id": "job_391",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": null,
+        "dvfs_state": "balanced",
+        "metadata": {
+          "reason": "dvfs_tradeoff"
+        }
+      },
+      "score": 52.583154411258526,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.09550240523760145,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 0.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.047751202618800725,
+        "carbon_delta_kg": 0.01050526457613616,
+        "cost_delta_usd": 0.0018145456995144276,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": true,
+      "rejection_reason": null
+    },
+    {
+      "action": {
+        "action_type": "change_dvfs",
+        "job_id": "job_391",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": null,
+        "dvfs_state": "power_saver",
+        "metadata": {
+          "reason": "dvfs_tradeoff"
+        }
+      },
+      "score": 52.583154411258526,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.09550240523760145,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 0.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.047751202618800725,
+        "carbon_delta_kg": 0.01050526457613616,
+        "cost_delta_usd": 0.0018145456995144276,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": false,
+      "rejection_reason": "power_saver DVFS rejected: predicted deadline-miss risk too high"
+    },
+    {
+      "action": {
+        "action_type": "change_dvfs",
+        "job_id": "job_392",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": null,
+        "dvfs_state": "high_performance",
+        "metadata": {
+          "reason": "dvfs_tradeoff"
+        }
+      },
+      "score": 52.583154411258526,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.15109955768861205,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 0.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.07554977884430603,
+        "carbon_delta_kg": 0.016620951345747325,
+        "cost_delta_usd": 0.002870891596083629,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": true,
+      "rejection_reason": null
+    },
+    {
+      "action": {
+        "action_type": "change_dvfs",
+        "job_id": "job_392",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": null,
+        "dvfs_state": "balanced",
+        "metadata": {
+          "reason": "dvfs_tradeoff"
+        }
+      },
+      "score": 52.583154411258526,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.15109955768861205,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 0.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.07554977884430603,
+        "carbon_delta_kg": 0.016620951345747325,
+        "cost_delta_usd": 0.002870891596083629,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": true,
+      "rejection_reason": null
+    },
+    {
+      "action": {
+        "action_type": "change_dvfs",
+        "job_id": "job_392",
+        "target_site_id": "site-a",
+        "target_rack_id": null,
+        "target_server_id": null,
+        "delay_minutes": null,
+        "dvfs_state": "power_saver",
+        "metadata": {
+          "reason": "dvfs_tradeoff"
+        }
+      },
+      "score": 52.583154411258526,
+      "score_breakdown": {
+        "sla_term": 100.0,
+        "power_term": 0.15109955768861205,
+        "carbon_term": 1.8857142857142857,
+        "price_term": 0.76,
+        "thermal_term": 2.16,
+        "fragmentation_term": 0.0392156860822761,
+        "delay_term": 0.0,
+        "utilization_term": -0.5625,
+        "consolidation_term": -0.84375
+      },
+      "predicted_effect": {
+        "energy_delta_kwh": 0.07554977884430603,
+        "carbon_delta_kg": 0.016620951345747325,
+        "cost_delta_usd": 0.002870891596083629,
+        "sla_risk_delta": 1.0,
+        "thermal_risk_delta": 0.18,
+        "utilization_delta": null
+      },
+      "valid": false,
+      "rejection_reason": "power_saver DVFS rejected: predicted deadline-miss risk too high"
+    }
+  ],
+  "score": 105.03297548466375,
+  "score_breakdown": {
+    "sla_term": 200.0,
+    "power_term": 0.2466019629262135,
+    "carbon_term": 3.7714285714285714,
+    "price_term": 1.52,
+    "thermal_term": 4.32,
+    "fragmentation_term": 0.0784313721645522,
+    "delay_term": 0.0,
+    "utilization_term": -1.125,
+    "consolidation_term": -1.6875
+  },
+  "explanation": "Selected placing now at site-a for job job_391 because sla costs 100.00 in the objective and thermal costs 2.16 in the objective. Selected placing now at site-a for job job_392 because sla costs 100.00 in the objective and thermal costs 2.16 in the objective.",
+  "predicted_effect": null,
+  "confidence": 0.85,
+  "model_version": "helicyn-ml-v0.1.0",
+  "is_fallback": false
+}

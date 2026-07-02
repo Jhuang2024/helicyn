@@ -1,0 +1,3 @@
+# Time-ordered split ratios, applied independently within each
+# source_dataset's own timeline (see helicyn_ml/preprocessing/split.py).
+ratios: [0.70, 0.15, 0.15]

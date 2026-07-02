@@ -1,0 +1,40 @@
+# Used by `python -m helicyn_ml ingest-all`.
+# Each entry: dataset_id (must exist in helicyn_ml/datasets/registry.py),
+# input (raw folder), out (processed parquet path). Missing/unavailable
+# raw folders are skipped with a warning, not an error.
+datasets:
+  - dataset_id: burstgpt
+    input: data/raw/burstgpt
+    out: data/processed/workloads/burstgpt.parquet
+
+  - dataset_id: alibaba-v2018
+    input: data/raw/alibaba/v2018
+    out: data/processed/workloads/alibaba_v2018.parquet
+
+  - dataset_id: alibaba-gpu-v2020
+    input: data/raw/alibaba/gpu-v2020
+    out: data/processed/workloads/alibaba_gpu_v2020.parquet
+
+  - dataset_id: azure-llm-2024
+    input: data/raw/azure/llm-2024
+    out: data/processed/workloads/azure_llm_2024.parquet
+
+  - dataset_id: google-2019-local
+    input: data/raw/google/clusterdata2019_sample
+    out: data/processed/workloads/google_2019_sample.parquet
+
+  - dataset_id: electricity-maps-sample
+    input: data/raw/electricity_maps
+    out: data/processed/grid/electricity_maps.parquet
+
+  - dataset_id: gridstatus
+    input: data/raw/gridstatus
+    out: data/processed/grid/gridstatus.parquet
+
+  - dataset_id: open-meteo-sample
+    input: data/raw/open_meteo
+    out: data/processed/weather/open_meteo.parquet
+
+  - dataset_id: scaleout-power
+    input: data/raw/scaleout_power
+    out: data/processed/power/scaleout_power.parquet

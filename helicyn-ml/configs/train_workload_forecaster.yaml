@@ -1,0 +1,15 @@
+model_name: workload_forecaster
+estimator: HistGradientBoostingRegressor
+hyperparameters:
+  max_depth: 6
+  max_iter: 200
+  random_state: 42
+targets:
+  - arrivals_next_15m
+  - arrivals_next_1h
+  - cpu_demand_next_15m
+  - gpu_demand_next_15m
+  - memory_demand_next_15m
+  - input_tokens_next_15m
+  - output_tokens_next_15m
+seed: 42

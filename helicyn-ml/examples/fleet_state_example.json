@@ -1,0 +1,81 @@
+{
+  "timestamp": "2024-06-01T12:00:00Z",
+  "sites": [
+    {"site_id": "site-a", "region": "us-west", "rack_ids": ["rack-a1"], "migratable": true},
+    {"site_id": "site-b", "region": "us-east", "rack_ids": ["rack-b1"], "migratable": true}
+  ],
+  "racks": [
+    {"rack_id": "rack-a1", "site_id": "site-a", "server_ids": ["a1-srv-0", "a1-srv-1"], "ambient_temp_c": 22.0},
+    {"rack_id": "rack-b1", "site_id": "site-b", "server_ids": ["b1-srv-0", "b1-srv-1"], "ambient_temp_c": 26.0}
+  ],
+  "servers": [
+    {"server_id": "a1-srv-0", "rack_id": "rack-a1", "cpu_capacity": 64, "cpu_used": 20, "memory_capacity_gb": 256, "memory_used_gb": 80, "gpu_capacity": 8, "gpu_used": 2, "gpu_memory_capacity_gb": 320, "gpu_memory_used_gb": 80, "dvfs_state": "balanced", "asleep": false, "running_job_ids": ["job_running_1"]},
+    {"server_id": "a1-srv-1", "rack_id": "rack-a1", "cpu_capacity": 64, "cpu_used": 8, "memory_capacity_gb": 256, "memory_used_gb": 32, "gpu_capacity": 8, "gpu_used": 1, "gpu_memory_capacity_gb": 320, "gpu_memory_used_gb": 40, "dvfs_state": "balanced", "asleep": false, "running_job_ids": []},
+    {"server_id": "b1-srv-0", "rack_id": "rack-b1", "cpu_capacity": 64, "cpu_used": 40, "memory_capacity_gb": 256, "memory_used_gb": 160, "gpu_capacity": 8, "gpu_used": 6, "gpu_memory_capacity_gb": 320, "gpu_memory_used_gb": 240, "dvfs_state": "high_performance", "asleep": false, "running_job_ids": ["job_running_2"]},
+    {"server_id": "b1-srv-1", "rack_id": "rack-b1", "cpu_capacity": 64, "cpu_used": 4, "memory_capacity_gb": 256, "memory_used_gb": 16, "gpu_capacity": 8, "gpu_used": 0, "gpu_memory_capacity_gb": 320, "gpu_memory_used_gb": 0, "dvfs_state": "power_saver", "asleep": false, "running_job_ids": []}
+  ],
+  "queued_jobs": [
+    {
+      "job_id": "job_391",
+      "workload_type": "llm_inference",
+      "arrival_time": "2024-06-01T11:58:00Z",
+      "cpu_request": 4,
+      "memory_request_gb": 16,
+      "gpu_request": 1,
+      "gpu_memory_request_gb": 24,
+      "input_tokens": 800,
+      "output_tokens": 300,
+      "priority": 0.6,
+      "preemptible": false,
+      "latency_sensitive": false,
+      "delayable": true,
+      "max_delay_minutes": 45,
+      "migratable": true
+    },
+    {
+      "job_id": "job_392",
+      "workload_type": "gpu_training",
+      "arrival_time": "2024-06-01T11:55:00Z",
+      "cpu_request": 8,
+      "memory_request_gb": 32,
+      "gpu_request": 2,
+      "gpu_memory_request_gb": 48,
+      "priority": 0.3,
+      "preemptible": true,
+      "latency_sensitive": false,
+      "delayable": true,
+      "max_delay_minutes": 120,
+      "migratable": true
+    }
+  ],
+  "running_jobs": [
+    {
+      "job_id": "job_running_1",
+      "server_id": "a1-srv-0",
+      "workload_type": "online_service",
+      "start_time": "2024-06-01T11:30:00Z",
+      "cpu_usage": 12,
+      "memory_usage_gb": 48,
+      "gpu_usage": 1.5,
+      "migratable": false
+    },
+    {
+      "job_id": "job_running_2",
+      "server_id": "b1-srv-0",
+      "workload_type": "gpu_training",
+      "start_time": "2024-06-01T10:00:00Z",
+      "cpu_usage": 30,
+      "memory_usage_gb": 120,
+      "gpu_usage": 5.0,
+      "migratable": true
+    }
+  ],
+  "grid_signals": [
+    {"region": "us-west", "timestamp": "2024-06-01T12:00:00Z", "carbon_intensity_gco2e_per_kwh": 220, "electricity_price_usd_per_mwh": 38, "grid_load_mw": 21000, "forecast_carbon_intensity_1h": 170},
+    {"region": "us-east", "timestamp": "2024-06-01T12:00:00Z", "carbon_intensity_gco2e_per_kwh": 410, "electricity_price_usd_per_mwh": 55, "grid_load_mw": 26000, "forecast_carbon_intensity_1h": 430}
+  ],
+  "weather_signals": [
+    {"region": "us-west", "timestamp": "2024-06-01T12:00:00Z", "ambient_temp_c": 19.5, "relative_humidity": 55},
+    {"region": "us-east", "timestamp": "2024-06-01T12:00:00Z", "ambient_temp_c": 28.0, "relative_humidity": 70}
+  ]
+}

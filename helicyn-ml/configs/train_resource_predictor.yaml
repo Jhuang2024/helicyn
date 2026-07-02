@@ -1,0 +1,13 @@
+model_name: resource_predictor
+estimator: HistGradientBoostingRegressor
+hyperparameters:
+  max_depth: 6
+  max_iter: 200
+  random_state: 42
+targets:
+  - cpu_usage
+  - memory_usage_gb
+  - gpu_usage
+  - gpu_memory_usage_gb
+min_label_coverage: 0.05
+seed: 42

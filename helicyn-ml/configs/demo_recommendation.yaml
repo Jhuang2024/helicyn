@@ -1,0 +1,5 @@
+# Used by docs/examples to describe how `python -m helicyn_ml demo`
+# produces examples/recommendation_example.json from examples/fleet_state_example.json.
+state_path: examples/fleet_state_example.json
+models_dir: artifacts/models
+out_path: examples/recommendation_example.json

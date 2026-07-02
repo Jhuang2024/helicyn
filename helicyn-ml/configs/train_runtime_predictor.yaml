@@ -1,0 +1,8 @@
+model_name: runtime_predictor
+estimator: HistGradientBoostingRegressor
+hyperparameters:
+  max_depth: 6
+  max_iter: 200
+  random_state: 42
+target: duration_seconds
+seed: 42

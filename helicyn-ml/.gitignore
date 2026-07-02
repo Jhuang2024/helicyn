@@ -1,0 +1,27 @@
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+*.parquet
+*.joblib
+*.npz
+!examples/*.json
+
+# Raw/interim/processed data is fetched or generated, not committed.
+data/raw/**
+data/interim/**
+data/processed/**
+data/splits/**
+data/samples/**
+!data/**/.gitkeep
+
+# Trained model artifacts and eval outputs are generated locally.
+artifacts/models/**
+artifacts/eval/**
+!artifacts/**/.gitkeep
+!artifacts/reports/model_cards/.gitkeep
+!artifacts/reports/figures/.gitkeep
+
+.DS_Store
