@@ -45,3 +45,21 @@ the start.
 
 This audit was re-run manually against the final diff before commit; no
 follow-up edits were required beyond the Phase 5 copy itself.
+
+## Phase 5.1 addendum (premium motion pass)
+
+Phase 5.1 added visual/motion polish to the five Phase 5 pages
+(`partners.html`, `onboarding.html`, `login.html`, `partner-portal.html`,
+`research.html`) and touched no auth/database/onboarding-submission logic.
+New copy introduced by this pass:
+
+| New copy | File / location | Notes |
+|---|---|---|
+| Founding-partner benefit cards ("Early access", "Direct product input", "Priority onboarding", "Preferred launch pricing", "Research visibility") | `partners.html` | Same five benefits already listed as plain text pre-5.1, now rendered as cards; no new claims |
+| "Illustrative example · future · only after verified savings" tag | `partners.html`, Stage 3 pricing strip | New label, explicitly future/conditional, added directly above the pre-existing $10M/15%/$1.5M example |
+| Onboarding trust panel copy ("Real application, written to a real database -- not a demo form.", "You control the account...", "Helicyn is pre-commercial today...") | `onboarding.html` | Restates existing page copy/claims already in the audit table, no new terms |
+| Research pipeline step labels ("Public traces", "ML models", "Simulator", "Policies", "Evidence package") and lead line "nothing here touches a real facility" | `research.html` | Descriptive/negating labels for the existing methodology text, no savings/customer claims |
+
+Re-ran the same `grep -rniE` sweep (plus `deployed`) across the five edited
+pages and their new JS/CSS after the motion pass; no new matches outside
+the pre-existing, already-audited occurrences above.

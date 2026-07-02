@@ -49,10 +49,11 @@
 
 <main id="main" tabindex="-1">
 <section class="section pagehead">
+  <div class="orbfield" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
   <div class="wrap">
-    <span class="eyebrow">Partner access</span>
-    <h1>Partner access</h1>
-    <p>Founding partner accounts are used for application status, research access, and onboarding updates. This is real authentication with a real session &mdash; not a demo login.</p>
+    <span class="eyebrow" data-reveal style="--i:0">Partner access</span>
+    <h1 data-reveal="mask" style="--i:1">Partner access</h1>
+    <p data-reveal style="--i:2">Founding partner accounts are used for application status, research access, and onboarding updates. This is real authentication with a real session &mdash; not a demo login.</p>
   </div>
 </section>
 
@@ -146,6 +147,7 @@
 </footer>
 
 <script src="main.js"></script>
+<script src="ambient.js"></script>
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="login.js"></script>
 </body>

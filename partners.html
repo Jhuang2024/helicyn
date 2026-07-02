@@ -55,14 +55,15 @@
 
 <!-- 1. Hero -->
 <section class="section pagehead">
+  <div class="orbfield" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
   <div class="wrap">
-    <span class="eyebrow">Founding partner program</span>
-    <h1>Become a Helicyn founding partner</h1>
-    <p>Founding partners help shape Helicyn before commercial launch and receive early access, priority onboarding, and preferred launch pricing.</p>
-    <div class="pagehead__cta">
+    <span class="eyebrow" data-reveal style="--i:0">Founding partner program</span>
+    <h1 data-reveal="mask" style="--i:1">Become a Helicyn founding partner</h1>
+    <p data-reveal style="--i:2">Founding partners help shape Helicyn before commercial launch and receive early access, priority onboarding, and preferred launch pricing.</p>
+    <div class="pagehead__cta" data-reveal style="--i:3">
       <a class="btn" href="onboarding.html" data-magnetic="0.2">Apply as founding partner <span class="arr" aria-hidden="true">→</span></a>
       <a class="btn" href="research.html" data-magnetic="0.2">View research <span class="arr" aria-hidden="true">→</span></a>
-      <a class="btn-ghost" href="control-plane.html"><span class="dot" aria-hidden="true"></span> View control plane</a>
+      <a class="btn-ghost" href="control-plane.html" data-magnetic="0.15"><span class="dot" aria-hidden="true"></span> View control plane</a>
     </div>
   </div>
 </section>
@@ -70,17 +71,17 @@
 <!-- 2. Who this is for -->
 <section class="section section--line">
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head" data-reveal>
       <span class="eyebrow">Who this is for</span>
       <h2>Operators, infrastructure teams, and research partners.</h2>
     </div>
     <div class="rolegrid" style="margin-top:2rem;">
-      <div class="rolecard"><div class="rolecard__title">Data center operators</div><p>Teams running facilities who want early input on workload/thermal/energy coordination.</p></div>
-      <div class="rolecard"><div class="rolecard__title">AI infrastructure teams</div><p>Teams managing GPU fleets across training and inference workloads.</p></div>
-      <div class="rolecard"><div class="rolecard__title">Cloud / platform teams</div><p>Teams operating multi-region compute platforms.</p></div>
-      <div class="rolecard"><div class="rolecard__title">Energy &amp; cooling infrastructure teams</div><p>Teams responsible for power, cooling, and physical plant constraints.</p></div>
-      <div class="rolecard"><div class="rolecard__title">Research / advisory partners</div><p>Researchers interested in the methodology behind the simulator and thesis.</p></div>
-      <div class="rolecard"><div class="rolecard__title">Investors / advisors</div><p>People evaluating the thesis, research direction, and staged business model.</p></div>
+      <div class="rolecard" data-reveal style="--i:0"><div class="rolecard__title">Data center operators</div><p>Teams running facilities who want early input on workload/thermal/energy coordination.</p></div>
+      <div class="rolecard" data-reveal style="--i:1"><div class="rolecard__title">AI infrastructure teams</div><p>Teams managing GPU fleets across training and inference workloads.</p></div>
+      <div class="rolecard" data-reveal style="--i:2"><div class="rolecard__title">Cloud / platform teams</div><p>Teams operating multi-region compute platforms.</p></div>
+      <div class="rolecard" data-reveal style="--i:3"><div class="rolecard__title">Energy &amp; cooling infrastructure teams</div><p>Teams responsible for power, cooling, and physical plant constraints.</p></div>
+      <div class="rolecard" data-reveal style="--i:4"><div class="rolecard__title">Research / advisory partners</div><p>Researchers interested in the methodology behind the simulator and thesis.</p></div>
+      <div class="rolecard" data-reveal style="--i:5"><div class="rolecard__title">Investors / advisors</div><p>People evaluating the thesis, research direction, and staged business model.</p></div>
     </div>
   </div>
 </section>
@@ -88,31 +89,39 @@
 <!-- 3. What founding partners receive -->
 <section class="section section--line">
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head" data-reveal>
       <span class="eyebrow">What founding partners receive</span>
       <h2>Early access, direct input, and preferred terms at launch.</h2>
     </div>
-    <ul style="margin-top:2rem; display:grid; gap:0.7rem; padding-left:1.2rem; max-width:64ch; color:var(--text-dim); font-size:1rem; line-height:1.6;">
-      <li>Early access</li>
-      <li>Direct product input</li>
-      <li>Priority onboarding</li>
-      <li>1 year free or permanently discounted pricing when Helicyn launches</li>
-      <li>Early visibility into research and simulator methodology</li>
-    </ul>
+    <div class="benefitgrid" style="margin-top:2rem;">
+      <div class="benefitcard" data-reveal style="--i:0"><span class="benefitcard__glyph" aria-hidden="true"></span><div class="benefitcard__title">Early access</div><p>First look as new capabilities ship, ahead of general availability.</p></div>
+      <div class="benefitcard" data-reveal style="--i:1"><span class="benefitcard__glyph" aria-hidden="true"></span><div class="benefitcard__title">Direct product input</div><p>A working channel into roadmap and design decisions, not a mailing list.</p></div>
+      <div class="benefitcard" data-reveal style="--i:2"><span class="benefitcard__glyph" aria-hidden="true"></span><div class="benefitcard__title">Priority onboarding</div><p>First in line when the platform moves from research prototype to pilot-ready.</p></div>
+      <div class="benefitcard" data-reveal style="--i:3"><span class="benefitcard__glyph" aria-hidden="true"></span><div class="benefitcard__title">Preferred launch pricing</div><p>1 year free or permanently discounted pricing when Helicyn launches commercially.</p></div>
+      <div class="benefitcard" data-reveal style="--i:4"><span class="benefitcard__glyph" aria-hidden="true"></span><div class="benefitcard__title">Research visibility</div><p>Early visibility into research and simulator methodology as it's published.</p></div>
+    </div>
   </div>
 </section>
 
 <!-- 4-6. Stages -->
 <section class="section section--line">
   <div class="wrap">
-    <div class="sec-head">
+    <div class="sec-head" data-reveal>
       <span class="eyebrow">Staged business model</span>
       <h2>Three proposed stages, in order.</h2>
       <p style="color:var(--text-dim); max-width:64ch;">Helicyn is pre-commercial today. The stages below describe the intended path, not current production capability.</p>
     </div>
 
-    <div class="stagegrid" style="margin-top:2rem;">
-      <div class="stagecard is-now">
+    <div class="stagerail" aria-hidden="true">
+      <div class="stagerail__track"><div class="stagerail__fill"></div></div>
+      <div class="stagerail__nodes">
+        <span class="stagerail__node is-now"><span class="stagerail__dot"></span></span>
+        <span class="stagerail__node"><span class="stagerail__dot"></span></span>
+        <span class="stagerail__node"><span class="stagerail__dot"></span></span>
+      </div>
+    </div>
+    <div class="stagegrid" style="margin-top:0.6rem;">
+      <div class="stagecard is-now" data-reveal style="--i:0">
         <span class="stagecard__tag"><span class="d" aria-hidden="true"></span>Stage 1 · Now</span>
         <h3>Founding Partner</h3>
         <p>Current stage. Pre-commercial and relationship-first: product feedback and validation with a small number of partners and operators.</p>
@@ -123,7 +132,7 @@
           <li>Not a paid production product yet</li>
         </ul>
       </div>
-      <div class="stagecard">
+      <div class="stagecard" data-reveal style="--i:1">
         <span class="stagecard__tag">Stage 2 · Future</span>
         <h3>Commercial Launch</h3>
         <p>Proposed future stage, once the platform is production-ready.</p>
@@ -133,7 +142,7 @@
           <li>Coordinates workloads, energy, cooling, and infrastructure</li>
         </ul>
       </div>
-      <div class="stagecard">
+      <div class="stagecard" data-reveal style="--i:2">
         <span class="stagecard__tag">Stage 3 · Future</span>
         <h3>Performance-Based Pricing</h3>
         <p>Proposed future stage, once savings are verified.</p>
@@ -141,7 +150,15 @@
           <li>Customer keeps most of the verified savings</li>
           <li>Helicyn receives an agreed percentage of verified savings</li>
         </ul>
-        <div class="stagecard__example">Example: if Helicyn saves a customer $10M/year and the agreement is 15%, Helicyn would earn $1.5M/year.</div>
+        <div class="pricingstrip">
+          <span class="pricingstrip__tag">Illustrative example · future · only after verified savings</span>
+          <span class="pricingstrip__num" data-count="$10.0M">$10.0M</span>
+          <span class="pricingstrip__op">saved/yr ×</span>
+          <span class="pricingstrip__num" data-count="15%">15%</span>
+          <span class="pricingstrip__op">agreement =</span>
+          <span class="pricingstrip__result" data-count="$1.5M">$1.5M</span>
+          <span class="pricingstrip__op">to Helicyn</span>
+        </div>
       </div>
     </div>
   </div>
@@ -154,7 +171,7 @@
       <span class="eyebrow">Incentive alignment</span>
       <h2>Helicyn is intended to win only when customers measurably save.</h2>
     </div>
-    <p style="margin-top:1.4rem; max-width:64ch; color:var(--text-dim); font-size:1rem; line-height:1.65;">
+    <p style="margin-top:1.4rem; max-width:64ch; color:var(--text-dim); font-size:1rem; line-height:1.65;" data-reveal>
       The proposed performance-based stage is designed so Helicyn earns meaningfully only when it generates verified savings in energy, carbon, or cost -- not for unproven promises. Performance pricing requires verification before it applies; this avoids charging customers purely on projected or modeled numbers.
     </p>
   </div>
@@ -163,15 +180,16 @@
 <!-- 8. CTA -->
 <section class="section access">
   <div class="wrap">
-    <div>
+    <div data-reveal>
       <span class="eyebrow">Get involved</span>
       <h2 style="margin-top:1.2rem;">Apply, sign in, or reach out directly.</h2>
     </div>
-    <div class="pagehead__cta">
+    <div class="pagehead__cta" data-reveal style="--i:1">
       <a class="btn" href="onboarding.html" data-magnetic="0.2">Apply as founding partner <span class="arr" aria-hidden="true">→</span></a>
       <a class="btn" href="login.html" data-magnetic="0.2">Sign in <span class="arr" aria-hidden="true">→</span></a>
-      <a class="btn-ghost" href="https://www.linkedin.com/company/helicyn/" target="_blank" rel="noopener noreferrer"><span class="dot" aria-hidden="true"></span> LinkedIn</a>
-      <a class="btn-ghost" data-email-link href="#"><span class="dot" aria-hidden="true"></span> Email</a>
+      <a class="btn" href="research.html" data-magnetic="0.2">View research <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn-ghost" href="https://www.linkedin.com/company/helicyn/" target="_blank" rel="noopener noreferrer" data-magnetic="0.15"><span class="dot" aria-hidden="true"></span> LinkedIn</a>
+      <a class="btn-ghost" data-email-link href="#" data-magnetic="0.15"><span class="dot" aria-hidden="true"></span> Email</a>
     </div>
   </div>
 </section>
@@ -213,5 +231,6 @@
 </footer>
 
 <script src="main.js"></script>
+<script src="ambient.js"></script>
 </body>
 </html>

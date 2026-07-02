@@ -49,10 +49,11 @@
 
 <main id="main" tabindex="-1">
 <section class="section pagehead">
+  <div class="orbfield" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
   <div class="wrap">
-    <span class="eyebrow">Partner portal</span>
-    <h1>Partner portal</h1>
-    <p>Your founding partner account, application status, and research/prototype links.</p>
+    <span class="eyebrow" data-reveal style="--i:0">Partner portal</span>
+    <h1 data-reveal="mask" style="--i:1">Partner portal</h1>
+    <p data-reveal style="--i:2">Your founding partner account, application status, and research/prototype links.</p>
   </div>
 </section>
 
@@ -64,19 +65,19 @@
       <span class="authnotice__title">Sign-in required</span>
       <p>The partner portal requires a real, signed-in Helicyn account.</p>
       <div class="pagehead__cta" style="margin-top:0.6rem;">
-        <a class="btn" href="login.html">Sign in <span class="arr" aria-hidden="true">→</span></a>
+        <a class="btn" href="login.html" data-magnetic="0.2">Sign in <span class="arr" aria-hidden="true">→</span></a>
       </div>
     </div>
 
     <div id="portalView" hidden>
       <div class="portalgrid">
-        <div class="portalcard">
+        <div class="portalcard" data-reveal style="--i:0">
           <h3>Account</h3>
           <div class="portalcard__row"><span class="k">Signed in as</span><span class="v" id="portalEmail"></span></div>
-          <button class="btn-ghost" type="button" id="portalSignOutBtn" style="justify-content:flex-start;"><span class="dot" aria-hidden="true"></span> Sign out</button>
+          <button class="btn-ghost" type="button" id="portalSignOutBtn" style="justify-content:flex-start;" data-magnetic="0.12"><span class="dot" aria-hidden="true"></span> Sign out</button>
         </div>
 
-        <div class="portalcard">
+        <div class="portalcard" data-reveal style="--i:1">
           <h3>Application status</h3>
           <div id="statusPill"></div>
           <div id="applicationSummary" hidden>
@@ -86,11 +87,11 @@
           </div>
           <div id="noApplication" hidden>
             <p style="color:var(--text-dim); font-size:0.9rem;">You haven't submitted a founding partner application yet.</p>
-            <a class="btn" href="onboarding.html" style="margin-top:0.6rem;">Submit application <span class="arr" aria-hidden="true">→</span></a>
+            <a class="btn" href="onboarding.html" style="margin-top:0.6rem;" data-magnetic="0.2">Submit application <span class="arr" aria-hidden="true">→</span></a>
           </div>
         </div>
 
-        <div class="portalcard portalcard--wide">
+        <div class="portalcard portalcard--wide" data-reveal style="--i:2">
           <h3>Founding partner program</h3>
           <ul style="padding-left:1.1rem; display:grid; gap:0.4rem; color:var(--text-dim); font-size:0.92rem;">
             <li>Early access</li>
@@ -100,7 +101,7 @@
           </ul>
         </div>
 
-        <div class="portalcard portalcard--wide">
+        <div class="portalcard portalcard--wide" data-reveal style="--i:3">
           <h3>Product stages</h3>
           <div class="stagegrid" style="margin-top:0.4rem;">
             <div class="stagecard is-now">
@@ -121,7 +122,7 @@
           </div>
         </div>
 
-        <div class="portalcard portalcard--wide">
+        <div class="portalcard portalcard--wide" data-reveal style="--i:4">
           <h3>Research / prototype links</h3>
           <div class="portalcard__linklist">
             <a href="research.html">Research / thesis preview <span class="arr" aria-hidden="true">→</span></a>
@@ -173,6 +174,7 @@
 </footer>
 
 <script src="main.js"></script>
+<script src="ambient.js"></script>
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="partner-portal.js"></script>
 </body>

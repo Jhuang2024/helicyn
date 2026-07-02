@@ -73,6 +73,14 @@
   checkReveal();
   setTimeout(checkReveal, 120);
   setTimeout(checkReveal, 600);
+  // some [data-reveal] content (auth/portal states) is unhidden later by
+  // async JS (Supabase session checks) well after the timeouts above, so
+  // re-check whenever anything's [hidden] attribute changes anywhere.
+  if (revealEls.length && 'MutationObserver' in window) {
+    new MutationObserver(queueReveal).observe(document.body, {
+      attributes: true, attributeFilter: ['hidden'], subtree: true,
+    });
+  }
 
   // ---- count-up metrics (illustrative values, animated once
   // on scroll-into-view; final digits match the static markup) --
@@ -209,6 +217,35 @@
     });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeNav(); });
   }
+
+  // ---- onboarding progress stepper --------------------------
+  // Purely visual: highlights the .stepper step matching whichever
+  // .formsection is currently most in view. No-ops if the page has
+  // no .stepper (every page except /onboarding).
+  (function () {
+    const steps = Array.from(document.querySelectorAll('.stepper__step'));
+    const sections = Array.from(document.querySelectorAll('.formsection'));
+    if (!steps.length || !sections.length || !('IntersectionObserver' in window)) return;
+    const byId = new Map(steps.map((s) => [s.getAttribute('data-step-for'), s]));
+    function setActive(id) {
+      steps.forEach((s) => s.classList.remove('is-active'));
+      const idx = sections.findIndex((sec) => sec.id === id);
+      steps.forEach((s, i) => s.classList.toggle('is-done', i < idx));
+      const active = byId.get(id);
+      if (active) active.classList.add('is-active');
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (!visible.length) return;
+        visible.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        setActive(visible[0].target.id);
+      },
+      { rootMargin: '-15% 0px -55% 0px', threshold: [0.1, 0.3, 0.6] }
+    );
+    sections.forEach((sec) => io.observe(sec));
+    setActive(sections[0].id);
+  })();
 
   // ---- thesis status modal ---------------------------------
   const thesisModal = document.getElementById('thesis-modal');

@@ -22,12 +22,23 @@ const submitNotice = document.getElementById("submitNotice");
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function clearErrors() {
-  form.querySelectorAll("[data-err-for]").forEach((el) => (el.textContent = ""));
+  form.querySelectorAll("[data-err-for]").forEach((el) => {
+    el.textContent = "";
+    const wrap = el.closest(".formfield, .checkfield");
+    if (wrap) wrap.classList.remove("formfield--invalid");
+  });
 }
 
 function setErr(field, message) {
   const el = form.querySelector(`[data-err-for="${field}"]`);
-  if (el) el.textContent = message;
+  if (!el) return;
+  el.textContent = message;
+  const wrap = el.closest(".formfield, .checkfield") || el.previousElementSibling;
+  if (wrap && wrap.classList) {
+    wrap.classList.remove("formfield--invalid");
+    void wrap.offsetWidth; // restart the shake animation even if already invalid
+    wrap.classList.add("formfield--invalid");
+  }
 }
 
 function setNotice(kind, title, message) {

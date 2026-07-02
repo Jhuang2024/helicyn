@@ -79,19 +79,35 @@ function setNotice(kind, title, message) {
   authNotice.appendChild(div);
 }
 
+function markInvalid(input, errEl, message) {
+  errEl.textContent = message;
+  const wrap = input.closest(".formfield");
+  if (!wrap) return;
+  wrap.classList.remove("formfield--invalid");
+  void wrap.offsetWidth; // restart the shake animation even if already invalid
+  wrap.classList.add("formfield--invalid");
+}
+
+function clearFieldInvalid(input) {
+  const wrap = input.closest(".formfield");
+  if (wrap) wrap.classList.remove("formfield--invalid");
+}
+
 async function handleSubmit(e) {
   e.preventDefault();
   setNotice();
   authEmailErr.textContent = "";
   authPasswordErr.textContent = "";
+  clearFieldInvalid(authEmail);
+  clearFieldInvalid(authPassword);
 
   const email = authEmail.value.trim();
   if (!EMAIL_RE.test(email)) {
-    authEmailErr.textContent = "Enter a valid email address.";
+    markInvalid(authEmail, authEmailErr, "Enter a valid email address.");
     return;
   }
   if (method === "password" && !authPassword.value) {
-    authPasswordErr.textContent = "Password is required.";
+    markInvalid(authPassword, authPasswordErr, "Password is required.");
     return;
   }
 

@@ -49,10 +49,11 @@
 
 <main id="main" tabindex="-1">
 <section class="section pagehead">
+  <div class="orbfield" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
   <div class="wrap">
-    <span class="eyebrow">Founding partner application</span>
-    <h1>Apply as a founding partner</h1>
-    <p>Founding partners get early access, direct product input, priority onboarding, and preferred launch pricing when Helicyn launches. Helicyn is currently pre-commercial -- this is a real application, stored in a real database, not a demo form.</p>
+    <span class="eyebrow" data-reveal style="--i:0">Founding partner application</span>
+    <h1 data-reveal="mask" style="--i:1">Apply as a founding partner</h1>
+    <p data-reveal style="--i:2">Founding partners get early access, direct product input, priority onboarding, and preferred launch pricing when Helicyn launches. Helicyn is currently pre-commercial -- this is a real application, stored in a real database, not a demo form.</p>
   </div>
 </section>
 
@@ -64,7 +65,7 @@
       <span class="authnotice__title">Sign in required</span>
       <p>You need a founding partner account before submitting an application (so you can view its status later in the partner portal). This takes under a minute.</p>
       <div class="pagehead__cta" style="margin-top:0.6rem;">
-        <a class="btn" href="login.html">Sign in or create an account <span class="arr" aria-hidden="true">→</span></a>
+        <a class="btn" href="login.html" data-magnetic="0.2">Sign in or create an account <span class="arr" aria-hidden="true">→</span></a>
       </div>
     </div>
 
@@ -77,12 +78,26 @@
       <span class="authnotice__title">Application submitted</span>
       <p>Thanks. Your founding partner application has been submitted. You can view its status in the partner portal.</p>
       <div class="pagehead__cta" style="margin-top:0.6rem;">
-        <a class="btn" href="partner-portal.html">Go to partner portal <span class="arr" aria-hidden="true">→</span></a>
+        <a class="btn" href="partner-portal.html" data-magnetic="0.2">Go to partner portal <span class="arr" aria-hidden="true">→</span></a>
       </div>
     </div>
 
+    <div class="onboardgrid">
+    <div>
+    <nav class="stepper" aria-label="Application sections">
+      <span class="stepper__step" data-step-for="step-company"><span class="n">1</span><span class="lbl">Company</span></span>
+      <span class="stepper__connector" aria-hidden="true"></span>
+      <span class="stepper__step" data-step-for="step-contact"><span class="n">2</span><span class="lbl">Contact</span></span>
+      <span class="stepper__connector" aria-hidden="true"></span>
+      <span class="stepper__step" data-step-for="step-infra"><span class="n">3</span><span class="lbl">Infrastructure</span></span>
+      <span class="stepper__connector" aria-hidden="true"></span>
+      <span class="stepper__step" data-step-for="step-interests"><span class="n">4</span><span class="lbl">Interests</span></span>
+      <span class="stepper__connector" aria-hidden="true"></span>
+      <span class="stepper__step" data-step-for="step-consent"><span class="n">5</span><span class="lbl">Consent</span></span>
+    </nav>
+
     <form id="onboardingForm" class="formgrid" novalidate>
-      <div>
+      <div class="formsection" id="step-company">
         <span class="eyebrow">Company information</span>
         <div class="formgrid formgrid--2col" style="margin-top:1rem;">
           <div class="formfield">
@@ -109,7 +124,7 @@
         </div>
       </div>
 
-      <div>
+      <div class="formsection" id="step-contact">
         <span class="eyebrow">Contact</span>
         <div class="formgrid formgrid--2col" style="margin-top:1rem;">
           <div class="formfield">
@@ -133,7 +148,7 @@
         </div>
       </div>
 
-      <div>
+      <div class="formsection" id="step-infra">
         <span class="eyebrow">Infrastructure profile</span>
         <div class="formgrid formgrid--2col" style="margin-top:1rem;">
           <div class="formfield">
@@ -178,35 +193,57 @@
         </div>
       </div>
 
-      <div class="formfield">
-        <label class="formfield__label">Founding partner interests</label>
-        <div class="multicheck">
-          <label><input type="checkbox" name="founding_partner_interests" value="early_access" /><span>Early access</span></label>
-          <label><input type="checkbox" name="founding_partner_interests" value="technical_review" /><span>Technical review</span></label>
-          <label><input type="checkbox" name="founding_partner_interests" value="product_feedback" /><span>Product feedback</span></label>
-          <label><input type="checkbox" name="founding_partner_interests" value="pilot_later" /><span>Pilot later</span></label>
-          <label><input type="checkbox" name="founding_partner_interests" value="research_collaboration" /><span>Research collaboration</span></label>
-          <label><input type="checkbox" name="founding_partner_interests" value="pricing_founding_partner_terms" /><span>Pricing / founding partner terms</span></label>
+      <div class="formsection" id="step-interests">
+        <span class="eyebrow">Founding partner interests</span>
+        <div class="formfield" style="margin-top:1rem;">
+          <div class="multicheck">
+            <label><input type="checkbox" name="founding_partner_interests" value="early_access" /><span>Early access</span></label>
+            <label><input type="checkbox" name="founding_partner_interests" value="technical_review" /><span>Technical review</span></label>
+            <label><input type="checkbox" name="founding_partner_interests" value="product_feedback" /><span>Product feedback</span></label>
+            <label><input type="checkbox" name="founding_partner_interests" value="pilot_later" /><span>Pilot later</span></label>
+            <label><input type="checkbox" name="founding_partner_interests" value="research_collaboration" /><span>Research collaboration</span></label>
+            <label><input type="checkbox" name="founding_partner_interests" value="pricing_founding_partner_terms" /><span>Pricing / founding partner terms</span></label>
+          </div>
+        </div>
+        <div class="formfield" style="margin-top:1rem;">
+          <label class="formfield__label" for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Anything else we should know?"></textarea>
         </div>
       </div>
 
-      <div class="formfield">
-        <label class="formfield__label" for="message">Message</label>
-        <textarea id="message" name="message" placeholder="Anything else we should know?"></textarea>
-      </div>
+      <div class="formsection" id="step-consent">
+        <span class="eyebrow">Consent</span>
+        <div class="checkfield" style="margin-top:1rem;">
+          <input type="checkbox" id="consent_precommercial" name="consent_precommercial" required />
+          <label for="consent_precommercial">I understand Helicyn is currently a pre-commercial research/prototype project. <span class="req">*</span></label>
+        </div>
+        <span class="formfield__err" data-err-for="consent_precommercial"></span>
 
-      <div class="checkfield">
-        <input type="checkbox" id="consent_precommercial" name="consent_precommercial" required />
-        <label for="consent_precommercial">I understand Helicyn is currently a pre-commercial research/prototype project. <span class="req">*</span></label>
+        <div class="formsubmit">
+          <button class="btn" type="submit" id="submitBtn">Submit application <span class="arr" aria-hidden="true">→</span></button>
+          <span class="mono" id="submitLoading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Submitting<span class="loadingdots"></span></span>
+        </div>
+        <div id="submitNotice"></div>
       </div>
-      <span class="formfield__err" data-err-for="consent_precommercial"></span>
-
-      <div class="formsubmit">
-        <button class="btn" type="submit" id="submitBtn">Submit application <span class="arr" aria-hidden="true">→</span></button>
-        <span class="mono" id="submitLoading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Submitting<span class="loadingdots"></span></span>
-      </div>
-      <div id="submitNotice"></div>
     </form>
+    </div>
+
+    <aside class="trustpanel" data-reveal>
+      <div>
+        <h3>Why this is safe to fill out</h3>
+        <ul>
+          <li>Real application, written to a real database -- not a demo form.</li>
+          <li>You control the account; sign-in uses real Supabase authentication, not a stored password on our side.</li>
+          <li>Helicyn is pre-commercial today -- this is relationship-first, not a billing signup.</li>
+        </ul>
+      </div>
+      <div class="trustpanel__foot">
+        <a href="partners.html">Founding partner program details →</a>
+        <a href="research.html">Research / methodology →</a>
+        <a href="partner-portal.html">Track status in the partner portal →</a>
+      </div>
+    </aside>
+    </div>
   </div>
 </section>
 </main>
@@ -247,6 +284,7 @@
 </footer>
 
 <script src="main.js"></script>
+<script src="ambient.js"></script>
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="onboarding.js"></script>
 </body>
