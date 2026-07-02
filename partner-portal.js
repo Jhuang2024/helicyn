@@ -51,13 +51,13 @@ function renderApplication(app) {
   renderStatusPill(app.status);
   applicationSummary.hidden = false;
   noApplication.hidden = true;
-  applicationSummary.querySelector('[data-app="company_name"]').textContent = app.company_name || "—";
+  applicationSummary.querySelector('[data-app="company_name"]').textContent = app.company_name || "--";
   applicationSummary.querySelector('[data-app="created_at"]').textContent = app.created_at
     ? new Date(app.created_at).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
-    : "—";
+    : "--";
   const interests = Array.isArray(app.founding_partner_interests) ? app.founding_partner_interests : [];
   applicationSummary.querySelector('[data-app="founding_partner_interests"]').textContent =
-    interests.length > 0 ? interests.join(", ") : "—";
+    interests.length > 0 ? interests.join(", ") : "--";
 }
 
 async function init() {
