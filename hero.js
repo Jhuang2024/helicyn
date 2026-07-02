@@ -217,7 +217,10 @@
   }
 
   // ---- input -----------------------------------------------
-  const hero = document.querySelector('.hero');
+  // .hero (homepage) or .control-head (control-plane.html) - both
+  // render the same #field canvas and should get the same cursor
+  // deflection/reticle instead of only the homepage reacting.
+  const hero = document.querySelector('.hero, .control-head');
   function onMove(e) {
     const rect = canvas.getBoundingClientRect();
     mouse.tx = e.clientX - rect.left;

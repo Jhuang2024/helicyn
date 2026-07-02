@@ -62,7 +62,7 @@
     }, { passive: true });
 
     /* ---- per-card spotlight (cursor-tracked sheen) -------- */
-    const CARD_SEL = '.demo-metric, .demo-region, .demo-rec, .cp-lifecell, .cp-rnode, .wl-staged__card, .demo-panel, .cp-queue__list li, .cp-assume, .archstack__panel, .compare__col, .cpcta__panel, .cap, .rolecard, .stagecard, .portalcard, .benefitcard';
+    const CARD_SEL = '.demo-metric, .demo-region, .demo-rec, .cp-lifecell, .cp-rnode, .wl-staged__card, .demo-panel, .cp-queue__list li, .cp-assume, .archstack__panel, .compare__col, .cpcta__panel, .cap, .rolecard, .stagecard, .portalcard, .benefitcard, .signalboard__tile, .enginediagram__step';
     let cardRaf = 0, lastEvt = null;
     function spot() {
       cardRaf = 0;

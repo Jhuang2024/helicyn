@@ -825,6 +825,22 @@
 .cp-ba__row .k { font-size: 0.8rem; color: var(--text-dim); }
 .cp-ba__row .v { font-family: var(--font-mono); font-size: 1.05rem; color: var(--text); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
 .cp-ba__col--before .cp-ba__row .v { color: var(--text-dim); }
+.cp-ba__row { transition: background 0.35s var(--ease); }
+.cp-ba__row:hover { background: color-mix(in srgb, var(--cyan-soft) 20%, transparent); }
+
+/* rows converge in from opposite sides toward the divider, same
+   language as the homepage's local-vs-fleet comparison (styles.css
+   .compare__list li), alongside the panel's own fade-in */
+@media (prefers-reduced-motion: no-preference) {
+  .js .cp-ba__row { opacity: 0; transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), background 0.35s var(--ease); }
+  .js .cp-ba__col--before .cp-ba__row { transform: translateX(-16px); }
+  .js .cp-ba__col--after .cp-ba__row { transform: translateX(16px); }
+  .cp-ba.is-revealing .cp-ba__row { opacity: 1; transform: translateX(0); }
+  .cp-ba.is-revealing .cp-ba__row:nth-child(2) { transition-delay: 70ms; }
+  .cp-ba.is-revealing .cp-ba__row:nth-child(3) { transition-delay: 140ms; }
+  .cp-ba.is-revealing .cp-ba__row:nth-child(4) { transition-delay: 210ms; }
+  .cp-ba.is-revealing .cp-ba__row:nth-child(5) { transition-delay: 280ms; }
+}
 
 /* ============================================================
    LIFETIME OPTIMIZATION IMPACT (#8)
@@ -1164,6 +1180,10 @@
 .cp-assume[open] .cp-assume__summary { border-bottom: 1px solid var(--line); }
 .cp-assume__grid { display: grid; gap: 1px; background: var(--line); }
 @media (min-width: 680px) { .cp-assume__grid { grid-template-columns: 1fr 1fr; } }
+@media (prefers-reduced-motion: no-preference) {
+  .cp-assume[open] .cp-assume__grid { animation: cpAssumeOpen 0.45s var(--ease); }
+  @keyframes cpAssumeOpen { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+}
 .cp-assume__item { background: var(--panel); padding: clamp(1.1rem, 2.2vw, 1.4rem); display: grid; gap: 0.45rem; align-content: start; }
 .cp-assume__item--limit { border-left: 2px solid var(--warn-soft); }
 @media (min-width: 680px) { .cp-assume__item--limit { grid-column: 1 / -1; } }

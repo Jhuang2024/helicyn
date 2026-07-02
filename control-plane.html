@@ -38,7 +38,7 @@
   <a class="brand" href="index.html" aria-label="Helicyn home" data-magnetic="0.18">
     <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true">
       <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
-      <circle cx="9" cy="9" r="2" fill="currentColor"></circle>
+      <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
     </svg>
     <span class="brand__name">Helicyn</span>
   </a>
@@ -88,6 +88,7 @@
 <!-- ===================== 1 · STATUS HEADER ===================== -->
 <section class="control-head" data-screen-label="control-header" id="top">
   <canvas id="field" aria-hidden="true"></canvas>
+  <div class="reticle" aria-hidden="true"></div>
   <div class="control-head__veil" aria-hidden="true"></div>
   <div class="demo-wrap control-head__inner">
     <span class="eyebrow" data-reveal>Helicyn · control plane</span>
@@ -850,8 +851,8 @@
       <div class="cp-ba__col cp-ba__col--before">
         <span class="cp-ba__label"><span class="d"></span>Before Helicyn</span>
         <div class="cp-ba__rows">
-          <div class="cp-ba__row"><span class="k">Average PUE: </span><span class="v" data-ba="before-pue">1.31</span></div>
-          <div class="cp-ba__row"><span class="k">Cooling load: </span><span class="v" data-ba="before-cooling">100%</span></div>
+          <div class="cp-ba__row"><span class="k">Average PUE: </span><span class="v" data-ba="before-pue" data-count="1.31">1.31</span></div>
+          <div class="cp-ba__row"><span class="k">Cooling load: </span><span class="v" data-ba="before-cooling" data-count="100%">100%</span></div>
           <div class="cp-ba__row"><span class="k">Thermal variance: </span><span class="v" data-ba="before-variance">9.8°C<button type="button" class="demo-tip" aria-label="About thermal variance">i<span class="demo-tip__pop" role="tooltip"><b>Thermal Variance.</b> The spread between hottest and coolest racks. Lower variance means more even cooling and less hotspot risk.</span></button></span></div>
           <div class="cp-ba__row"><span class="k">Hotspot risk: </span><span class="v" data-ba="before-risk">Elevated</span></div>
           <div class="cp-ba__row"><span class="k">Daily cost: </span><span class="v" data-ba="before-cost">$38,700</span></div>
@@ -860,9 +861,9 @@
       <div class="cp-ba__col cp-ba__col--after">
         <span class="cp-ba__label"><span class="d"></span>After Helicyn</span>
         <div class="cp-ba__rows">
-          <div class="cp-ba__row"><span class="k">Average PUE: </span><span class="v" data-ba="after-pue">1.18</span></div>
-          <div class="cp-ba__row"><span class="k">Cooling load: </span><span class="v" data-ba="after-cooling">88.4%</span></div>
-          <div class="cp-ba__row"><span class="k">Thermal variance: </span><span class="v" data-ba="after-variance">4.2°C</span></div>
+          <div class="cp-ba__row"><span class="k">Average PUE: </span><span class="v" data-ba="after-pue" data-count="1.18">1.18</span></div>
+          <div class="cp-ba__row"><span class="k">Cooling load: </span><span class="v" data-ba="after-cooling" data-count="88.4%">88.4%</span></div>
+          <div class="cp-ba__row"><span class="k">Thermal variance: </span><span class="v" data-ba="after-variance" data-count="4.2°C">4.2°C</span></div>
           <div class="cp-ba__row"><span class="k">Hotspot risk: </span><span class="v" data-ba="after-risk">Stable</span></div>
           <div class="cp-ba__row"><span class="k">Daily cost: </span><span class="v" data-ba="after-cost">$33,706</span></div>
         </div>
@@ -911,7 +912,7 @@
 <!-- ===================== ASSUMPTIONS DRAWER =================== -->
 <section class="demo-section demo-section--line" aria-label="Simulation assumptions" id="assumptions">
   <div class="demo-wrap">
-    <details class="cp-assume" data-reveal open>
+    <details class="cp-assume" data-reveal>
       <summary class="cp-assume__summary">
         <span class="cp-assume__title"><span class="tick">·</span>Simulation assumptions</span>
         <span class="cp-assume__hint">What this demo does and does not model</span>
@@ -951,18 +952,18 @@
 <footer class="footer" data-screen-label="footer">
   <div class="wrap">
     <div class="footer__top">
-      <div class="footer__brand">
-        <span class="brand">
+      <div class="footer__brand" data-reveal style="--i:0">
+        <span class="brand" data-magnetic="0.15">
           <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true" style="width:20px;height:20px;">
             <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
-            <circle cx="9" cy="9" r="2" fill="currentColor"></circle>
+            <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
           </svg>
           <span class="brand__name">Helicyn</span>
         </span>
         <p class="footer__tagline">The coordination layer for large-scale physical and computational systems.</p>
       </div>
 
-      <div class="fcol">
+      <div class="fcol" data-reveal style="--i:1">
         <h4>Company</h4>
         <a href="research.html">Thesis / Research</a>
         <a href="partners.html">Founding Partners</a>
@@ -971,7 +972,7 @@
         <a href="login.html">Login</a>
       </div>
 
-      <div class="fcol">
+      <div class="fcol" data-reveal style="--i:2">
         <h4>Connect</h4>
         <a href="https://www.linkedin.com/company/helicyn/" target="_blank" rel="noopener noreferrer">Follow us on LinkedIn <span class="arr" aria-hidden="true">↗</span></a>
         <a data-email-link href="#">Email us</a>
