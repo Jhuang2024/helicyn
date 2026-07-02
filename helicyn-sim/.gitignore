@@ -1,0 +1,26 @@
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+build/
+dist/
+
+# generated run outputs (keep the folder, ignore contents)
+runs/*
+!runs/.gitkeep
+
+# large/local data (keep folders, ignore contents)
+data/samples/*
+!data/samples/.gitkeep
+data/traces/*
+!data/traces/.gitkeep
+data/grid/*
+!data/grid/.gitkeep
+data/weather/*
+!data/weather/.gitkeep
+data/fleets/*
+!data/fleets/.gitkeep

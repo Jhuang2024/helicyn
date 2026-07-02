@@ -1,0 +1,55 @@
+# Demo config: 24h, 5-minute timesteps, two sites (matches README quickstart).
+simulation:
+  timestep_minutes: 5
+  duration_hours: 24
+  seed: 42
+
+fleet:
+  sites:
+    - site_id: "ONT-NORTH"
+      region: "Ontario"
+      racks: 4
+      servers_per_rack: 16
+      base_pue: 1.35
+      cooling_reference_temp_c: 18
+      carbon_profile: mixed_grid
+      price_profile: moderate_price
+      weather_profile: cool_weather
+
+    - site_id: "CA-WEST"
+      region: "California"
+      racks: 4
+      servers_per_rack: 16
+      base_pue: 1.25
+      cooling_reference_temp_c: 20
+      carbon_profile: solar_duck_curve
+      price_profile: volatile_price
+      weather_profile: warm_weather
+
+  server_profile:
+    cpu_capacity_units: 100
+    memory_capacity_gb: 512
+    gpu_capacity_units: 0
+    idle_power_w: 180
+    max_cpu_dynamic_power_w: 470
+    fan_overhead_w: 40
+    sleep_power_w: 15
+
+workload:
+  llm_inference_jobs_per_hour_peak: 40
+  llm_inference_jobs_per_hour_offpeak: 8
+  batch_jobs_per_hour_day: 3
+  batch_jobs_per_hour_night: 10
+  online_service_jobs_per_hour: 15
+  maintenance_jobs_per_day: 2
+  cpu_demand_min_units: 2
+  cpu_demand_max_units: 20
+  memory_demand_min_gb: 2
+  memory_demand_max_gb: 32
+  max_delay_minutes_flexible: 120
+
+policy:
+  name: baseline_first_fit
+  dvfs_state: balanced
+
+memory_power_coefficient_w: 60

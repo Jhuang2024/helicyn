@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "helicyn-sim"
+version = "0.1.0"
+description = "Helicyn Sim: an independent, discrete-time data-center scheduling simulator prototype for evaluating energy/carbon/cost/thermal/SLA tradeoffs, with an optional HTTP hook into Helicyn ML."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Helicyn" }]
+
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "pyarrow>=14.0",
+    "pydantic>=2.5",
+    "pyyaml>=6.0",
+    "typer>=0.9",
+    "rich>=13.0",
+    "requests>=2.31",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+]
+plot = ["matplotlib>=3.7"]
+
+[project.scripts]
+helicyn-sim = "helicyn_sim.cli:app"
+
+[tool.setuptools.packages.find]
+include = ["helicyn_sim*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
