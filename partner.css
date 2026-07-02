@@ -14,7 +14,7 @@
 
 /* .authnotice / .authcard / .formgrid all set their own `display`,
    which (per CSS origin rules) silently outranks the UA stylesheet's
-   `[hidden] { display: none }` -- so any of these with a bare `hidden`
+   `[hidden] { display: none }`, so any of these with a bare `hidden`
    attribute would render anyway. Restoring that here is what makes
    every hidden/shown auth + form state (and the new pop-in animation
    on [hidden] removal) actually work as the existing JS intends. */
@@ -236,7 +236,7 @@
    --tiltx/--tilty (lean) custom properties ambient.js already
    writes for the homepage/control-plane cards (see styles.css
    "PREMIUM INTERACTION LAYER"). ambient.js's CARD_SEL/TILT_SEL
-   were extended to include these four selectors -- no new JS.
+   were extended to include these four selectors; no new JS.
    Fine-pointer only; no-ops under reduced-motion or touch.
    ============================================================ */
 .rolecard, .stagecard, .portalcard, .benefitcard { position: relative; }
@@ -303,19 +303,24 @@
    STAGE RAIL - decorative connecting line above the Stage
    1/2/3 grid. Static fill (Stage 1 is the real current stage;
    the fill never scroll-links to avoid implying 2/3 are live).
-   Desktop only -- on a stacked mobile layout the "Stage N" tags
+   Desktop only; on a stacked mobile layout the "Stage N" tags
    inside each card already carry the sequence.
    ============================================================ */
 .stagerail { display: none; }
 @media (min-width: 860px) {
   .stagerail {
-    display: grid; grid-template-columns: repeat(3, 1fr); align-items: center;
-    margin-bottom: 0.6rem; padding-inline: 0.2rem;
+    position: relative; display: grid; grid-template-columns: repeat(3, 1fr); align-items: center;
+    height: 20px; margin-bottom: 0.6rem; padding-inline: 0.2rem;
   }
-  .stagerail__track { position: relative; grid-column: 1 / -1; height: 2px; background: var(--line-2); border-radius: 2px; overflow: hidden; margin-bottom: -1px; }
+  /* absolutely positioned + vertically centered against the same box
+     the nodes are grid-aligned in, so the line always runs through the
+     dots' centers rather than sitting in a separate row above them */
+  .stagerail__track {
+    position: absolute; left: 0.2rem; right: 0.2rem; top: 50%; transform: translateY(-50%);
+    height: 2px; background: var(--line-2); border-radius: 2px; overflow: hidden;
+  }
   .stagerail__fill { position: absolute; inset: 0; width: 16.6%; background: linear-gradient(90deg, var(--signal), var(--signal-line)); box-shadow: 0 0 10px -1px var(--signal-glow); }
-  .stagerail__nodes { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); }
-  .stagerail__node { display: flex; align-items: center; gap: 0.5rem; justify-self: center; }
+  .stagerail__node { position: relative; z-index: 1; display: flex; align-items: center; gap: 0.5rem; justify-self: center; }
   .stagerail__node:first-child { justify-self: start; }
   .stagerail__node:last-child { justify-self: end; }
   .stagerail__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line-2); flex: none; }

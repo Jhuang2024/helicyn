@@ -7,15 +7,15 @@ control-plane/homepage logic changed.
 
 ## Pages polished
 
-- `/partners` -- cinematic hero, animated Stage 1/2/3 timeline, benefit
+- `/partners`: cinematic hero, animated Stage 1/2/3 timeline, benefit
   cards, illustrative pricing-example strip, premium final CTA.
-- `/onboarding` -- 5-step progress stepper, sectioned form, validation
+- `/onboarding`: 5-step progress stepper, sectioned form, validation
   shake/animation, trust panel, animated success/notice states.
-- `/login` -- centered animated auth card, orb backdrop, focus states,
+- `/login`: centered animated auth card, orb backdrop, focus states,
   button loading pulse, animated error/success notices.
-- `/partner-portal` -- staggered account/status/stage/link cards with
+- `/partner-portal`: staggered account/status/stage/link cards with
   hover spotlight+tilt, animated status pill, correct hidden/shown states.
-- `/research` -- premium hero, animated 5-stage research pipeline
+- `/research`: premium hero, animated 5-stage research pipeline
   (Public traces -> ML models -> simulator -> policies -> evidence
   package), findings placeholder cards, limitations block.
 
@@ -24,45 +24,45 @@ the Supabase migration/config were **not** touched.
 
 ## Motion system added (all opt-in, scoped to `partner.css`)
 
-- `.orbfield` / `.orb` -- decorative ambient glow behind hero sections
+- `.orbfield` / `.orb`: decorative ambient glow behind hero sections
   (pure CSS drift, frozen under reduced motion).
 - Card spotlight + tilt on `.rolecard`, `.stagecard`, `.portalcard`,
-  `.benefitcard` -- reuses the *existing* homepage/control-plane
+  and `.benefitcard`, reusing the *existing* homepage/control-plane
   cursor-tracked spotlight system (`ambient.js`'s `--cx/--cy` and
   `--tiltx/--tilty` custom properties); `ambient.js`'s `CARD_SEL`/
   `TILT_SEL` selector lists were extended with these four classes
   (2-line diff, no new JS logic). Fine-pointer only; no-op on touch or
   reduced motion.
-- `.benefitgrid` / `.benefitcard` -- new founding-partner benefit cards
+- `.benefitgrid` / `.benefitcard`: new founding-partner benefit cards
   (previously a plain bullet list).
-- `.stagerail` -- decorative connecting line + nodes above the Stage
+- `.stagerail`: decorative connecting line and nodes above the Stage
   1/2/3 grid (desktop only; static fill, never scroll-linked, so it
   never implies Stage 2/3 are live).
-- `.stagecard.is-now` glow pulse -- slow breathing box-shadow on the
+- `.stagecard.is-now` glow pulse: a slow breathing box-shadow on the
   active stage card.
-- `.pricingstrip` -- illustrative Stage-3 pricing math, animated via the
+- `.pricingstrip`: illustrative Stage-3 pricing math, animated via the
   site's existing `data-count` count-up utility (already used on the
-  homepage; final values are in the static HTML so no-JS/reduced-motion
+  homepage; final values are in the static HTML, so no-JS/reduced-motion
   users see the correct numbers immediately).
-- `.stepper` / `.formsection` -- onboarding progress stepper; active
-  step is tracked by a small `IntersectionObserver` block added to
-  `main.js`, guarded so it only runs on pages with a `.stepper`.
-- `.trustpanel` -- sticky-on-desktop, stacked-on-mobile aside with
-  reassurance copy + links.
-- Form validation motion -- `.formfield--invalid` shake, wired up in
+- `.stepper` / `.formsection`: an onboarding progress stepper whose
+  active step is tracked by a small `IntersectionObserver` block added
+  to `main.js`, guarded so it only runs on pages with a `.stepper`.
+- `.trustpanel`: a sticky-on-desktop, stacked-on-mobile aside with
+  reassurance copy and links.
+- Form validation motion: `.formfield--invalid` shake, wired up in
   `onboarding.js`/`login.js` by toggling a class (no validation-logic
   changes, no field renames).
-- `.authnotice:not([hidden])`, `.statuspill`, `.authcard` -- pop/rise
+- `.authnotice:not([hidden])`, `.statuspill`, and `.authcard`: pop/rise
   entrance animations that fire whenever those elements are unhidden or
   (re)rendered.
 - `main.js` reveal system reused as-is (`[data-reveal]`, `--i` stagger)
   for hero/section entrances on all five pages, plus a new
   `MutationObserver` that re-runs the reveal check whenever any
-  `[hidden]` attribute changes anywhere in the document -- needed
+  `[hidden]` attribute changes anywhere in the document. That's needed
   because several `[data-reveal]` blocks (auth/portal states) are only
   unhidden later by async Supabase session checks, well after the
   reveal system's initial timeouts.
-- Research pipeline reuses the homepage's existing
+- The research pipeline reuses the homepage's existing
   `.enginediagram__pipeline` traveling-beam component as-is (a new
   `.pipeline--5` column-count variant), rather than building a new
   diagram from scratch.
@@ -74,12 +74,12 @@ the Supabase migration/config were **not** touched.
 `display` on an element outranks the browser's built-in
 `[hidden] { display: none }`, regardless of selector specificity or
 source order. That meant every `hidden`-toggled auth/notice/form state
-on these pages was actually rendering all at once (e.g. login's
+on these pages was actually rendering all at once (for example, login's
 "already signed in" card stacked on top of the full sign-in form). This
-predates Phase 5.1 (it was already present in the Phase 5 commit) but
-directly broke the new pop-in animations and the whole point of the
+predates Phase 5.1 (it was already present in the Phase 5 commit), but
+it directly broke the new pop-in animations and the whole point of the
 motion pass, so it's fixed here with a 3-line `[hidden] { display: none }`
-override -- no auth/JS behavior changed, purely a CSS specificity fix.
+override. No auth/JS behavior changed; it's purely a CSS specificity fix.
 Verified with a headless-browser check before and after (screenshots in
 this session's scratch directory).
 
@@ -111,8 +111,8 @@ strip all degrade to their static end state under reduced motion.
 - Spotlight/tilt pointer tracking is delegated through the single
   existing `ambient.js` pointermove listener (rAF-throttled), not new
   per-card listeners.
-- Orb backgrounds are `filter: blur()` + `transform` only (GPU-friendly,
-  no layout thrash).
+- Orb backgrounds use `filter: blur()` and `transform` only
+  (GPU-friendly, no layout thrash).
 - The reveal `MutationObserver` only watches the `hidden` attribute
   (`attributeFilter: ['hidden']`), so it doesn't fire on unrelated DOM
   churn.
@@ -121,15 +121,15 @@ strip all degrade to their static end state under reduced motion.
 
 `partner.css`, `ambient.js`, `main.js`, `partners.html`, `onboarding.html`,
 `onboarding.js`, `login.html`, `login.js`, `partner-portal.html`,
-`research.html`, `docs/website_claims_audit.md` (addendum for new copy),
-this file.
+`partner-portal.js`, `research.html`, `docs/website_claims_audit.md`
+(addendum for new copy), this file.
 
 ## Remaining rough spots
 
 - The onboarding progress stepper still renders (in its neutral state)
   even when the form itself is hidden behind a config-error notice,
-  since the stepper markup sits outside the `<form>`. Cosmetic only,
-  and only reachable in a local/unconfigured deployment.
+  since the stepper markup sits outside the `<form>`. This is cosmetic
+  only, and only reachable in a local/unconfigured deployment.
 - `/partner-portal`'s signed-in card grid could only be checked
   structurally and against the shared `.stagecard`/`.portalcard` styling
   already verified on `/partners`; a live Supabase session was not
