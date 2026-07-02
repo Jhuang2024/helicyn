@@ -1,10 +1,20 @@
 """The discrete-time simulation loop. See README.md for the per-timestep
 step list this function implements 1:1.
+
+Site carbon/price/ambient signals are drawn once per site per step, before
+the policy runs (step order below still matches the README's 12 steps --
+this is just *when within a step* the otherwise-independent grid/weather
+draw happens). This lets carbon-aware/price-aware/DVFS-aware/external
+policies see this step's actual realized signal instead of only a
+forecast, and guarantees the value a policy reasoned about is exactly the
+value later billed in `run_summary`/`timeseries_metrics.csv` -- in the
+original Phase 1 engine, ambient temperature was drawn twice per site per
+step (once for rack thermal update, once for cooling), which was harmless
+for outcomes but wasted a stateful rng draw; this also fixes that.
 """
 from __future__ import annotations
 
 from collections import defaultdict
-from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import numpy as np
@@ -17,10 +27,10 @@ from helicyn_sim.models import thermal as thermal_model
 from helicyn_sim.models import weather as weather_model
 from helicyn_sim.policies.base import Policy
 from helicyn_sim.simulation.accounting import SiteAccumulator
+from helicyn_sim.simulation.clock import hour_of_day as step_hour_of_day
+from helicyn_sim.simulation.clock import step_timestamp
 from helicyn_sim.simulation.results import RunRecorder
 from helicyn_sim.simulation.state import SimState, build_initial_state
-
-SIM_EPOCH = datetime(2024, 1, 1, tzinfo=timezone.utc)
 
 
 def run_simulation(
@@ -31,7 +41,6 @@ def run_simulation(
     state = build_initial_state(config, resource_trace_path=resource_trace_path)
 
     dt_minutes = config.simulation.timestep_minutes
-    dt_hours = dt_minutes / 60.0
     num_steps = int(round(config.simulation.duration_hours * 60.0 / dt_minutes))
 
     arrivals_by_step: dict[int, list[str]] = defaultdict(list)
@@ -54,7 +63,24 @@ def run_simulation(
 
     for step in range(num_steps):
         state.step = step
-        timestamp = (SIM_EPOCH + timedelta(minutes=step * dt_minutes)).isoformat()
+        timestamp = step_timestamp(step, dt_minutes).isoformat()
+        hour_of_day = step_hour_of_day(step, dt_minutes)
+
+        # Draw this step's realized carbon/price/ambient signal per site
+        # up front (independent of jobs/servers) so both the policy and the
+        # accounting below see/use the exact same values.
+        state.current_site_signals = {}
+        for site_id, site in state.sites.items():
+            rng = site_rngs[site_id]
+            state.current_site_signals[site_id] = {
+                "carbon_intensity_gco2e_per_kwh": grid_model.carbon_intensity_gco2e_per_kwh(
+                    site.carbon_profile, hour_of_day, rng
+                ),
+                "electricity_price_usd_per_mwh": grid_model.electricity_price_usd_per_mwh(
+                    site.price_profile, hour_of_day, rng
+                ),
+                "ambient_temp_c": weather_model.ambient_temp_c(site.weather_profile, hour_of_day, rng),
+            }
 
         # 1. Add newly arrived jobs to queue.
         state.job_queue.extend(arrivals_by_step.get(step, []))
@@ -91,11 +117,9 @@ def run_simulation(
         # 7 & 8. Server utilization is computed on demand by Server; server
         # power uses each server's *current* (pre-update) rack temperature.
         site_power: dict[str, dict] = {}
-        site_signals: dict[str, dict] = {}
 
         for site_id, site in state.sites.items():
-            hour_of_day = (step * dt_minutes / 60.0) % 24.0
-            rng = site_rngs[site_id]
+            ambient_temp_c = state.current_site_signals[site_id]["ambient_temp_c"]
 
             total_server_power_w = 0.0
             for rack_id in site.rack_ids:
@@ -107,7 +131,6 @@ def run_simulation(
                 total_server_power_w += rack_power_w
 
                 # 9. Update rack temperatures based on the load just computed.
-                ambient_temp_c = weather_model.ambient_temp_c(site.weather_profile, hour_of_day, rng)
                 rack.rack_temp_c = thermal_model.next_rack_temp_c(
                     rack_temp_c=rack.rack_temp_c,
                     rack_power_kw=rack_power_w / 1000.0,
@@ -117,7 +140,6 @@ def run_simulation(
                 )
 
             # 10. Compute site PUE/cooling/facility power.
-            ambient_temp_c = weather_model.ambient_temp_c(site.weather_profile, hour_of_day, rng)
             cooling_result = cooling_model.compute_site_cooling(
                 total_server_power_w=total_server_power_w,
                 base_pue=site.base_pue,
@@ -131,22 +153,13 @@ def run_simulation(
                 "cooling_power_kw": cooling_result.cooling_power_kw,
                 "dynamic_pue": cooling_result.dynamic_pue,
             }
-            site_signals[site_id] = {
-                "carbon_intensity_gco2e_per_kwh": grid_model.carbon_intensity_gco2e_per_kwh(
-                    site.carbon_profile, hour_of_day, rng
-                ),
-                "electricity_price_usd_per_mwh": grid_model.electricity_price_usd_per_mwh(
-                    site.price_profile, hour_of_day, rng
-                ),
-                "ambient_temp_c": ambient_temp_c,
-            }
 
         # 11 & 12. Compute energy/carbon/cost and log metrics for this step.
         recorder.record_timestep(
             state=state,
             timestamp=timestamp,
             site_power=site_power,
-            site_signals=site_signals,
+            site_signals=state.current_site_signals,
             site_accumulators=site_accumulators,
             newly_completed_this_step=newly_completed,
             newly_rejected_this_step=newly_rejected,

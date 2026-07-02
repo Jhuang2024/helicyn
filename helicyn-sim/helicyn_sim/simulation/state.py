@@ -31,6 +31,15 @@ class SimState:
     step: int = 0
     rng: np.random.Generator = field(default=None)  # type: ignore[assignment]
 
+    # This step's realized (noisy) carbon/price/ambient signal per site,
+    # keyed by site_id -> {"carbon_intensity_gco2e_per_kwh", "electricity_price_usd_per_mwh",
+    # "ambient_temp_c"}. Computed once at the start of each engine step
+    # (before the policy runs) and reused for both policy decisions and the
+    # step's power/cooling/carbon/cost accounting, so a policy that reads
+    # "current carbon" and the recorder that later logs "current carbon"
+    # never disagree. See simulation/engine.py.
+    current_site_signals: dict[str, dict] = field(default_factory=dict)
+
     def servers_in_rack(self, rack_id: str) -> list[Server]:
         return [self.servers[sid] for sid in self.racks[rack_id].server_ids]
 

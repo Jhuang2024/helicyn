@@ -1,16 +1,37 @@
 """Mirrors helicyn_ml.schemas.fleet_state field-for-field. This is the
-payload shape the simulator will POST to `http://127.0.0.1:8765/recommend`
-once the Phase 2 `external_helicyn` policy adapter exists. Not used by any
-Phase 1 policy; kept here now so the schema is stable and testable early.
+payload shape the simulator POSTs to `http://127.0.0.1:8765/recommend` via
+the Phase 2 `external_helicyn` policy adapter.
 """
 from __future__ import annotations
 
 from datetime import datetime
+from enum import Enum
 from typing import Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from helicyn_sim.schemas.workload import WorkloadType
+
+class HelicynWorkloadType(str, Enum):
+    """Mirrors helicyn_ml.schemas.normalized_workload.WorkloadType exactly
+    (not helicyn_sim.schemas.workload.WorkloadType, which is this
+    simulator's own, smaller, 4-value job-type enum). helicyn-ml's FastAPI
+    server validates `queued_jobs[].workload_type`/`running_jobs[].workload_type`
+    strictly against its own enum, so sending our internal enum's spelling
+    verbatim (e.g. "maintenance", which helicyn-ml has no concept of) fails
+    with a 422. `policies/external_helicyn.py` maps our internal
+    WorkloadType onto this one before building a FleetState.
+    """
+
+    BATCH = "batch"
+    ONLINE_SERVICE = "online_service"
+    VM = "vm"
+    SERVERLESS = "serverless"
+    LLM_INFERENCE = "llm_inference"
+    LMM_INFERENCE = "lmm_inference"
+    GPU_TRAINING = "gpu_training"
+    GPU_INFERENCE = "gpu_inference"
+    CPU_BATCH = "cpu_batch"
+    UNKNOWN = "unknown"
 
 
 class Server(BaseModel):
@@ -54,7 +75,7 @@ class QueuedJob(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     job_id: str
-    workload_type: WorkloadType = WorkloadType.BATCH
+    workload_type: HelicynWorkloadType = HelicynWorkloadType.BATCH
     arrival_time: datetime
     cpu_request: Optional[float] = Field(default=None, ge=0)
     memory_request_gb: Optional[float] = Field(default=None, ge=0)
@@ -77,7 +98,7 @@ class RunningJob(BaseModel):
 
     job_id: str
     server_id: str
-    workload_type: WorkloadType = WorkloadType.BATCH
+    workload_type: HelicynWorkloadType = HelicynWorkloadType.BATCH
     start_time: datetime
     expected_end_time: Optional[datetime] = None
     cpu_usage: Optional[float] = Field(default=None, ge=0)

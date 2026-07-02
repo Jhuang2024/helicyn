@@ -96,8 +96,15 @@ class RunRecorder:
             self.active_server_steps += active
             self.sleeping_server_steps += sleeping
 
-            cpu_utils = [s.cpu_utilization() for s in servers]
-            mem_utils = [s.memory_utilization() for s in servers]
+            # Utilization is averaged over *awake* servers only. A sleeping
+            # server always has 0 allocated units, so including it would
+            # dilute the average toward zero as a policy sleeps more
+            # servers -- exactly backwards for comparing e.g. consolidation
+            # (few, busier active servers) against a policy that never
+            # sleeps anything (many, mostly-idle active servers).
+            awake_servers = [s for s in servers if not s.asleep]
+            cpu_utils = [s.cpu_utilization() for s in awake_servers]
+            mem_utils = [s.memory_utilization() for s in awake_servers]
             fleet_cpu_utils.extend(cpu_utils)
             fleet_mem_utils.extend(mem_utils)
             avg_cpu = float(np.mean(cpu_utils)) if cpu_utils else 0.0

@@ -41,7 +41,34 @@ Read this before drawing any conclusion from a run of this simulator.
   this simulator is a statement about how the modeled policies behave under
   these specific modeling choices -- it is not a statement about real
   data-center outcomes, and it must not be reported as one.
-- **Only one policy exists in Phase 1** (`baseline_first_fit`). There is no
-  Helicyn-aware policy in this repository yet to compare it against; no
-  "before/after Helicyn" numbers can honestly be produced until Phase 2
-  exists and both policies have been run under identical conditions.
+- **Only one policy exists in Phase 1** (`baseline_first_fit`). Phase 2
+  adds five built-in heuristic policies and an `external_helicyn` adapter
+  -- see the Phase 2 items below.
+
+## Phase 2 additions
+
+- **`external_helicyn` is still experimental.** It is a thin, validated
+  adapter around whatever `helicyn-ml serve` returns; it has not been
+  tuned, tested against adversarial recommendations beyond the specific
+  validation rules in `docs/phase2_external_helicyn.md`, or run against
+  more than one demo fleet configuration.
+- **`helicyn-ml`'s `policy_ranker` is teacher-imitation only.** It was
+  trained to imitate a hand-written heuristic scoring function, not from
+  real outcome data or simulator rollouts (see `docs/ml_integration_plan.md`).
+  A `before-after` run that includes `external_helicyn` is therefore, at
+  best, "does imitating this heuristic help under these simulated
+  conditions" -- not "does Helicyn's ML improve real outcomes."
+- **`before-after` results are simulated under this project's stated
+  assumptions**, same as any single run -- see every item above. Six
+  built-in policies (plus `external_helicyn` when reachable) being
+  compared under identical simulated conditions does not make the
+  comparison a real-world benchmark.
+- **No GPU-trained behavior anywhere**, including in `external_helicyn`:
+  the adapter explicitly rejects any recommended action that appears to
+  rely on nonzero GPU demand (`gpu_based_optimization_not_supported_no_gpu_labels`),
+  since neither this simulator nor `helicyn-ml` has real GPU training data.
+- **No real facility validation of any Phase 2 policy**, built-in or
+  external. All six built-in heuristics and the external adapter are
+  evaluated only against each other, inside the same reduced-order
+  simulator, under the same synthetic workload and grid/weather
+  assumptions.

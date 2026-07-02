@@ -1,13 +1,15 @@
 # Helicyn ML integration plan
 
 This document explains what `helicyn-ml` actually provides today, and what
-Phase 2 of this simulator will do with it. Phase 1 (this repo, as it stands)
-does not import `helicyn-ml` and does not call its HTTP service; it only
-optionally reads one of its output artifacts (a normalized resource-trace
-parquet file) to shape synthetic workload demand -- see
-`docs/model_assumptions.md`.
+this simulator does with it. Phase 1 only optionally read one of
+`helicyn-ml`'s output artifacts (a normalized resource-trace parquet file)
+to shape synthetic workload demand. Phase 2 adds the `external_helicyn`
+policy, which does call `helicyn-ml`'s HTTP service -- see
+`docs/phase2_external_helicyn.md` for the full contract (FleetState
+conversion, action validation, fallback behavior). This document stays
+focused on *why* that integration is built the way it is.
 
-## Current helicyn-ml status (as of this Phase 1 build)
+## Current helicyn-ml status
 
 Per `helicyn-ml`'s own `python -m helicyn_ml status` honesty check:
 
@@ -18,7 +20,8 @@ Per `helicyn-ml`'s own `python -m helicyn_ml status` honesty check:
   points at.
 - **GPU labels are unavailable** in any dataset `helicyn-ml` currently
   ingests. Nothing in `helicyn-ml` or this simulator fabricates GPU-trained
-  behavior to fill that gap.
+  behavior to fill that gap; `external_helicyn` explicitly rejects any
+  recommended action that relies on nonzero GPU demand.
 - **`runtime_predictor`**: skipped (no dataset with real job-runtime labels
   auto-downloads yet).
 - **`sla_risk_model`**: unavailable/degenerate (no real SLA-violation
@@ -29,60 +32,58 @@ Per `helicyn-ml`'s own `python -m helicyn_ml status` honesty check:
   simulator rollouts.
 
 None of this is a criticism to fix inside this simulator. It's the reason
-Phase 1 of `helicyn-sim` is CPU/memory-first, has no GPU-aware behavior, and
-has no Helicyn-driven policy yet: there is no trustworthy signal upstream to
-drive one.
+`helicyn-sim` is CPU/memory-first, has no GPU-aware behavior, and treats
+`external_helicyn`'s recommendations as untrusted input to validate, not as
+ground truth: there is no trustworthy outcome-trained signal upstream yet.
 
 ## Why this simulator exists
 
 `helicyn-ml`'s `policy_ranker` was trained by imitating a heuristic teacher
 score, not from outcome feedback. The stated purpose of this simulator
 (per `helicyn-ml`'s own README: "requires simulator and/or real telemetry
-validation before any operational claim can be made") is to eventually give
-that ranker -- or any future Helicyn policy -- a way to be evaluated (Phase
-2) and, further out, trained against (Phase 3+) simulated rollouts instead
-of only a static heuristic teacher.
+validation before any operational claim can be made") is to give that
+ranker -- or any future Helicyn policy -- a way to be evaluated (Phase 2,
+now implemented as `external_helicyn` + `before-after`) and, further out,
+trained against (Phase 3+) simulated rollouts instead of only a static
+heuristic teacher.
 
-## Phase 2 plan: `external_helicyn` policy adapter
+## Phase 2: `external_helicyn` policy adapter (implemented)
 
-Not implemented yet. When built, it will live at
-`helicyn_sim/policies/external_helicyn.py` and:
+Lives at `helicyn_sim/policies/external_helicyn.py`. Summary (full detail
+in `docs/phase2_external_helicyn.md`):
 
-1. Implement the same `Policy.place_jobs(state) -> list[PolicyDecision]`
-   interface as `BaselineFirstFitPolicy`, so the engine and output files
-   don't change shape.
-2. Each timestep, build a `helicyn_sim.schemas.fleet_state.FleetState`
-   (already implemented in Phase 1, field-for-field compatible with
-   `helicyn_ml.schemas.fleet_state.FleetState`) from the current `SimState`:
-   sites, racks, servers (capacity/allocation/DVFS/sleep state), queued and
-   running jobs, and the current grid/weather signals for each site.
-3. `POST` that `FleetState` as JSON to `http://127.0.0.1:8765/recommend`
-   (the endpoint `helicyn-ml serve` exposes; see `helicyn-ml`'s
-   `docs/simulator_integration.md`), and parse the response into
-   `helicyn_sim.schemas.recommendation.Recommendation` (already implemented
-   in Phase 1, same field-for-field compatibility).
-4. Translate `Recommendation.selected_actions` (`CandidateAction`s: place /
-   delay / migrate / change_dvfs / sleep_server / wake_server / reject) into
-   the same server-allocation mutations `BaselineFirstFitPolicy` performs
-   directly, respecting the same hard capacity constraints
-   (`Server.can_fit`/`allocate`) regardless of what the model recommends --
-   the simulator, not the model, is the source of truth for whether a
-   placement is physically valid.
-5. Fall back to `BaselineFirstFitPolicy` behavior (and log why) if the HTTP
-   call fails, times out, or `helicyn-ml` is not running -- this simulator
-   must work standalone, and `helicyn-ml` is explicitly optional per this
-   project's brief.
+1. Implements the same `Policy.place_jobs(state) -> list[PolicyDecision]`
+   interface as every other policy.
+2. Each timestep, builds a `helicyn_sim.schemas.fleet_state.FleetState`
+   (field-for-field compatible with `helicyn_ml.schemas.fleet_state.FleetState`)
+   from the current `SimState`.
+3. `POST`s it to `--helicyn-url` (default `http://127.0.0.1:8765/recommend`),
+   parses the response into `helicyn_sim.schemas.recommendation.Recommendation`.
+4. Validates every `selected_actions` entry against the simulator's actual
+   capacity/state before applying it -- the simulator, never the model, is
+   the source of truth for whether a placement is physically valid.
+   Invalid actions are rejected and logged; unaddressed or rejected jobs
+   fall back to safe first-fit placement.
+5. Raises a clear `ExternalHelicynUnavailableError` if the server is
+   unreachable; `run` exits cleanly on that error, `before-after` skips
+   `external_helicyn` and continues the built-in policies.
 
-## What Phase 2 will NOT do
+`migrate` actions are not implemented (out of scope for Phase 2); only
+`place`/`delay`/`change_dvfs`/`sleep_server`/`wake_server`/`reject` are
+supported. `Recommendation.ranked_actions`/`predicted_effect` are not
+consumed, only `selected_actions`.
 
-- It will not modify `helicyn-ml` unless something in the `FleetState` /
-  `Recommendation` contract turns out to be genuinely incompatible with
-  what the simulator can produce -- and even then, only the minimum needed
-  for compatibility.
-- It will not claim the resulting comparison is production-validated. It
-  will be exactly what it is: one heuristic/teacher-imitation-trained
-  policy compared against a first-fit baseline, under this simulator's
-  documented synthetic assumptions (`docs/model_assumptions.md`,
-  `docs/limitations.md`).
-- It will not add GPU-aware coordination, since `helicyn-ml` has no
+## What Phase 2 does NOT do
+
+- It does not modify `helicyn-ml`; nothing about this integration required
+  changing `helicyn-ml`'s schemas or serving code.
+- It does not claim the resulting comparison is production-validated. It
+  is exactly what it is: a teacher-imitation-trained policy compared
+  against a first-fit baseline (and five other built-in heuristics), under
+  this simulator's documented synthetic assumptions
+  (`docs/model_assumptions.md`, `docs/limitations.md`).
+- It does not add GPU-aware coordination, since `helicyn-ml` has no
   GPU-trained model to drive it.
+- It does not force `external_helicyn` to look good: `before-after`
+  reports whatever the run actually produces, better or worse than
+  baseline.
