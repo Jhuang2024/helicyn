@@ -26,6 +26,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="control.css" />
+<link rel="stylesheet" href="partner.css" />
 </head>
 <body>
 
@@ -41,13 +42,19 @@
     </svg>
     <span class="brand__name">Helicyn</span>
   </a>
-  <nav class="nav__right">
+  <button class="navtoggle" type="button" aria-expanded="false" aria-controls="navmenu" data-nav-toggle aria-label="Toggle menu">
+    <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
+  </button>
+  <nav class="nav__right" id="navmenu" data-nav-menu>
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
       <span class="mono" data-clock>00:00:00 UTC</span>
     </span>
     <a class="navlink" href="index.html">Overview</a>
-    <a class="navlink navlink--cta" href="index.html#access"><span class="lbl-full">Request access</span><span class="lbl-short">Access</span> <span class="arr" aria-hidden="true">↗</span></a>
+    <a class="navlink" href="research.html">Research</a>
+    <a class="navlink" href="partners.html">Founding Partners</a>
+    <a class="navlink" href="login.html">Login</a>
+    <a class="navlink navlink--cta" href="onboarding.html"><span class="lbl-full">Apply as partner</span><span class="lbl-short">Apply</span> <span class="arr" aria-hidden="true">↗</span></a>
   </nav>
 </header>
 
@@ -930,8 +937,10 @@
     <p class="demo-thesis__quote" data-reveal style="--i:1; margin-top:1.4rem;">Helicyn does not replace operators. It gives them a <span class="lift">coordination layer across compute, energy, and thermal systems</span>, surfacing decisions before inefficiency becomes a constraint.</p>
     <p class="demo-thesis__sub" data-reveal style="--i:2">The operator stays in command; Helicyn connects the signals, proposes the action, and verifies the result.</p>
     <div class="demo-thesis__cta" data-reveal style="--i:3">
-      <a class="btn" href="index.html#access" data-magnetic="0.2">Request access <span class="arr" aria-hidden="true">→</span></a>
-      <a class="btn-ghost" href="index.html#thesis"><span class="dot" aria-hidden="true"></span> Research thesis</a>
+      <a class="btn" href="onboarding.html" data-magnetic="0.2">Apply as founding partner <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn" href="partners.html" data-magnetic="0.2">Founding partner program <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn-ghost" href="research.html"><span class="dot" aria-hidden="true"></span> Research</a>
+      <a class="btn-ghost" href="login.html"><span class="dot" aria-hidden="true"></span> Login</a>
     </div>
   </div>
 </section>
@@ -955,15 +964,17 @@
 
       <div class="fcol">
         <h4>Company</h4>
-        <a href="index.html#thesis">Thesis</a>
-        <a href="index.html#capabilities">What we build</a>
-        <a href="control-plane.html">Interactive demo</a>
-        <a href="index.html#access">Request access</a>
+        <a href="research.html">Thesis / Research</a>
+        <a href="partners.html">Founding Partners</a>
+        <a href="control-plane.html">Control Plane</a>
+        <a href="onboarding.html">Onboarding</a>
+        <a href="login.html">Login</a>
       </div>
 
       <div class="fcol">
         <h4>Connect</h4>
         <a href="https://www.linkedin.com/company/helicyn/" target="_blank" rel="noopener noreferrer">Follow us on LinkedIn <span class="arr" aria-hidden="true">↗</span></a>
+        <a data-email-link href="#">Email us</a>
         <span class="fcol__note">Follow us on LinkedIn for future updates.</span>
       </div>
     </div>

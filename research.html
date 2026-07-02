@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>document.documentElement.className += ' js';</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#08090b" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Helicyn · Research</title>
+<meta name="description" content="Helicyn's preliminary research thesis: a simulation-based, assumption-bound research prototype. Preliminary technical paper coming soon." />
+<link rel="canonical" href="https://helicyn.com/research" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://helicyn.com/research" />
+<meta property="og:title" content="Helicyn · Research" />
+<meta property="og:description" content="Preliminary thesis, methodology, and simulator findings. Simulation-based and assumption-bound; final paper coming later." />
+<meta property="og:image" content="https://helicyn.com/og-image.png" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="favicon-180.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="partner.css" />
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+<div class="progress"></div>
+
+<header class="nav" data-screen-label="nav">
+  <a class="brand" href="index.html" aria-label="Helicyn home" data-magnetic="0.18">
+    <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
+      <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
+    </svg>
+    <span class="brand__name">Helicyn</span>
+  </a>
+  <button class="navtoggle" type="button" aria-expanded="false" aria-controls="navmenu" data-nav-toggle aria-label="Toggle menu">
+    <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
+  </button>
+  <nav class="nav__right" id="navmenu" data-nav-menu>
+    <span class="nav__meta">
+      <span class="statusdot" aria-hidden="true"></span>
+      <span class="mono" data-clock>00:00:00 UTC</span>
+    </span>
+    <a class="navlink" href="partners.html">Founding Partners</a>
+    <a class="navlink" href="control-plane.html"><span class="lbl-full">Control plane</span><span class="lbl-short">Demo</span></a>
+    <a class="navlink" href="login.html">Login</a>
+    <a class="navlink navlink--cta" href="onboarding.html"><span class="lbl-full">Apply as partner</span><span class="lbl-short">Apply</span> <span class="arr" aria-hidden="true">↗</span></a>
+  </nav>
+</header>
+
+<main id="main" tabindex="-1">
+<section class="section pagehead">
+  <div class="wrap">
+    <span class="eyebrow">Research · preliminary</span>
+    <h1>Helicyn research</h1>
+    <p>This page tracks Helicyn's research thesis and simulator findings. Everything here is <strong>preliminary, research/prototype, simulation-based, and assumption-bound</strong>. The final paper is coming later and will replace the placeholders below.</p>
+    <div class="pagehead__cta">
+      <a class="btn" href="control-plane.html" data-magnetic="0.2">View control plane <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn" href="partners.html" data-magnetic="0.2">Founding partner program <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn-ghost" href="onboarding.html"><span class="dot" aria-hidden="true"></span> Apply as partner</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--line">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Status</span>
+      <h2>Preliminary thesis · paper coming soon.</h2>
+    </div>
+    <div class="researchplaceholder" style="margin-top:1.6rem;">
+      <strong>[PAPER_STATUS]</strong> Preliminary technical paper expected late July 2026. Not yet published.
+      <br /><strong>[PAPER_TITLE]</strong> placeholder -- replace with the final paper title.
+      <br /><strong>[PAPER_DATE]</strong> placeholder -- replace with the final paper's publication date.
+    </div>
+  </div>
+</section>
+
+<section class="section section--line">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Abstract</span>
+      <h2>Placeholder -- replace with the final abstract.</h2>
+    </div>
+    <div class="researchplaceholder" style="margin-top:1.6rem;">
+      [ABSTRACT] This section will contain the final paper's abstract once written. Today: Helicyn's working
+      thesis is that AI data center infrastructure is increasingly constrained by coordination across compute,
+      energy, cooling, and grid conditions rather than by any single layer in isolation, and that a coordination
+      layer can reduce waste without sacrificing utilization -- evaluated so far only in an independent,
+      discrete-time simulator under documented modeling assumptions, not in production.
+    </div>
+  </div>
+</section>
+
+<section class="section section--line">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Methodology</span>
+      <h2>Simulation-based, assumption-bound.</h2>
+    </div>
+    <div class="researchplaceholder" style="margin-top:1.6rem;">
+      [METHODOLOGY_SUMMARY] placeholder. The current evidence base is an independent, discrete-time data-center
+      scheduling simulator (helicyn-sim) that models workload placement, thermal/cooling response, energy, carbon,
+      and cost under several scheduling policies (baseline first-fit, consolidation, thermal-aware, carbon-aware,
+      price-aware, DVFS-aware, and an integrated-coordination policy), compared across synthetic and
+      trace-shaped scenarios. See helicyn-sim/docs/model_assumptions.md and helicyn-sim/docs/limitations.md for
+      the full assumption set. Replace this paragraph with the paper's finalized methodology summary.
+    </div>
+  </div>
+</section>
+
+<section class="section section--line">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Selected findings</span>
+      <h2>Placeholder -- replace with key findings once finalized.</h2>
+    </div>
+    <div class="researchplaceholder" style="margin-top:1.6rem;">
+      [KEY_FINDINGS] placeholder. Findings from the simulator (energy, carbon, cost, deadline misses, and thermal
+      violations by policy) are simulated under documented assumptions in a research prototype -- they are not
+      production savings or real facility validation. Once research_outputs/ has been generated (see
+      helicyn-sim's research-run / paper-figures / paper-tables commands) and reviewed, replace this section with
+      the finalized, caveated findings and figures selected for the paper.
+    </div>
+    <div class="researchplaceholder" style="margin-top:1rem;">
+      [SELECTED_FIGURES] placeholder -- figures such as facility_energy_by_policy.png, carbon_by_policy.png,
+      cost_by_policy.png, deadline_misses_by_policy.png, and thermal_violations_by_policy.png go here once
+      selected and copied into this site's assets. All public captions must say simulated / under assumptions /
+      research prototype / concept-feasibility, and must avoid "proven," "validated," or "production savings."
+    </div>
+  </div>
+</section>
+
+<section class="section section--line">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Limitations</span>
+      <h2>What this research does not yet show.</h2>
+    </div>
+    <ul style="margin-top:1.6rem; display:grid; gap:0.7rem; padding-left:1.2rem; max-width:68ch; color:var(--text-dim); font-size:1rem; line-height:1.6;">
+      <li>All results to date are simulated under documented modeling assumptions -- not measured from live production infrastructure.</li>
+      <li>The simulator is an independent research prototype (helicyn-sim), not connected to any customer's real facility, telemetry, or billing systems.</li>
+      <li>No production savings, verified real-world impact, or live deployments currently exist.</li>
+      <li>The optional external Helicyn ML integration uses a teacher-imitation-only model, not one trained on real or simulated outcomes -- see helicyn-sim/docs/ml_integration_plan.md.</li>
+      <li>The final paper will state its own limitations explicitly; this list will be reviewed and superseded by that document.</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section access">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Next steps</span>
+      <h2 style="margin-top:1.2rem;">Explore the prototype or apply as a founding partner.</h2>
+    </div>
+    <div class="pagehead__cta">
+      <a class="btn" href="control-plane.html" data-magnetic="0.2">View control plane <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn" href="onboarding.html" data-magnetic="0.2">Apply as founding partner <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer" data-screen-label="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <span class="brand" data-magnetic="0.15">
+          <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true" style="width:20px;height:20px;">
+            <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
+            <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
+          </svg>
+          <span class="brand__name">Helicyn</span>
+        </span>
+        <p class="footer__tagline">The coordination layer for large-scale physical and computational systems.</p>
+      </div>
+      <div class="fcol">
+        <h4>Company</h4>
+        <a href="research.html">Thesis / Research</a>
+        <a href="partners.html">Founding Partners</a>
+        <a href="control-plane.html">Control Plane</a>
+        <a href="onboarding.html">Onboarding</a>
+        <a href="login.html">Login</a>
+      </div>
+      <div class="fcol">
+        <h4>Connect</h4>
+        <a href="https://www.linkedin.com/company/helicyn/" target="_blank" rel="noopener noreferrer">Follow us on LinkedIn <span class="arr" aria-hidden="true">↗</span></a>
+        <a data-email-link href="#">Email us</a>
+      </div>
+    </div>
+    <div class="footer__base">
+      <span class="mono">© 2026 Helicyn · All rights reserved</span>
+      <span class="statusband__item"><span class="statusdot" aria-hidden="true"></span><span class="mono">Research preview · Build v0.3.0</span></span>
+      <span class="mono">v0.3.0 / build 2026.07.01</span>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

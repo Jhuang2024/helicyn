@@ -1,0 +1,12 @@
+# Real Supabase project config (URL + public anon key) -- never commit.
+# Copy supabase-config.example.js to supabase-config.js and fill in your
+# own project's values. See docs/auth_setup.md.
+supabase-config.js
+
+# Env files (kept in case a future build step is added; never commit)
+.env
+.env.local
+.env.*.local
+
+# OS / editor cruft
+.DS_Store

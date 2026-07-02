@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>document.documentElement.className += ' js';</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#08090b" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Helicyn · Founding Partner Application</title>
+<meta name="description" content="Apply to become a Helicyn founding partner: early access, direct product input, priority onboarding, and preferred launch pricing. Pre-commercial research/prototype." />
+<link rel="canonical" href="https://helicyn.com/onboarding" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="favicon-180.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="partner.css" />
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+<div class="progress"></div>
+
+<header class="nav" data-screen-label="nav">
+  <a class="brand" href="index.html" aria-label="Helicyn home" data-magnetic="0.18">
+    <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
+      <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
+    </svg>
+    <span class="brand__name">Helicyn</span>
+  </a>
+  <button class="navtoggle" type="button" aria-expanded="false" aria-controls="navmenu" data-nav-toggle aria-label="Toggle menu">
+    <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
+  </button>
+  <nav class="nav__right" id="navmenu" data-nav-menu>
+    <span class="nav__meta">
+      <span class="statusdot" aria-hidden="true"></span>
+      <span class="mono" data-clock>00:00:00 UTC</span>
+    </span>
+    <a class="navlink" href="research.html">Research</a>
+    <a class="navlink" href="partners.html">Founding Partners</a>
+    <a class="navlink" href="control-plane.html"><span class="lbl-full">Control plane</span><span class="lbl-short">Demo</span></a>
+    <a class="navlink" href="login.html">Login</a>
+    <a class="navlink navlink--cta" href="partner-portal.html"><span class="lbl-full">Partner portal</span><span class="lbl-short">Portal</span> <span class="arr" aria-hidden="true">↗</span></a>
+  </nav>
+</header>
+
+<main id="main" tabindex="-1">
+<section class="section pagehead">
+  <div class="wrap">
+    <span class="eyebrow">Founding partner application</span>
+    <h1>Apply as a founding partner</h1>
+    <p>Founding partners get early access, direct product input, priority onboarding, and preferred launch pricing when Helicyn launches. Helicyn is currently pre-commercial -- this is a real application, stored in a real database, not a demo form.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="wrap">
+    <div id="configNotice"></div>
+
+    <div id="authGate" class="authnotice authnotice--info centerwrap" hidden>
+      <span class="authnotice__title">Sign in required</span>
+      <p>You need a founding partner account before submitting an application (so you can view its status later in the partner portal). This takes under a minute.</p>
+      <div class="pagehead__cta" style="margin-top:0.6rem;">
+        <a class="btn" href="login.html">Sign in or create an account <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <div id="alreadySubmitted" class="authnotice authnotice--ok centerwrap" hidden>
+      <span class="authnotice__title">Application already submitted</span>
+      <p>You already have a founding partner application on file. View or track it in the <a href="partner-portal.html" style="text-decoration:underline;">partner portal</a>.</p>
+    </div>
+
+    <div id="successView" class="authnotice authnotice--ok centerwrap" hidden>
+      <span class="authnotice__title">Application submitted</span>
+      <p>Thanks. Your founding partner application has been submitted. You can view its status in the partner portal.</p>
+      <div class="pagehead__cta" style="margin-top:0.6rem;">
+        <a class="btn" href="partner-portal.html">Go to partner portal <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <form id="onboardingForm" class="formgrid" novalidate>
+      <div>
+        <span class="eyebrow">Company information</span>
+        <div class="formgrid formgrid--2col" style="margin-top:1rem;">
+          <div class="formfield">
+            <label class="formfield__label" for="company_name">Company name <span class="req">*</span></label>
+            <input type="text" id="company_name" name="company_name" required />
+            <span class="formfield__err" data-err-for="company_name"></span>
+          </div>
+          <div class="formfield">
+            <label class="formfield__label" for="website">Website</label>
+            <input type="url" id="website" name="website" placeholder="https://" />
+          </div>
+          <div class="formfield">
+            <label class="formfield__label" for="industry">Industry</label>
+            <input type="text" id="industry" name="industry" />
+          </div>
+          <div class="formfield">
+            <label class="formfield__label" for="company_size">Company size</label>
+            <input type="text" id="company_size" name="company_size" placeholder="e.g. 50-200" />
+          </div>
+          <div class="formfield">
+            <label class="formfield__label" for="region">Region</label>
+            <input type="text" id="region" name="region" />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <span class="eyebrow">Contact</span>
+        <div class="formgrid formgrid--2col" style="margin-top:1rem;">
+          <div class="formfield">
+            <label class="formfield__label" for="name">Name <span class="req">*</span></label>
+            <input type="text" id="name" name="name" required />
+            <span class="formfield__err" data-err-for="name"></span>
+          </div>
+          <div class="formfield">
+            <label class="formfield__label" for="email">Email <span class="req">*</span></label>
+            <input type="email" id="email" name="email" required />
+            <span class="formfield__err" data-err-for="email"></span>
+          </div>
+          <div class="formfield">
+            <label class="formfield__label" for="role_title">Role / title</label>
+            <input type="text" id="role_title" name="role_title" />
+          </div>
+          <div class="formfield">
+            <label class="formfield__label" for="linkedin">LinkedIn</label>
+            <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/..." />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <span class="eyebrow">Infrastructure profile</span>
+        <div class="formgrid formgrid--2col" style="margin-top:1rem;">
+          <div class="formfield">
+            <label class="formfield__label" for="relationship_to_data_centers">Relationship to data centers</label>
+            <select id="relationship_to_data_centers" name="relationship_to_data_centers">
+              <option value="">Select one</option>
+              <option value="operator">Operator</option>
+              <option value="cloud_platform_team">Cloud / platform team</option>
+              <option value="ai_infrastructure_team">AI infrastructure team</option>
+              <option value="energy_cooling_vendor">Energy / cooling vendor</option>
+              <option value="investor_advisor">Investor / advisor</option>
+              <option value="researcher">Researcher</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="formfield">
+            <label class="formfield__label" for="infrastructure_scale">Infrastructure scale</label>
+            <select id="infrastructure_scale" name="infrastructure_scale">
+              <option value="">Select one</option>
+              <option value="exploratory_research">Exploratory / research</option>
+              <option value="single_site">Single site</option>
+              <option value="multi_site">Multi-site</option>
+              <option value="cloud_hybrid">Cloud / hybrid</option>
+              <option value="large_fleet">Large fleet</option>
+              <option value="prefer_not_to_say">Prefer not to say</option>
+            </select>
+          </div>
+          <div class="formfield">
+            <label class="formfield__label" for="primary_concern">Primary concern</label>
+            <select id="primary_concern" name="primary_concern">
+              <option value="">Select one</option>
+              <option value="energy_cost">Energy cost</option>
+              <option value="carbon_intensity">Carbon intensity</option>
+              <option value="cooling_thermal_constraints">Cooling / thermal constraints</option>
+              <option value="gpu_utilization">GPU utilization</option>
+              <option value="workload_placement">Workload placement</option>
+              <option value="peak_power">Peak power</option>
+              <option value="research_collaboration">Research collaboration</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="formfield">
+        <label class="formfield__label">Founding partner interests</label>
+        <div class="multicheck">
+          <label><input type="checkbox" name="founding_partner_interests" value="early_access" /><span>Early access</span></label>
+          <label><input type="checkbox" name="founding_partner_interests" value="technical_review" /><span>Technical review</span></label>
+          <label><input type="checkbox" name="founding_partner_interests" value="product_feedback" /><span>Product feedback</span></label>
+          <label><input type="checkbox" name="founding_partner_interests" value="pilot_later" /><span>Pilot later</span></label>
+          <label><input type="checkbox" name="founding_partner_interests" value="research_collaboration" /><span>Research collaboration</span></label>
+          <label><input type="checkbox" name="founding_partner_interests" value="pricing_founding_partner_terms" /><span>Pricing / founding partner terms</span></label>
+        </div>
+      </div>
+
+      <div class="formfield">
+        <label class="formfield__label" for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Anything else we should know?"></textarea>
+      </div>
+
+      <div class="checkfield">
+        <input type="checkbox" id="consent_precommercial" name="consent_precommercial" required />
+        <label for="consent_precommercial">I understand Helicyn is currently a pre-commercial research/prototype project. <span class="req">*</span></label>
+      </div>
+      <span class="formfield__err" data-err-for="consent_precommercial"></span>
+
+      <div class="formsubmit">
+        <button class="btn" type="submit" id="submitBtn">Submit application <span class="arr" aria-hidden="true">→</span></button>
+        <span class="mono" id="submitLoading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Submitting<span class="loadingdots"></span></span>
+      </div>
+      <div id="submitNotice"></div>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer class="footer" data-screen-label="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <span class="brand" data-magnetic="0.15">
+          <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true" style="width:20px;height:20px;">
+            <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
+            <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
+          </svg>
+          <span class="brand__name">Helicyn</span>
+        </span>
+        <p class="footer__tagline">The coordination layer for large-scale physical and computational systems.</p>
+      </div>
+      <div class="fcol">
+        <h4>Company</h4>
+        <a href="research.html">Thesis / Research</a>
+        <a href="partners.html">Founding Partners</a>
+        <a href="control-plane.html">Control Plane</a>
+        <a href="onboarding.html">Onboarding</a>
+        <a href="login.html">Login</a>
+      </div>
+      <div class="fcol">
+        <h4>Connect</h4>
+        <a href="https://www.linkedin.com/company/helicyn/" target="_blank" rel="noopener noreferrer">Follow us on LinkedIn <span class="arr" aria-hidden="true">↗</span></a>
+        <a data-email-link href="#">Email us</a>
+      </div>
+    </div>
+    <div class="footer__base">
+      <span class="mono">© 2026 Helicyn · All rights reserved</span>
+      <span class="statusband__item"><span class="statusdot" aria-hidden="true"></span><span class="mono">Research preview · Build v0.3.0</span></span>
+      <span class="mono">v0.3.0 / build 2026.07.01</span>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script type="module" src="supabase-config.js"></script>
+<script type="module" src="onboarding.js"></script>
+</body>
+</html>

@@ -185,6 +185,31 @@
       if (note.classList.contains('err')) { note.classList.remove('err'); note.textContent = note.dataset.idle || ''; }
     });
   }
+  // ---- footer/portal email links (assembled at runtime, same
+  // anti-scrape pattern as the access form) -------------------
+  document.querySelectorAll('[data-email-link]').forEach((a) => {
+    const dest = 'jerry' + String.fromCharCode(64) + ['helicyn', 'com'].join('.');
+    a.href = 'mailto:' + dest;
+  });
+
+  // ---- mobile nav toggle -------------------------------------
+  const navToggle = document.querySelector('[data-nav-toggle]');
+  const navMenu = document.querySelector('[data-nav-menu]');
+  if (navToggle && navMenu) {
+    const closeNav = () => { navMenu.classList.remove('is-open'); navToggle.setAttribute('aria-expanded', 'false'); };
+    const openNav = () => { navMenu.classList.add('is-open'); navToggle.setAttribute('aria-expanded', 'true'); };
+    navToggle.addEventListener('click', () => {
+      if (navMenu.classList.contains('is-open')) closeNav(); else openNav();
+    });
+    navMenu.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeNav));
+    document.addEventListener('click', (e) => {
+      if (!navMenu.classList.contains('is-open')) return;
+      if (navMenu.contains(e.target) || navToggle.contains(e.target)) return;
+      closeNav();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeNav(); });
+  }
+
   // ---- thesis status modal ---------------------------------
   const thesisModal = document.getElementById('thesis-modal');
   if (thesisModal) {

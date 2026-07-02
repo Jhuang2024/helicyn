@@ -1,0 +1,186 @@
+/* ============================================================
+   HELICYN - partner pages (login, onboarding, partner-portal,
+   partners, research)
+   Extends styles.css's dark instrument-panel system with the extra
+   components those pages need: real form fields (select/textarea/
+   checkbox), auth notices, stage cards, and portal summary cards.
+   ============================================================ */
+
+.pagehead { padding-top: clamp(7rem, 14vh, 10rem); padding-bottom: clamp(2rem, 5vh, 3rem); }
+.pagehead .eyebrow { margin-bottom: 1rem; }
+.pagehead h1 { font-weight: 500; font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.05; letter-spacing: -0.03em; text-wrap: balance; }
+.pagehead p { margin-top: 1.1rem; max-width: 62ch; color: var(--text-dim); font-size: 1.05rem; line-height: 1.6; }
+.pagehead__cta { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 1.8rem; }
+
+/* ---- generic form controls (select/textarea/checkbox) ------------- */
+
+.formgrid { display: grid; gap: 1.4rem; }
+@media (min-width: 720px) { .formgrid--2col { grid-template-columns: 1fr 1fr; } }
+
+.formfield { display: grid; gap: 0.5rem; }
+.formfield__label {
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.formfield__label .req { color: var(--signal); margin-left: 0.3em; }
+.formfield input[type="text"],
+.formfield input[type="email"],
+.formfield input[type="password"],
+.formfield input[type="url"],
+.formfield select,
+.formfield textarea {
+  width: 100%;
+  background: var(--bg-1);
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.98rem;
+  transition: border-color 0.35s var(--ease), background 0.35s var(--ease);
+}
+.formfield select { appearance: none; cursor: pointer; }
+.formfield textarea { resize: vertical; min-height: 6.5rem; line-height: 1.5; }
+.formfield input::placeholder, .formfield textarea::placeholder { color: var(--text-faint); }
+.formfield input:focus-visible, .formfield select:focus-visible, .formfield textarea:focus-visible {
+  outline: none; border-color: var(--signal-line); background: var(--bg-2);
+}
+.formfield__err { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em; color: oklch(0.7 0.13 35); min-height: 1.1em; }
+.formfield--invalid input, .formfield--invalid select, .formfield--invalid textarea { border-color: oklch(0.7 0.13 35 / 0.6); }
+
+.checkfield { display: flex; align-items: flex-start; gap: 0.75rem; }
+.checkfield input[type="checkbox"] {
+  margin-top: 0.2rem; width: 16px; height: 16px; flex: none; accent-color: var(--signal); cursor: pointer;
+}
+.checkfield label { font-size: 0.88rem; color: var(--text-dim); line-height: 1.5; cursor: pointer; }
+
+.multicheck { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+.multicheck label { position: relative; }
+.multicheck input { position: absolute; opacity: 0; width: 0; height: 0; }
+.multicheck span {
+  display: inline-flex; align-items: center; padding: 0.5rem 0.85rem; cursor: pointer;
+  border: 1px solid var(--line-2); border-radius: 100px;
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em; color: var(--text-dim);
+  transition: border-color 0.35s var(--ease), color 0.35s var(--ease), background 0.35s var(--ease);
+}
+.multicheck input:checked + span { color: var(--text); border-color: var(--signal-line); background: var(--signal-soft); }
+.multicheck input:focus-visible + span { outline: 2px solid var(--signal); outline-offset: 2px; }
+
+.formsubmit { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 0.4rem; }
+
+/* ---- auth notices (config error, form error, success) --------------- */
+
+.authnotice {
+  border: 1px solid var(--line-2); border-radius: 10px; padding: 1rem 1.2rem;
+  background: var(--bg-1); display: grid; gap: 0.4rem;
+}
+.authnotice__title { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); }
+.authnotice p { color: var(--text-dim); font-size: 0.92rem; line-height: 1.55; }
+.authnotice--err { border-color: oklch(0.7 0.13 35 / 0.4); }
+.authnotice--err .authnotice__title { color: oklch(0.75 0.13 35); }
+.authnotice--ok { border-color: var(--signal-line); }
+.authnotice--ok .authnotice__title { color: var(--signal); }
+.authnotice--info { border-color: var(--line-2); }
+
+/* ---- auth card (login) ------------------------------------------------ */
+
+.authcard {
+  border: 1px solid var(--line); border-radius: 14px; background: var(--bg-1);
+  padding: clamp(1.6rem, 4vw, 2.4rem); max-width: 480px; display: grid; gap: 1.4rem;
+}
+.authcard__tabs { display: flex; gap: 0.5rem; }
+.authcard__tab {
+  font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.5rem 0.9rem; border-radius: 100px; border: 1px solid var(--line-2); color: var(--text-dim);
+  background: transparent; cursor: pointer; transition: all 0.3s var(--ease);
+}
+.authcard__tab.is-active { color: var(--text); border-color: var(--signal-line); background: var(--signal-soft); }
+.authcard__method { display: flex; gap: 0.5rem; margin-top: -0.4rem; }
+.authcard__methodlink {
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em; color: var(--text-faint);
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer; background: none; border: 0;
+}
+.authcard__methodlink:hover { color: var(--text); }
+.authcard__foot { display: grid; gap: 0.5rem; padding-top: 0.6rem; border-top: 1px solid var(--line); }
+.authcard__foot a { font-size: 0.86rem; color: var(--text-dim); transition: color 0.3s var(--ease); }
+.authcard__foot a:hover { color: var(--text); }
+
+/* ---- stage cards (Stage 1/2/3, product stages) ------------------------ */
+
+.stagegrid { display: grid; gap: 1.1rem; }
+@media (min-width: 860px) { .stagegrid { grid-template-columns: repeat(3, 1fr); } }
+.stagecard {
+  border: 1px solid var(--line); border-radius: 14px; padding: 1.6rem; background: var(--bg-1);
+  display: grid; gap: 0.8rem; align-content: start;
+}
+.stagecard.is-now { border-color: var(--signal-line); background: linear-gradient(180deg, var(--signal-soft), transparent 60%); }
+.stagecard__tag {
+  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint);
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.stagecard.is-now .stagecard__tag { color: var(--signal); }
+.stagecard h3 { font-weight: 500; font-size: 1.2rem; letter-spacing: -0.01em; }
+.stagecard p { color: var(--text-dim); font-size: 0.92rem; line-height: 1.55; }
+.stagecard ul { display: grid; gap: 0.4rem; margin-top: 0.2rem; padding-left: 1.1rem; }
+.stagecard li { color: var(--text-dim); font-size: 0.88rem; line-height: 1.5; }
+.stagecard__example {
+  font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-faint); background: var(--bg-2);
+  border: 1px solid var(--line); border-radius: 8px; padding: 0.7rem 0.85rem; margin-top: 0.2rem;
+}
+
+/* ---- who-this-is-for / role cards --------------------------------- */
+
+.rolegrid { display: grid; gap: 0.9rem; }
+@media (min-width: 640px) { .rolegrid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 980px) { .rolegrid { grid-template-columns: repeat(3, 1fr); } }
+.rolecard {
+  border: 1px solid var(--line); border-radius: 12px; padding: 1.3rem; background: var(--bg-1);
+  transition: border-color 0.35s var(--ease), transform 0.35s var(--ease);
+}
+.rolecard:hover { border-color: var(--signal-line); transform: translateY(-2px); }
+.rolecard__title { font-weight: 500; font-size: 1rem; margin-bottom: 0.4rem; }
+.rolecard p { color: var(--text-dim); font-size: 0.88rem; line-height: 1.5; }
+
+/* ---- portal cards --------------------------------------------------- */
+
+.portalgrid { display: grid; gap: 1.1rem; }
+@media (min-width: 860px) { .portalgrid { grid-template-columns: 1fr 1fr; } }
+.portalcard {
+  border: 1px solid var(--line); border-radius: 14px; padding: 1.6rem; background: var(--bg-1);
+  display: grid; gap: 0.9rem; align-content: start;
+}
+.portalcard--wide { grid-column: 1 / -1; }
+.portalcard h3 { font-weight: 500; font-size: 1.05rem; }
+.portalcard__row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-block: 0.5rem; border-bottom: 1px solid var(--line-soft); }
+.portalcard__row:last-child { border-bottom: 0; }
+.portalcard__row .k { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); }
+.portalcard__row .v { color: var(--text); font-size: 0.92rem; text-align: right; }
+.portalcard__linklist { display: grid; gap: 0.5rem; }
+.portalcard__linklist a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-dim); font-size: 0.92rem; transition: color 0.3s var(--ease); }
+.portalcard__linklist a:hover { color: var(--text); }
+
+.statuspill {
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.8rem; border-radius: 100px;
+  border: 1px solid var(--line-2); font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-dim); width: fit-content;
+}
+.statuspill .d { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); flex: none; }
+.statuspill--submitted, .statuspill--reviewing { border-color: var(--signal-line); color: var(--text); }
+.statuspill--submitted .d, .statuspill--reviewing .d { background: var(--signal); box-shadow: 0 0 8px var(--signal-glow); }
+.statuspill--accepted { border-color: var(--signal-line); color: var(--signal); }
+.statuspill--accepted .d { background: var(--signal); }
+.statuspill--declined, .statuspill--waitlisted { border-color: var(--warn-line); color: var(--warn); }
+.statuspill--declined .d, .statuspill--waitlisted .d { background: var(--warn); }
+
+/* ---- research page placeholders -------------------------------------- */
+
+.researchplaceholder {
+  border: 1px dashed var(--line-2); border-radius: 12px; padding: 1.4rem;
+  color: var(--text-faint); font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.6;
+  background: var(--bg-1);
+}
+.researchplaceholder strong { color: var(--text-dim); }
+
+.loadingdots::after { content: "..."; }
+
+.centerwrap { max-width: 640px; margin: 0 auto; }

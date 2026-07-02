@@ -34,11 +34,15 @@ from helicyn_sim.dashboard.pages import (  # noqa: E402
     paper_outputs as paper_outputs_page,
     policy_comparison as policy_comparison_page,
     run_inspector as run_inspector_page,
+    run_policy_comparison as run_policy_comparison_page,
+    run_simulator as run_simulator_page,
     sensitivity as sensitivity_page,
 )
 
 PAGES = {
     "Overview": overview_page,
+    "Run Simulator": run_simulator_page,
+    "Run Policy Comparison": run_policy_comparison_page,
     "Single Run Inspector": run_inspector_page,
     "Policy Comparison": policy_comparison_page,
     "Integrated Coordination": integrated_coordination_page,

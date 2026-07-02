@@ -34,6 +34,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="partner.css" />
 </head>
 <body>
 
@@ -49,13 +50,19 @@
     </svg>
     <span class="brand__name">Helicyn</span>
   </a>
-  <nav class="nav__right">
+  <button class="navtoggle" type="button" aria-expanded="false" aria-controls="navmenu" data-nav-toggle aria-label="Toggle menu">
+    <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
+  </button>
+  <nav class="nav__right" id="navmenu" data-nav-menu>
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
       <span class="mono" data-clock>00:00:00 UTC</span>
     </span>
-    <a class="navlink" href="control-plane.html"><span class="lbl-full">Interactive demo</span><span class="lbl-short">Demo</span></a>
-    <a class="navlink navlink--cta" href="#access"><span class="lbl-full">Request access</span><span class="lbl-short">Access</span> <span class="arr" aria-hidden="true">↗</span></a>
+    <a class="navlink" href="research.html">Research</a>
+    <a class="navlink" href="partners.html">Founding Partners</a>
+    <a class="navlink" href="control-plane.html"><span class="lbl-full">Control plane</span><span class="lbl-short">Demo</span></a>
+    <a class="navlink" href="login.html">Login</a>
+    <a class="navlink navlink--cta" href="onboarding.html"><span class="lbl-full">Apply as partner</span><span class="lbl-short">Apply</span> <span class="arr" aria-hidden="true">↗</span></a>
   </nav>
 </header>
 
@@ -81,7 +88,7 @@
         <p class="hero__tagline" data-reveal style="--i:2">The coordination layer for AI infrastructure.</p>
         <div class="hero__cta" data-reveal style="--i:3">
           <a class="btn" href="control-plane.html" data-magnetic="0.2">View control plane <span class="arr" aria-hidden="true">→</span></a>
-          <a class="btn" href="#access" data-magnetic="0.2">Request access <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn" href="onboarding.html" data-magnetic="0.2">Apply as founding partner <span class="arr" aria-hidden="true">→</span></a>
           <a class="btn-ghost" href="#thesis"><span class="dot" aria-hidden="true"></span> Thesis preview</a>
         </div>
         <div class="hero__status" data-reveal style="--i:4" role="note" aria-label="What this preview demonstrates">
@@ -296,6 +303,7 @@
       <p data-reveal style="--i:4">We start with energy and thermal optimization for AI data centers. The direction is an operating layer for large-scale computational and physical infrastructure.</p>
       <div class="manifesto__thesisrow" data-reveal style="--i:5">
         <button class="btn" type="button" data-thesis-open>Thesis status <span class="arr" aria-hidden="true">→</span></button>
+        <a class="btn-ghost" href="research.html"><span class="dot" aria-hidden="true"></span> Research page</a>
         <span class="manifesto__thesisnote">Preliminary technical paper expected late&nbsp;July.</span>
       </div>
     </div>
@@ -463,13 +471,46 @@
   </div>
 </section>
 
+<!-- =================== FOUNDING PARTNER PROGRAM ================= -->
+<section class="section section--line" id="founding-partner-program" data-screen-label="founding-partner-program">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">Founding Partner Program</span>
+      <h2 data-reveal="mask" style="--i:1">Pre-commercial now. Platform subscription at launch. Performance-based pricing only after verified savings.</h2>
+      <p style="color:var(--text-dim); max-width:64ch;">Helicyn is currently pre-commercial. Founding partners receive early access, direct product input, priority onboarding, and preferred launch pricing when the platform launches.</p>
+    </div>
+    <div class="stagegrid" data-reveal style="--i:2; margin-top:2rem;">
+      <div class="stagecard is-now">
+        <span class="stagecard__tag"><span class="d" aria-hidden="true"></span>Stage 1 · Now</span>
+        <h3>Founding Partner</h3>
+        <p>Pre-commercial. Relationship-first: product feedback, design partnership, and early validation. Not a paid production product yet.</p>
+      </div>
+      <div class="stagecard">
+        <span class="stagecard__tag">Stage 2 · Future</span>
+        <h3>Commercial Launch</h3>
+        <p>Proposed annual enterprise SaaS/platform subscription once the platform is production-ready, coordinating workloads, energy, cooling, and infrastructure.</p>
+      </div>
+      <div class="stagecard">
+        <span class="stagecard__tag">Stage 3 · Future</span>
+        <h3>Performance-Based Pricing</h3>
+        <p>Once savings are verified, the customer keeps most of the savings and Helicyn receives an agreed percentage.</p>
+      </div>
+    </div>
+    <div class="pagehead__cta" data-reveal style="--i:3">
+      <a class="btn" href="partners.html" data-magnetic="0.2">Learn about founding partners <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn" href="onboarding.html" data-magnetic="0.2">Apply as founding partner <span class="arr" aria-hidden="true">→</span></a>
+      <a class="btn-ghost" href="research.html"><span class="dot" aria-hidden="true"></span> Research</a>
+    </div>
+  </div>
+</section>
+
 <!-- ========================== ACCESS =========================== -->
 <section class="section access" id="access" data-screen-label="access">
   <div class="wrap">
     <div data-reveal>
-      <span class="eyebrow">Limited intake</span>
-      <h2 style="margin-top:1.2rem;">We are speaking with a small number of partners and operators.</h2>
-      <p>Leave an email if you want to review the thesis, test the simulation, or discuss infrastructure coordination. Conversations are private.</p>
+      <span class="eyebrow">Quick contact</span>
+      <h2 style="margin-top:1.2rem;">Prefer email first? Leave an address.</h2>
+      <p>Leave an email if you want to review the thesis, test the simulation, or discuss infrastructure coordination before applying. Conversations are private. To formally apply as a founding partner, use the <a href="onboarding.html" style="text-decoration:underline;">onboarding form</a> instead (requires an account, sign in at <a href="login.html" style="text-decoration:underline;">/login</a>).</p>
     </div>
     <form class="form" data-reveal style="--i:1" novalidate>
       <fieldset class="rolepick">
@@ -507,15 +548,17 @@
 
       <div class="fcol">
         <h4>Company</h4>
-        <a href="#thesis">Thesis</a>
-        <a href="#capabilities">What we build</a>
-        <a href="control-plane.html">Interactive demo</a>
-        <a href="#access">Request access</a>
+        <a href="research.html">Thesis / Research</a>
+        <a href="partners.html">Founding Partners</a>
+        <a href="control-plane.html">Control Plane</a>
+        <a href="onboarding.html">Onboarding</a>
+        <a href="login.html">Login</a>
       </div>
 
       <div class="fcol">
         <h4>Connect</h4>
         <a href="https://www.linkedin.com/company/helicyn/" target="_blank" rel="noopener noreferrer">Follow us on LinkedIn <span class="arr" aria-hidden="true">↗</span></a>
+        <a data-email-link href="#">Email us</a>
         <span class="fcol__note">Follow us on LinkedIn for future updates.</span>
       </div>
     </div>
@@ -538,7 +581,8 @@
     <span class="eyebrow" id="thesis-modal-title">Thesis · status</span>
     <p class="modal__body" id="thesis-modal-body">The full Helicyn thesis is currently being written. A preliminary version is expected in late&nbsp;July.</p>
     <div class="modal__actions">
-      <button class="btn" type="button" data-modal-close>Understood</button>
+      <a class="btn" href="research.html">View research page <span class="arr" aria-hidden="true">→</span></a>
+      <button class="btn-ghost" type="button" data-modal-close><span class="dot" aria-hidden="true"></span> Close</button>
     </div>
   </div>
 </div>

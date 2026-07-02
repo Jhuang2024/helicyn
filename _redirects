@@ -7,3 +7,8 @@
 /control-plane.html   /control-plane   301
 # Pretty URL → file
 /control-plane        /control-plane.html  200
+/login                 /login.html            200
+/onboarding            /onboarding.html       200
+/partner-portal        /partner-portal.html   200
+/partners              /partners.html         200
+/research              /research.html         200
