@@ -9,6 +9,7 @@ from rich.console import Console
 from helicyn_sim.experiments.ablation import run_ablation
 from helicyn_sim.experiments.before_after import run_before_after
 from helicyn_sim.experiments.claims_audit import write_claims_audit
+from helicyn_sim.experiments.dashboard_snapshot import generate_dashboard_snapshot
 from helicyn_sim.experiments.paper_figures import generate_paper_figures
 from helicyn_sim.experiments.paper_tables import generate_paper_tables
 from helicyn_sim.experiments.research_report import generate_research_report
@@ -329,6 +330,47 @@ def research_report(
         results, out, ablation_dir=ablation, sensitivity_dir=sensitivity, claims_audit_path=claims
     )
     console.print(f"[green]Research report written.[/green] {path}")
+
+
+@app.command()
+def dashboard() -> None:
+    """Launch the Streamlit research dashboard (helicyn_sim/dashboard/app.py).
+    Falls back to printing the exact command if streamlit isn't installed
+    or can't be launched from here.
+    """
+    import shutil
+    import subprocess
+    import sys
+
+    app_path = Path(__file__).parent / "dashboard" / "app.py"
+    streamlit_cmd = f"streamlit run {app_path}"
+
+    if shutil.which("streamlit") is None:
+        console.print("[yellow]streamlit is not installed or not on PATH.[/yellow]")
+        console.print("Install it with: pip install -e \".[dev]\"  (or \".[dashboard]\")")
+        console.print("Then run:")
+        console.print(streamlit_cmd, style="bold")
+        raise typer.Exit(code=0)
+
+    console.print(f"Launching: {streamlit_cmd}")
+    try:
+        subprocess.run(["streamlit", "run", str(app_path)], check=False)
+    except (OSError, KeyboardInterrupt):
+        console.print("Run:")
+        console.print(streamlit_cmd, style="bold")
+        sys.exit(0)
+
+
+@app.command(name="dashboard-snapshot")
+def dashboard_snapshot(
+    results: Path = typer.Option(..., "--results", exists=True, help="A research-run output directory."),
+    out: Path = typer.Option(..., "--out", help="Output path for dashboard_snapshot.md."),
+) -> None:
+    """Generate a static markdown summary of the same overview information
+    the dashboard's Overview page shows -- useful when Streamlit isn't running.
+    """
+    path = generate_dashboard_snapshot(results, out)
+    console.print(f"[green]Dashboard snapshot written.[/green] {path}")
 
 
 @app.command()
