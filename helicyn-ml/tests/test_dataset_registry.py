@@ -7,6 +7,8 @@ EXPECTED_IDS = {
     "azure-llm-2024",
     "azure-functions-2019",
     "google-2019-local",
+    "google-cluster-cpu-memory-preprocessed",
+    "azure-cpu-usage-small",
     "burstgpt",
     "electricity-maps-sample",
     "electricity-maps",
@@ -29,4 +31,4 @@ def test_dataset_cards_have_required_fields():
         assert card.source_url.startswith("http")
         assert card.purpose
         assert isinstance(card.limitations, list) and len(card.limitations) > 0
-        assert card.kind in {"workload", "grid", "weather", "power"}
+        assert card.kind in {"workload", "grid", "weather", "power", "resource"}

@@ -6,6 +6,7 @@ from pydantic import ValidationError
 from helicyn_ml.schemas import (
     NormalizedGridRecord,
     NormalizedPowerRecord,
+    NormalizedResourceTimeseriesRecord,
     NormalizedWeatherRecord,
     NormalizedWorkloadRecord,
 )
@@ -79,3 +80,58 @@ def test_valid_power_record():
 def test_invalid_power_record_negative_power():
     with pytest.raises(ValidationError):
         NormalizedPowerRecord(source_dataset="x", timestamp=NOW, power_kw=-1.0)
+
+
+def test_valid_resource_record_relative_time():
+    record = NormalizedResourceTimeseriesRecord(
+        source_dataset="google_cluster_cpu_memory_preprocessed",
+        vm_id="vm_1",
+        timestamp=None,
+        time_index=0,
+        timestamp_is_relative=True,
+        interval_minutes=5.0,
+        cpu_usage_percent=42.0,
+        memory_usage_percent=17.5,
+    )
+    assert record.timestamp_is_relative is True
+    assert record.timestamp is None
+
+
+def test_valid_resource_record_real_time():
+    record = NormalizedResourceTimeseriesRecord(
+        source_dataset="azure_cpu_usage_small",
+        vm_id="azure_aggregate",
+        timestamp=NOW,
+        time_index=0,
+        timestamp_is_relative=False,
+        interval_minutes=5.0,
+        avg_cpu_usage_percent=1_200_000.0,
+    )
+    assert record.timestamp_is_relative is False
+    # Azure's raw values are not bounded 0-100 (see azure_cpu_small.py docstring)
+    # - the schema must not fabricate a percentage bound that would reject them.
+    assert record.avg_cpu_usage_percent == 1_200_000.0
+
+
+def test_resource_record_missing_required_fields():
+    with pytest.raises(ValidationError):
+        NormalizedResourceTimeseriesRecord(source_dataset="x")
+
+
+def test_resource_record_has_no_gpu_field():
+    """The schema must not carry any GPU field at all - see the module
+    docstring on why a nulled/defaulted gpu field would be worse than none.
+    """
+    assert "gpu" not in NormalizedResourceTimeseriesRecord.model_fields
+    fields = NormalizedResourceTimeseriesRecord.model_fields.keys()
+    assert not any("gpu" in f.lower() for f in fields)
+
+
+def test_resource_record_rejects_unknown_fields():
+    with pytest.raises(ValidationError):
+        NormalizedResourceTimeseriesRecord(
+            source_dataset="x",
+            vm_id="vm_1",
+            timestamp_is_relative=True,
+            gpu_usage_percent=50.0,
+        )
