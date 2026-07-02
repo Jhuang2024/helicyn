@@ -1,7 +1,7 @@
 # Model Card: resource_predictor
 
 - **Version**: v2
-- **Date trained**: 2026-07-02T09:39:45.147720+00:00
+- **Date trained**: 2026-07-02T09:49:07.268077+00:00
 - **Datasets used**: azure_cpu_usage_small, burstgpt, google_cluster_cpu_memory_preprocessed
 - **Rows used**: 1328463
 - **Label provenance**: real

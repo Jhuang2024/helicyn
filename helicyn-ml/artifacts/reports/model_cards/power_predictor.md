@@ -1,7 +1,7 @@
 # Model Card: power_predictor
 
 - **Version**: v1
-- **Date trained**: 2026-07-02T09:40:30.346856+00:00
+- **Date trained**: 2026-07-02T09:49:52.455684+00:00
 - **Datasets used**: synthetic_sample
 - **Rows used**: 352
 - **Label provenance**: synthetic

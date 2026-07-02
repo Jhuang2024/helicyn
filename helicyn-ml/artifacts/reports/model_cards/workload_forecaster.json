@@ -1,7 +1,7 @@
 {
   "model_name": "workload_forecaster",
   "version": "v1",
-  "date_trained": "2026-07-02T09:39:18.966017Z",
+  "date_trained": "2026-07-02T09:48:40.874407Z",
   "datasets_used": [
     "burstgpt"
   ],

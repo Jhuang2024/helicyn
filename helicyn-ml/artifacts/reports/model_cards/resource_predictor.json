@@ -1,7 +1,7 @@
 {
   "model_name": "resource_predictor",
   "version": "v2",
-  "date_trained": "2026-07-02T09:39:45.147720Z",
+  "date_trained": "2026-07-02T09:49:07.268077Z",
   "datasets_used": [
     "azure_cpu_usage_small",
     "burstgpt",
