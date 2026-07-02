@@ -79,7 +79,9 @@ def run_simulation(
                 "electricity_price_usd_per_mwh": grid_model.electricity_price_usd_per_mwh(
                     site.price_profile, hour_of_day, rng
                 ),
-                "ambient_temp_c": weather_model.ambient_temp_c(site.weather_profile, hour_of_day, rng),
+                "ambient_temp_c": weather_model.ambient_temp_c(
+                    site.weather_profile, hour_of_day, rng, offset_c=site.ambient_temp_offset_c
+                ),
             }
 
         # 1. Add newly arrived jobs to queue.

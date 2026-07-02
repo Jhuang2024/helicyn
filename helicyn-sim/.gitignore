@@ -13,6 +13,11 @@ dist/
 runs/*
 !runs/.gitkeep
 
+# generated Phase 3 research evidence outputs (regenerate with the CLI
+# research-run/ablation/sensitivity/paper-figures/paper-tables/claims-audit/
+# research-report commands; not checked in)
+research_outputs/
+
 # large/local data (keep folders, ignore contents)
 data/samples/*
 !data/samples/.gitkeep

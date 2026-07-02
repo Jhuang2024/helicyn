@@ -1,0 +1,80 @@
+# Config for `python -m helicyn_sim sensitivity`. Same base fleet/workload
+# as configs/ablation.yaml. `variables` lists the values swept for each of
+# the five sensitivity dimensions; each value is applied ONE AT A TIME on
+# top of `base` (a standard one-factor-at-a-time sensitivity design, not a
+# full cartesian product -- 5 variables x 3 values would be a lot of
+# combinations to run and interpret). See
+# helicyn_sim/experiments/sensitivity.py for exactly how each variable name
+# maps onto config fields.
+base:
+  simulation:
+    timestep_minutes: 5
+    duration_hours: 24
+    seed: 42
+
+  fleet:
+    sites:
+      - site_id: "ONT-NORTH"
+        region: "Ontario"
+        racks: 1
+        servers_per_rack: 3
+        base_pue: 1.35
+        cooling_reference_temp_c: 18
+        carbon_profile: mixed_grid
+        price_profile: moderate_price
+        weather_profile: cool_weather
+      - site_id: "CA-WEST"
+        region: "California"
+        racks: 1
+        servers_per_rack: 3
+        base_pue: 1.25
+        cooling_reference_temp_c: 20
+        carbon_profile: solar_duck_curve
+        price_profile: volatile_price
+        weather_profile: warm_weather
+    server_profile:
+      cpu_capacity_units: 100
+      memory_capacity_gb: 512
+      gpu_capacity_units: 0
+      idle_power_w: 180
+      max_cpu_dynamic_power_w: 470
+      fan_overhead_w: 40
+      sleep_power_w: 15
+
+  workload:
+    llm_inference_jobs_per_hour_peak: 40
+    llm_inference_jobs_per_hour_offpeak: 8
+    batch_jobs_per_hour_day: 3
+    batch_jobs_per_hour_night: 10
+    online_service_jobs_per_hour: 15
+    maintenance_jobs_per_day: 2
+    cpu_demand_min_units: 2
+    cpu_demand_max_units: 20
+    memory_demand_min_gb: 2
+    memory_demand_max_gb: 32
+    max_delay_minutes_flexible: 120
+    latency_sensitive_deadline_slack_minutes: 15
+
+  policy:
+    name: baseline_first_fit
+    dvfs_state: balanced
+
+  memory_power_coefficient_w: 60
+
+seeds: [42, 43]
+
+variables:
+  load_multiplier: [0.7, 1.0, 1.3]
+  carbon_variability: [low, medium, high]
+  ambient_temperature_offset_c: [-3, 0, 5]
+  deadline_tightness: [loose, normal, tight]
+  server_idle_power_w: [120, 180, 240]
+
+# --quick uses these subsets instead (first/last of each list, i.e. the two
+# most contrasting values, skipping the middle "no change from base" point).
+quick_variables:
+  load_multiplier: [0.7, 1.3]
+  carbon_variability: [low, high]
+  ambient_temperature_offset_c: [-3, 5]
+  deadline_tightness: [loose, tight]
+  server_idle_power_w: [120, 240]

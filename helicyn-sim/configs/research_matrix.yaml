@@ -1,0 +1,217 @@
+# Phase 3 research scenario matrix. `base` is a full simulator Config
+# (same shape as configs/demo.yaml); each scenario under `scenarios` is a
+# partial dict deep-merged onto `base` before being re-validated, so a
+# scenario only needs to state what it changes.
+#
+# The fleet here is deliberately smaller than configs/demo.yaml's (2 racks
+# x 6 servers/site instead of 4x16): Phase 2's before-after runs showed the
+# demo fleet is oversized relative to its workload (~1.7% average CPU
+# utilization under baseline_first_fit), which made consolidation's energy
+# savings look artificially dramatic (nearly all of it was "stop running
+# idle servers that never needed to be on"). `normal_load` below targets a
+# more moderate, meaningful utilization band instead -- run
+# `python -m helicyn_sim validate-scenarios --config configs/research_matrix.yaml`
+# to check the actual achieved utilization per scenario; see
+# docs/results_interpretation.md for why this matters.
+base:
+  simulation:
+    timestep_minutes: 5
+    duration_hours: 24
+    seed: 42
+
+  fleet:
+    sites:
+      - site_id: "ONT-NORTH"
+        region: "Ontario"
+        racks: 1
+        servers_per_rack: 3
+        base_pue: 1.35
+        cooling_reference_temp_c: 18
+        carbon_profile: mixed_grid
+        price_profile: moderate_price
+        weather_profile: cool_weather
+      - site_id: "CA-WEST"
+        region: "California"
+        racks: 1
+        servers_per_rack: 3
+        base_pue: 1.25
+        cooling_reference_temp_c: 20
+        carbon_profile: solar_duck_curve
+        price_profile: volatile_price
+        weather_profile: warm_weather
+    server_profile:
+      cpu_capacity_units: 100
+      memory_capacity_gb: 512
+      gpu_capacity_units: 0
+      idle_power_w: 180
+      max_cpu_dynamic_power_w: 470
+      fan_overhead_w: 40
+      sleep_power_w: 15
+
+  workload:
+    llm_inference_jobs_per_hour_peak: 40
+    llm_inference_jobs_per_hour_offpeak: 8
+    batch_jobs_per_hour_day: 3
+    batch_jobs_per_hour_night: 10
+    online_service_jobs_per_hour: 15
+    maintenance_jobs_per_day: 2
+    cpu_demand_min_units: 2
+    cpu_demand_max_units: 20
+    memory_demand_min_gb: 2
+    memory_demand_max_gb: 32
+    max_delay_minutes_flexible: 120
+    latency_sensitive_deadline_slack_minutes: 15
+
+  policy:
+    name: baseline_first_fit
+    dvfs_state: balanced
+
+  memory_power_coefficient_w: 60
+
+seeds: [42, 43, 44, 45, 46]
+
+scenarios:
+  - name: normal_load
+    description: >
+      Reference scenario at the base fleet/workload rates. Target: moderate
+      average CPU utilization (roughly 35-55%), low/zero deadline misses
+      under baseline_first_fit. No stress applied.
+    overrides: {}
+
+  - name: high_load
+    description: >
+      Roughly 2x the base arrival rates, meant to push average CPU
+      utilization toward 60-80% -- stresses capacity without collapsing it
+      (baseline_first_fit should still complete nearly everything).
+    overrides:
+      workload:
+        llm_inference_jobs_per_hour_peak: 85
+        llm_inference_jobs_per_hour_offpeak: 18
+        batch_jobs_per_hour_day: 7
+        batch_jobs_per_hour_night: 20
+        online_service_jobs_per_hour: 32
+
+  - name: carbon_shift_opportunity
+    description: >
+      More flexible (batch/maintenance) jobs with more delay slack, on top
+      of the base fleet's existing ONT-NORTH (flat, moderate) vs CA-WEST
+      (solar duck curve, deep midday dip) carbon contrast -- gives
+      carbon-aware/integrated policies a real, meaningfully-sized low-carbon
+      window to shift work into.
+    overrides:
+      workload:
+        batch_jobs_per_hour_day: 10
+        batch_jobs_per_hour_night: 22
+        maintenance_jobs_per_day: 6
+        max_delay_minutes_flexible: 180
+
+  - name: thermal_stress
+    description: >
+      high_load-level arrival rates, a raised cooling_reference_temp_c at
+      both sites (i.e. a worse/higher cooling setpoint), and a +12C
+      ambient temperature offset, calibrated (empirically, via
+      validate-scenarios) so sustained IT power actually pushes rack
+      temperatures past the HOT threshold (32C, see docs/equations.md) and
+      produces real thermal_violations under baseline_first_fit -- giving
+      thermal-aware/integrated placement something concrete to avoid,
+      instead of staying near the cool baseline all other scenarios sit at.
+    overrides:
+      workload:
+        llm_inference_jobs_per_hour_peak: 85
+        llm_inference_jobs_per_hour_offpeak: 18
+        batch_jobs_per_hour_day: 7
+        batch_jobs_per_hour_night: 20
+        online_service_jobs_per_hour: 32
+      fleet:
+        sites:
+          - site_id: "ONT-NORTH"
+            region: "Ontario"
+            racks: 1
+            servers_per_rack: 3
+            base_pue: 1.35
+            cooling_reference_temp_c: 27
+            carbon_profile: mixed_grid
+            price_profile: moderate_price
+            weather_profile: cool_weather
+            ambient_temp_offset_c: 12
+          - site_id: "CA-WEST"
+            region: "California"
+            racks: 1
+            servers_per_rack: 3
+            base_pue: 1.25
+            cooling_reference_temp_c: 30
+            carbon_profile: solar_duck_curve
+            price_profile: volatile_price
+            weather_profile: warm_weather
+            ambient_temp_offset_c: 12
+
+  - name: price_spike
+    description: >
+      CA-WEST's price_profile swapped for `price_spike` (a `volatile_price`
+      shape with an exaggerated evening peak, see models/grid.py) while
+      ONT-NORTH stays at `moderate_price`, giving price-aware/integrated
+      policies a clear cheap-site-vs-expensive-site choice during the
+      spike window.
+    overrides:
+      fleet:
+        sites:
+          - site_id: "ONT-NORTH"
+            region: "Ontario"
+            racks: 1
+            servers_per_rack: 3
+            base_pue: 1.35
+            cooling_reference_temp_c: 18
+            carbon_profile: mixed_grid
+            price_profile: moderate_price
+            weather_profile: cool_weather
+          - site_id: "CA-WEST"
+            region: "California"
+            racks: 1
+            servers_per_rack: 3
+            base_pue: 1.25
+            cooling_reference_temp_c: 20
+            carbon_profile: solar_duck_curve
+            price_profile: price_spike
+            weather_profile: warm_weather
+      workload:
+        batch_jobs_per_hour_day: 8
+        batch_jobs_per_hour_night: 18
+        max_delay_minutes_flexible: 150
+
+  - name: mixed_stress
+    description: >
+      Combines high_load arrival rates, the thermal_stress ambient offset,
+      the price_spike profile at CA-WEST, and extra flexible workload --
+      the hardest scenario, meant to expose every policy's tradeoffs (not
+      just its best case) at once.
+    overrides:
+      workload:
+        llm_inference_jobs_per_hour_peak: 85
+        llm_inference_jobs_per_hour_offpeak: 18
+        batch_jobs_per_hour_day: 10
+        batch_jobs_per_hour_night: 22
+        online_service_jobs_per_hour: 32
+        maintenance_jobs_per_day: 6
+        max_delay_minutes_flexible: 180
+      fleet:
+        sites:
+          - site_id: "ONT-NORTH"
+            region: "Ontario"
+            racks: 1
+            servers_per_rack: 3
+            base_pue: 1.35
+            cooling_reference_temp_c: 27
+            carbon_profile: mixed_grid
+            price_profile: moderate_price
+            weather_profile: cool_weather
+            ambient_temp_offset_c: 12
+          - site_id: "CA-WEST"
+            region: "California"
+            racks: 1
+            servers_per_rack: 3
+            base_pue: 1.25
+            cooling_reference_temp_c: 30
+            carbon_profile: solar_duck_curve
+            price_profile: price_spike
+            weather_profile: warm_weather
+            ambient_temp_offset_c: 12

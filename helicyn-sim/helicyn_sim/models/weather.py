@@ -17,7 +17,11 @@ WEATHER_PROFILES = {
 }
 
 
-def ambient_temp_c(profile: str, hour_of_day: float, rng: np.random.Generator) -> float:
+def ambient_temp_c(profile: str, hour_of_day: float, rng: np.random.Generator, offset_c: float = 0.0) -> float:
+    """`offset_c` is a flat shift on top of the named profile's own daily
+    curve (Phase 3's `ambient_temp_offset_c` site config field / sensitivity
+    sweep) -- it does not change the profile's shape, only where it sits.
+    """
     if profile not in WEATHER_PROFILES:
         raise ValueError(f"Unknown weather_profile: {profile!r}. Valid: {sorted(WEATHER_PROFILES)}")
     p = WEATHER_PROFILES[profile]
@@ -25,4 +29,4 @@ def ambient_temp_c(profile: str, hour_of_day: float, rng: np.random.Generator) -
     phase = (hour_of_day - 15.0) / 24.0 * 2 * math.pi
     value = p["mean_c"] + p["daily_amplitude_c"] * math.cos(phase)
     value += rng.normal(0.0, p["noise_sd"])
-    return value
+    return value + offset_c

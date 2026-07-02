@@ -72,3 +72,34 @@ Read this before drawing any conclusion from a run of this simulator.
   evaluated only against each other, inside the same reduced-order
   simulator, under the same synthetic workload and grid/weather
   assumptions.
+
+## Phase 3 additions
+
+- **`integrated_coordination` is a simulator-native, hand-weighted
+  heuristic, not trained ML.** Its weights (`docs/experimental_methodology.md`)
+  were chosen by engineering judgment, not fit to data or optimized against
+  any objective. It is not "production Helicyn," not a "validated AI
+  optimizer," and not a "real-world controller" -- see its module
+  docstring (`helicyn_sim/policies/integrated_coordination.py`).
+- **The research scenario matrix is calibrated but still synthetic.**
+  `configs/research_matrix.yaml`'s fleet/workload rates were hand-tuned
+  (and checked with `validate-scenarios`) to hit target utilization/thermal
+  bands, not derived from any real fleet's operating point.
+  `docs/results_interpretation.md` explains why an oversized fleet can make
+  consolidation-style savings look artificially large, and why this
+  matters when reading `research-run`/`ablation`/`sensitivity` output.
+- **Ablation here means policy-by-policy staging, not feature ablation.**
+  `ablation`'s stages are complete, independent policy runs under one
+  scenario, not incremental feature toggles inside a single model.
+- **Sensitivity analysis is one-factor-at-a-time**, not a full factorial
+  sweep -- it shows how each variable affects outcomes in isolation, not
+  interaction effects between variables.
+- **`paper-figures`/`paper-tables`/`research-report` render whatever the
+  underlying runs produced**, including negative or mixed results (e.g.
+  `dvfs_aware` increasing facility energy, `carbon_aware`/`integrated_coordination`
+  increasing deadline misses under `thermal_stress` in this project's own
+  runs) -- nothing in the figure/table/report generation code filters or
+  adjusts results to look more favorable.
+- **`claims-audit` is a categorization tool, not a guarantee.** It reflects
+  what this codebase and its documented status support as of when it was
+  run; it does not audit any external use of this project's output.

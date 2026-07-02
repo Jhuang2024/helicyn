@@ -11,6 +11,15 @@ non-trivial to react to:
 - "mixed_grid" (used by the ONT-NORTH demo site): flatter, moderate carbon
   intensity, characteristic of a grid with a large hydro/nuclear baseload.
 
+Phase 3 (`docs/experimental_methodology.md`) adds two more, used only by
+`configs/sensitivity.yaml`'s `carbon_variability` sweep and
+`price_spike` research scenario, not by the Phase 1/2 demo fleet:
+
+- "flat_grid" / "flat_price": very low daily variation, a "low
+  variability" reference point.
+- "price_spike": a `volatile_price`-shaped curve with an exaggerated
+  evening peak, standing in for a single-period price-spike event.
+
 See docs/model_assumptions.md for the full disclaimer.
 """
 from __future__ import annotations
@@ -22,11 +31,14 @@ import numpy as np
 CARBON_PROFILES = {
     "solar_duck_curve": dict(base=250.0, midday_dip=170.0, evening_peak=110.0, noise_sd=6.0),
     "mixed_grid": dict(base=120.0, midday_dip=15.0, evening_peak=20.0, noise_sd=4.0),
+    "flat_grid": dict(base=130.0, midday_dip=8.0, evening_peak=8.0, noise_sd=2.0),
 }
 
 PRICE_PROFILES = {
     "volatile_price": dict(base=70.0, midday_dip=50.0, evening_peak=130.0, noise_sd=3.0),
     "moderate_price": dict(base=60.0, midday_dip=10.0, evening_peak=15.0, noise_sd=1.5),
+    "flat_price": dict(base=55.0, midday_dip=5.0, evening_peak=5.0, noise_sd=1.0),
+    "price_spike": dict(base=60.0, midday_dip=15.0, evening_peak=220.0, noise_sd=4.0),
 }
 
 

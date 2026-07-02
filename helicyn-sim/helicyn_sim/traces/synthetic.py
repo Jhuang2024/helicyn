@@ -23,6 +23,10 @@ from helicyn_sim.models.workload import WORKLOAD_DEFAULTS
 from helicyn_sim.schemas.workload import Job, WorkloadType
 from helicyn_sim.traces.resource_trace_loader import load_resource_trace_shape
 
+# Default kept for backwards compatibility with anything importing this
+# constant directly; the actual value used at generation time comes from
+# `WorkloadConfig.latency_sensitive_deadline_slack_minutes` (Phase 3 added
+# this as a config field, previously it was hardcoded here).
 DEADLINE_SLACK_MINUTES_LATENCY_SENSITIVE = 15.0
 
 
@@ -72,6 +76,7 @@ def generate_fleet(config: Config) -> tuple[dict[str, Site], dict[str, Rack], di
             price_profile=site_cfg.price_profile,
             weather_profile=site_cfg.weather_profile,
             ambient_temp_coefficient=site_cfg.ambient_temp_coefficient,
+            ambient_temp_offset_c=site_cfg.ambient_temp_offset_c,
         )
 
     return sites, racks, servers
@@ -150,7 +155,7 @@ def generate_workload(
 
                 latency_sensitive = defaults["latency_sensitive"]
                 if latency_sensitive:
-                    max_delay = DEADLINE_SLACK_MINUTES_LATENCY_SENSITIVE
+                    max_delay = wc.latency_sensitive_deadline_slack_minutes
                 else:
                     max_delay = wc.max_delay_minutes_flexible
                 deadline_time = step + int(math.ceil((total_work + max_delay) / dt_minutes))

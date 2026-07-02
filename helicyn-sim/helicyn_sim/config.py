@@ -36,6 +36,7 @@ class SiteConfig(BaseModel):
     price_profile: str = "moderate_price"
     weather_profile: str = "cool_weather"
     ambient_temp_coefficient: float = 0.008
+    ambient_temp_offset_c: float = 0.0
 
 
 class FleetConfig(BaseModel):
@@ -83,6 +84,7 @@ class WorkloadConfig(BaseModel):
     maintenance_work_units_max: float = 90.0
 
     max_delay_minutes_flexible: float = 120.0
+    latency_sensitive_deadline_slack_minutes: float = 15.0
 
     resource_trace_path: Optional[str] = None
 
@@ -115,3 +117,76 @@ def write_resolved_config(config: Config, out_path: str | Path) -> None:
     out_path = Path(out_path)
     with out_path.open("w") as f:
         yaml.safe_dump(config.model_dump(mode="json"), f, sort_keys=False)
+
+
+# ---------------------------------------------------------------------------
+# Phase 3: research/scenario configs. A single YAML file describes a `base`
+# Config plus a list of named `scenarios`, each a partial dict of overrides
+# deep-merged onto `base` before being re-validated as a full Config. This
+# keeps configs/research_matrix.yaml (six scenarios) from having to repeat
+# the entire fleet/workload block six times -- most scenarios only touch a
+# handful of fields.
+# ---------------------------------------------------------------------------
+
+
+class ScenarioSpec(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str
+    description: str = ""
+    overrides: dict = Field(default_factory=dict)
+
+
+class ResearchConfig(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    base: Config
+    seeds: List[int] = Field(default_factory=lambda: [42])
+    scenarios: List[ScenarioSpec] = Field(default_factory=list)
+
+
+def _deep_merge(base: dict, overrides: dict) -> dict:
+    result = dict(base)
+    for key, value in overrides.items():
+        if isinstance(value, dict) and isinstance(result.get(key), dict):
+            result[key] = _deep_merge(result[key], value)
+        else:
+            result[key] = value
+    return result
+
+
+def resolve_scenario_config(research_config: ResearchConfig, scenario: ScenarioSpec) -> Config:
+    base_dict = research_config.base.model_dump(mode="json")
+    merged = _deep_merge(base_dict, scenario.overrides)
+    return Config.model_validate(merged)
+
+
+def load_research_config(path: str | Path) -> ResearchConfig:
+    path = Path(path)
+    with path.open("r") as f:
+        raw = yaml.safe_load(f)
+    return ResearchConfig.model_validate(raw)
+
+
+class SensitivityFileConfig(BaseModel):
+    """configs/sensitivity.yaml's shape: a base Config plus named sweep
+    variables (see helicyn_sim/experiments/sensitivity.py for how each
+    variable name maps onto actual Config field mutations -- unlike
+    ResearchConfig's scenarios, these aren't generic dict overrides,
+    because e.g. "load_multiplier: 1.3" means "scale every arrival-rate
+    field," not a literal field path.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    base: Config
+    seeds: List[int] = Field(default_factory=lambda: [42])
+    variables: dict = Field(default_factory=dict)
+    quick_variables: dict = Field(default_factory=dict)
+
+
+def load_sensitivity_config(path: str | Path) -> SensitivityFileConfig:
+    path = Path(path)
+    with path.open("r") as f:
+        raw = yaml.safe_load(f)
+    return SensitivityFileConfig.model_validate(raw)
