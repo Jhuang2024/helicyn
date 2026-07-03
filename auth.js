@@ -256,10 +256,10 @@ export async function updatePassword(newPassword) {
 // Unlike profileMetadata() above (which omits empty optional fields so
 // signup doesn't overwrite anything), this sends exactly what's passed
 // so clearing a field on the profile page actually clears it.
-export async function updateProfile({ full_name, job_title, newsletter_opt_in }) {
+export async function updateProfile({ full_name, job_title, linkedin_url, newsletter_opt_in }) {
   const client = await requireClient();
   const { data, error } = await client.auth.updateUser({
-    data: { full_name, job_title, newsletter_opt_in },
+    data: { full_name, job_title, linkedin_url, newsletter_opt_in },
   });
   if (error) throw error;
   return data;

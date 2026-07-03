@@ -19,6 +19,8 @@ const profileForm = document.getElementById("profileForm");
 const profileEmail = document.getElementById("profileEmail");
 const profileFullName = document.getElementById("profileFullName");
 const profileJobTitle = document.getElementById("profileJobTitle");
+const profileLinkedin = document.getElementById("profileLinkedin");
+const profileLinkedinErr = document.getElementById("profileLinkedinErr");
 const profileNewsletter = document.getElementById("profileNewsletter");
 const profileSaveBtn = document.getElementById("profileSaveBtn");
 const profileLoading = document.getElementById("profileLoading");
@@ -45,20 +47,46 @@ function fillForm(session) {
   profileEmail.value = session.user.email || "";
   profileFullName.value = meta.full_name || "";
   profileJobTitle.value = meta.job_title || "";
+  profileLinkedin.value = meta.linkedin_url || "";
   profileNewsletter.checked = meta.newsletter_opt_in !== false;
+}
+
+function normalizeLinkedinUrl(raw) {
+  const value = raw.trim();
+  if (!value) return { ok: true, value: "" };
+  const withScheme = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+  let parsed;
+  try {
+    parsed = new URL(withScheme);
+  } catch {
+    return { ok: false };
+  }
+  if (!/(^|\.)linkedin\.com$/i.test(parsed.hostname)) return { ok: false };
+  return { ok: true, value: parsed.href };
 }
 
 async function handleSubmit(e) {
   e.preventDefault();
   setNotice();
+  profileLinkedinErr.textContent = "";
+
+  const linkedin = normalizeLinkedinUrl(profileLinkedin.value);
+  if (!linkedin.ok) {
+    profileLinkedinErr.textContent = "Enter a valid linkedin.com URL, or leave it blank.";
+    profileLinkedin.focus();
+    return;
+  }
+
   profileSaveBtn.disabled = true;
   profileLoading.hidden = false;
   try {
     await updateProfile({
       full_name: profileFullName.value.trim(),
       job_title: profileJobTitle.value.trim(),
+      linkedin_url: linkedin.value,
       newsletter_opt_in: profileNewsletter.checked,
     });
+    profileLinkedin.value = linkedin.value;
     setNotice("ok", "Saved", "Your profile has been updated.");
   } catch (err) {
     setNotice("err", "Could not save changes", err.message || String(err));
