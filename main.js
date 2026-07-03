@@ -219,13 +219,14 @@
   }
 
   // ---- onboarding progress stepper --------------------------
-  // Purely visual: highlights the .stepper step matching whichever
-  // .formsection is currently most in view. No-ops if the page has
-  // no .stepper (every page except /onboarding).
+  // Highlights the .stepper step matching whichever .formsection is
+  // currently most in view, and (since each step reads as a clickable
+  // tab) lets clicking/activating a step jump straight to its section.
+  // No-ops if the page has no .stepper (every page except /onboarding).
   (function () {
     const steps = Array.from(document.querySelectorAll('.stepper__step'));
     const sections = Array.from(document.querySelectorAll('.formsection'));
-    if (!steps.length || !sections.length || !('IntersectionObserver' in window)) return;
+    if (!steps.length || !sections.length) return;
     const byId = new Map(steps.map((s) => [s.getAttribute('data-step-for'), s]));
     function setActive(id) {
       steps.forEach((s) => s.classList.remove('is-active'));
@@ -234,6 +235,20 @@
       const active = byId.get(id);
       if (active) active.classList.add('is-active');
     }
+    steps.forEach((step) => {
+      step.setAttribute('role', 'button');
+      step.setAttribute('tabindex', '0');
+      const jump = () => {
+        const id = step.getAttribute('data-step-for');
+        const section = document.getElementById(id);
+        if (section) section.scrollIntoView({ behavior: prm ? 'auto' : 'smooth', block: 'start' });
+      };
+      step.addEventListener('click', jump);
+      step.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jump(); }
+      });
+    });
+    if (!('IntersectionObserver' in window)) { setActive(sections[0].id); return; }
     const io = new IntersectionObserver(
       (entries) => {
         const visible = entries.filter((e) => e.isIntersecting);

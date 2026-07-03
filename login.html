@@ -97,6 +97,17 @@
           <input type="email" id="authEmail" name="email" autocomplete="email" placeholder="name@organization.com" required />
           <span class="formfield__err" id="authEmailErr"></span>
         </div>
+        <div id="authSignupFields" class="formgrid formgrid--2col" hidden>
+          <div class="formfield">
+            <label class="formfield__label" for="authFullName">Full name <span class="req">*</span></label>
+            <input type="text" id="authFullName" name="full_name" autocomplete="name" placeholder="Jane Doe" />
+            <span class="formfield__err" id="authFullNameErr"></span>
+          </div>
+          <div class="formfield">
+            <label class="formfield__label" for="authJobTitle">Job title</label>
+            <input type="text" id="authJobTitle" name="job_title" autocomplete="organization-title" placeholder="VP Infrastructure" />
+          </div>
+        </div>
         <div class="formfield" id="authPasswordField">
           <label class="formfield__label" for="authPassword">Password <span class="req">*</span></label>
           <input type="password" id="authPassword" name="password" autocomplete="current-password" placeholder="••••••••" />

@@ -21,11 +21,15 @@ const authForm = document.getElementById("authForm");
 const authEmail = document.getElementById("authEmail");
 const authPassword = document.getElementById("authPassword");
 const authPasswordField = document.getElementById("authPasswordField");
+const authSignupFields = document.getElementById("authSignupFields");
+const authFullName = document.getElementById("authFullName");
+const authJobTitle = document.getElementById("authJobTitle");
 const authSubmitBtn = document.getElementById("authSubmitBtn");
 const authLoading = document.getElementById("authLoading");
 const authNotice = document.getElementById("authNotice");
 const authEmailErr = document.getElementById("authEmailErr");
 const authPasswordErr = document.getElementById("authPasswordErr");
+const authFullNameErr = document.getElementById("authFullNameErr");
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -48,6 +52,9 @@ document.querySelectorAll("[data-auth-tab]").forEach((btn) => {
       b.classList.toggle("is-active", b === btn);
       b.setAttribute("aria-selected", b === btn ? "true" : "false");
     });
+    authSignupFields.hidden = mode !== "signup";
+    authFullNameErr.textContent = "";
+    clearFieldInvalid(authFullName);
     updateSubmitLabel();
   });
 });
@@ -98,8 +105,10 @@ async function handleSubmit(e) {
   setNotice();
   authEmailErr.textContent = "";
   authPasswordErr.textContent = "";
+  authFullNameErr.textContent = "";
   clearFieldInvalid(authEmail);
   clearFieldInvalid(authPassword);
+  clearFieldInvalid(authFullName);
 
   const email = authEmail.value.trim();
   if (!EMAIL_RE.test(email)) {
@@ -110,19 +119,25 @@ async function handleSubmit(e) {
     markInvalid(authPassword, authPasswordErr, "Password is required.");
     return;
   }
+  if (mode === "signup" && !authFullName.value.trim()) {
+    markInvalid(authFullName, authFullNameErr, "Full name is required.");
+    return;
+  }
+  const profile =
+    mode === "signup" ? { full_name: authFullName.value.trim(), job_title: authJobTitle.value.trim() } : undefined;
 
   authSubmitBtn.disabled = true;
   authLoading.hidden = false;
   try {
     if (method === "magic") {
-      await signInWithMagicLink(email);
+      await signInWithMagicLink(email, profile);
       setNotice(
         "ok",
         "Check your email",
         `A sign-in link was sent to ${email}. Open it on this device to finish signing in.`
       );
     } else if (mode === "signup") {
-      await signUpWithPassword(email, authPassword.value);
+      await signUpWithPassword(email, authPassword.value, profile);
       setNotice("ok", "Account created", "Check your email to confirm your account, then sign in.");
     } else {
       await signInWithPassword(email, authPassword.value);

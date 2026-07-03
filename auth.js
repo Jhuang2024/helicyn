@@ -119,12 +119,24 @@ export async function onAuthStateChange(callback) {
   return data.subscription;
 }
 
-export async function signUpWithPassword(email, password) {
+// profile ({ full_name, job_title }) becomes the new user's
+// auth.users.user_metadata -- captured at account creation so it's
+// available immediately, without waiting on the separate founding
+// partner application form.
+function profileMetadata(profile) {
+  if (!profile) return undefined;
+  const data = {};
+  if (profile.full_name) data.full_name = profile.full_name;
+  if (profile.job_title) data.job_title = profile.job_title;
+  return Object.keys(data).length ? data : undefined;
+}
+
+export async function signUpWithPassword(email, password, profile) {
   const client = await requireClient();
   const { data, error } = await client.auth.signUp({
     email,
     password,
-    options: { emailRedirectTo: authCallbackUrl() },
+    options: { emailRedirectTo: authCallbackUrl(), data: profileMetadata(profile) },
   });
   if (error) throw error;
   return data;
@@ -137,11 +149,11 @@ export async function signInWithPassword(email, password) {
   return data;
 }
 
-export async function signInWithMagicLink(email) {
+export async function signInWithMagicLink(email, profile) {
   const client = await requireClient();
   const { error } = await client.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: authCallbackUrl() },
+    options: { emailRedirectTo: authCallbackUrl(), data: profileMetadata(profile) },
   });
   if (error) throw error;
 }
