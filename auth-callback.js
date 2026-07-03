@@ -1,6 +1,6 @@
 // /auth-callback page logic: the single landing target for every
-// Supabase Auth email link (signup confirmation, magic link). Supabase
-// always redirects here (see auth.js's authCallbackUrl()), either with
+// Supabase Auth email link (signup confirmation, password reset).
+// Supabase always redirects here (see auth.js's authCallbackUrl()), either with
 // a session in the URL hash (success) or with #error=... params (an
 // expired or already-used link). Either way this page turns that hash
 // into a real UI instead of leaving the raw Supabase error exposed at

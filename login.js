@@ -1,6 +1,5 @@
-// /login page logic: real Supabase auth (password or magic link), no
-// fake users, no manually stored passwords. See auth.js and
-// docs/auth_setup.md.
+// /login page logic: real Supabase auth (password), no fake users, no
+// manually stored passwords. See auth.js and docs/auth_setup.md.
 import {
   checkClientReady,
   renderConfigError,
@@ -8,7 +7,6 @@ import {
   onAuthStateChange,
   signUpWithPassword,
   signInWithPassword,
-  signInWithMagicLink,
   signOut,
   requestPasswordReset,
   setRememberMe,
@@ -22,7 +20,6 @@ const signOutBtn = document.getElementById("signOutBtn");
 const authForm = document.getElementById("authForm");
 const authEmail = document.getElementById("authEmail");
 const authPassword = document.getElementById("authPassword");
-const authPasswordField = document.getElementById("authPasswordField");
 const authSignupFields = document.getElementById("authSignupFields");
 const authFullName = document.getElementById("authFullName");
 const authJobTitle = document.getElementById("authJobTitle");
@@ -43,15 +40,10 @@ const authFullNameErr = document.getElementById("authFullNameErr");
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 let mode = "signin"; // "signin" | "signup"
-let method = "password"; // "password" | "magic"
 
 function updateSubmitLabel() {
-  if (method === "magic") {
-    authSubmitBtn.innerHTML = 'Send magic link <span class="arr" aria-hidden="true">→</span>';
-  } else {
-    authSubmitBtn.innerHTML =
-      (mode === "signup" ? "Sign up" : "Sign in") + ' <span class="arr" aria-hidden="true">→</span>';
-  }
+  authSubmitBtn.innerHTML =
+    (mode === "signup" ? "Sign up" : "Sign in") + ' <span class="arr" aria-hidden="true">→</span>';
 }
 
 document.querySelectorAll("[data-auth-tab]").forEach((btn) => {
@@ -68,15 +60,6 @@ document.querySelectorAll("[data-auth-tab]").forEach((btn) => {
     authFullNameErr.textContent = "";
     authTermsErr.textContent = "";
     clearFieldInvalid(authFullName);
-    updateSubmitLabel();
-  });
-});
-
-document.querySelectorAll("[data-auth-method]").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    method = btn.dataset.authMethod;
-    document.querySelectorAll("[data-auth-method]").forEach((b) => b.classList.toggle("is-active", b === btn));
-    authPasswordField.hidden = method === "magic";
     updateSubmitLabel();
   });
 });
@@ -154,7 +137,7 @@ async function handleSubmit(e) {
     markInvalid(authEmail, authEmailErr, "Enter a valid email address.");
     return;
   }
-  if (method === "password" && !authPassword.value) {
+  if (!authPassword.value) {
     markInvalid(authPassword, authPasswordErr, "Password is required.");
     return;
   }
@@ -182,14 +165,7 @@ async function handleSubmit(e) {
   authSubmitBtn.disabled = true;
   authLoading.hidden = false;
   try {
-    if (method === "magic") {
-      await signInWithMagicLink(email, profile);
-      setNotice(
-        "ok",
-        "Check your email",
-        `A sign-in link was sent to ${email}. Open it on this device to finish signing in.`
-      );
-    } else if (mode === "signup") {
+    if (mode === "signup") {
       await signUpWithPassword(email, authPassword.value, profile);
       setNotice("ok", "Account created", "Check your email to confirm your account, then sign in.");
     } else {

@@ -16,8 +16,8 @@ const SUPABASE_URL = window.HELICYN_SUPABASE_URL || "";
 const SUPABASE_ANON_KEY = window.HELICYN_SUPABASE_ANON_KEY || "";
 const SUPABASE_JS_CDN_URL = "https://esm.sh/@supabase/supabase-js@2";
 
-// Every email Supabase sends (signup confirmation, magic link) needs an
-// explicit redirect target, or it falls back to whatever "Site URL" is
+// Every email Supabase sends (signup confirmation, password reset) needs
+// an explicit redirect target, or it falls back to whatever "Site URL" is
 // set to in the Supabase dashboard. Routing both through one callback
 // page means the dashboard's Site URL is no longer load-bearing for
 // where a real user actually lands, and gives us one place to turn a
@@ -202,15 +202,6 @@ export async function signInWithPassword(email, password) {
   const { data, error } = await client.auth.signInWithPassword({ email, password });
   if (error) throw error;
   return data;
-}
-
-export async function signInWithMagicLink(email, profile) {
-  const client = await requireClient();
-  const { error } = await client.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: authCallbackUrl(), data: profileMetadata(profile) },
-  });
-  if (error) throw error;
 }
 
 // Used by the auth callback page to let someone whose confirmation link

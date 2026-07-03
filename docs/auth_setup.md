@@ -63,10 +63,10 @@ This site has no build step, so there is nothing that reads
 5. Serve the site as static files (e.g. `python3 -m http.server 8000`
    from the repo root, or any static host) and open `/login.html`.
 6. In Supabase Auth settings, enable the auth methods you want
-   (email/password is on by default; magic link uses the same "Email"
-   provider). For local testing, Supabase's default email confirmation
-   flow uses Supabase's built-in test SMTP -- check the Auth logs in the
-   Supabase dashboard if a confirmation/magic-link email doesn't arrive.
+   (email/password is on by default). For local testing, Supabase's
+   default email confirmation flow uses Supabase's built-in test SMTP --
+   check the Auth logs in the Supabase dashboard if a confirmation email
+   doesn't arrive.
 
 ## Production setup
 
@@ -89,9 +89,9 @@ This site has no build step, so there is nothing that reads
      email" -- this was the root cause of the `otp_expired` /
      `access_denied` error users were landing on.
    - Add `https://helicyn.com/auth-callback` (no `.html`; see the URL
-     structure note below) to **Redirect URLs**. `signUpWithPassword`,
-     `signInWithMagicLink`, and `requestPasswordReset` in `auth.js` all
-     pass an explicit `emailRedirectTo: <origin>/auth-callback`, but
+     structure note below) to **Redirect URLs**. `signUpWithPassword`
+     and `requestPasswordReset` in `auth.js` both pass an explicit
+     `emailRedirectTo: <origin>/auth-callback`, but
      Supabase rejects (silently falls back to Site URL) any redirect
      target that is not also present in this allow-list, so both the
      code and this dashboard entry are required together. If you
@@ -104,8 +104,8 @@ This site has no build step, so there is nothing that reads
      not need to replace the production entry.
 3. `/auth-callback` (served from `auth-callback.html` via the
    `_redirects` rewrite; see the URL structure note below) is the
-   single landing page for both signup-confirmation and magic-link
-   emails, and for password-reset links (`type=recovery` in the
+   single landing page for signup-confirmation emails and for
+   password-reset links (`type=recovery` in the
    redirect shows a "set a new password" form instead). It establishes
    the session and redirects into `/partner-portal` on success, and
    renders a real "link expired or already used, want a new one?" UI
@@ -178,8 +178,8 @@ required" banner and disables its form instead of pretending to work.
   a link to expire (or click a link twice) and confirm
   `/auth-callback` shows the "link expired or already used" panel
   with a working resend action, rather than the raw Supabase error.
-- **Sign in:** confirm the account, then use the "Sign in" tab
-  (password) or "Magic link" method on `/login`.
+- **Sign in:** confirm the account, then use the "Sign in" tab on
+  `/login`.
 - **Forgot password:** "Forgot password?" on the Sign In tab, confirm
   the reset email, and land on `/auth-callback` with a "set a new
   password" form.

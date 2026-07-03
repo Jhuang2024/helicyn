@@ -156,13 +156,6 @@
   background: transparent; cursor: pointer; transition: all 0.3s var(--ease);
 }
 .authcard__tab.is-active { color: var(--text); border-color: var(--signal-line); background: var(--signal-soft); }
-.authcard__method { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; margin-top: -0.4rem; }
-.authcard__methodlink {
-  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em; color: var(--text-faint);
-  text-decoration: underline; text-underline-offset: 3px; cursor: pointer; background: none; border: 0;
-  padding: 0; margin: 0; line-height: inherit;
-}
-.authcard__methodlink:hover { color: var(--text); }
 .authcard__foot { display: grid; gap: 0.5rem; padding-top: 0.6rem; border-top: 1px solid var(--line); }
 .authcard__foot a { font-size: 0.86rem; color: var(--text-dim); transition: color 0.3s var(--ease); }
 .authcard__foot a:hover { color: var(--text); }
