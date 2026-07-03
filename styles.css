@@ -282,7 +282,7 @@ h1, h2, h3 { overflow-wrap: break-word; }
   position: relative; z-index: 1;
   font-weight: 500;
   font-size: clamp(4rem, 9.4vw, 8.4rem);
-  line-height: 0.98;
+  line-height: 1.08;
   letter-spacing: -0.035em;
 }
 /* soft breathing halo behind the mark - purely decorative depth cue */
