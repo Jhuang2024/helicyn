@@ -6,10 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#08090b" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>Helicyn · Partner Access</title>
-<meta name="description" content="Sign in or create a founding partner account for application status, research access, and onboarding updates. Pre-commercial research/prototype." />
+<title>Helicyn · Verifying</title>
+<meta name="description" content="Completing sign-in for your Helicyn account." />
 <meta name="robots" content="noindex" />
-<link rel="canonical" href="https://helicyn.com/login" />
+<link rel="canonical" href="https://helicyn.com/auth-callback" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
 <link rel="apple-touch-icon" href="favicon-180.png" />
@@ -43,25 +43,17 @@
     <a class="navlink" href="research.html">Research</a>
     <a class="navlink" href="patch-notes.html">Patch notes</a>
     <a class="navlink" href="partners.html">Founding Partners</a>
-    <a class="navlink" href="control-plane.html"><span class="lbl-full">Control plane</span><span class="lbl-short">Demo</span></a>
-    <a class="navlink navlink--cta" href="onboarding.html"><span class="lbl-full">Apply as partner</span><span class="lbl-short">Apply</span> <span class="arr" aria-hidden="true">↗</span></a>
+    <a class="navlink" href="login.html">Login</a>
   </nav>
 </header>
 
 <main id="main" tabindex="-1">
 <section class="section pagehead">
   <div class="orbfield" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
-  <svg class="constellation" aria-hidden="true" viewBox="0 0 260 220" preserveAspectRatio="xMidYMid meet">
-    <g class="constellation__link is-signal"><path d="M60,50 L180,90" style="animation-delay:-0.5s"></path></g>
-    <g class="constellation__link"><path d="M180,90 L140,190"></path></g>
-    <g class="constellation__node" transform="translate(60,50)"><circle class="ring" r="6"></circle><circle class="dot" r="2"></circle></g>
-    <g class="constellation__node is-signal" transform="translate(180,90)"><circle class="ring" r="8"></circle><circle class="dot" r="2.5" style="animation-delay:-1s"></circle></g>
-    <g class="constellation__node" transform="translate(140,190)"><circle class="ring" r="6"></circle><circle class="dot" r="2"></circle></g>
-  </svg>
   <div class="wrap">
-    <span class="eyebrow" data-reveal style="--i:0">Partner access</span>
-    <h1 data-reveal="mask" style="--i:1">Partner access</h1>
-    <p data-reveal style="--i:2">Founding partner accounts are used for application status, research access, and onboarding updates. This is real authentication with a real session, not a demo login.</p>
+    <span class="eyebrow" data-reveal style="--i:0">Account access</span>
+    <h1 data-reveal="mask" style="--i:1">Confirming your account</h1>
+    <p data-reveal style="--i:2">One moment. This page finishes signing you in after a verification or magic link email.</p>
   </div>
 </section>
 
@@ -69,49 +61,10 @@
   <div class="wrap">
     <div id="configNotice"></div>
 
-    <div id="signedInView" class="authcard" hidden>
-      <span class="eyebrow">Signed in</span>
-      <p style="color:var(--text-dim);">Signed in as <strong id="signedInEmail" style="color:var(--text);"></strong></p>
-      <div class="authcard__foot" style="border-top:0; padding-top:0;">
-        <a href="partner-portal.html">Go to partner portal →</a>
-        <button class="btn-ghost" type="button" id="signOutBtn" style="justify-content:flex-start;"><span class="dot" aria-hidden="true"></span> Sign out</button>
-      </div>
-    </div>
-
-    <div id="authView" class="authcard">
-      <div class="authcard__tabs" role="tablist" aria-label="Sign in or sign up">
-        <button class="authcard__tab is-active" type="button" data-auth-tab="signin" role="tab" aria-selected="true">Sign in</button>
-        <button class="authcard__tab" type="button" data-auth-tab="signup" role="tab" aria-selected="false">Sign up</button>
-      </div>
-
-      <div class="authcard__method">
-        <span class="mono" style="font-size:0.66rem; letter-spacing:0.1em; color:var(--text-faint);">Method:</span>
-        <button class="authcard__methodlink is-active" type="button" data-auth-method="password">Password</button>
-        <span aria-hidden="true" style="color:var(--text-faint);">·</span>
-        <button class="authcard__methodlink" type="button" data-auth-method="magic">Magic link</button>
-      </div>
-
-      <form id="authForm" class="formgrid" novalidate>
-        <div class="formfield">
-          <label class="formfield__label" for="authEmail">Email <span class="req">*</span></label>
-          <input type="email" id="authEmail" name="email" autocomplete="email" placeholder="name@organization.com" required />
-          <span class="formfield__err" id="authEmailErr"></span>
-        </div>
-        <div class="formfield" id="authPasswordField">
-          <label class="formfield__label" for="authPassword">Password <span class="req">*</span></label>
-          <input type="password" id="authPassword" name="password" autocomplete="current-password" placeholder="••••••••" />
-          <span class="formfield__err" id="authPasswordErr"></span>
-        </div>
-        <div class="formsubmit">
-          <button class="btn" type="submit" id="authSubmitBtn">Sign in <span class="arr" aria-hidden="true">→</span></button>
-          <span class="mono" id="authLoading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Working<span class="loadingdots"></span></span>
-        </div>
-        <div id="authNotice"></div>
-      </form>
-
+    <div id="callbackCard" class="authcard">
+      <div id="callbackNotice"></div>
       <div class="authcard__foot">
-        <a href="partners.html">Learn about the founding partner program →</a>
-        <a href="onboarding.html">Go to the onboarding application →</a>
+        <a href="login.html">← Back to sign in</a>
         <a href="index.html">← Back to homepage</a>
       </div>
     </div>
@@ -158,6 +111,6 @@
 <script src="main.js"></script>
 <script src="ambient.js"></script>
 <script type="module" src="supabase-config.js"></script>
-<script type="module" src="login.js"></script>
+<script type="module" src="auth-callback.js"></script>
 </body>
 </html>

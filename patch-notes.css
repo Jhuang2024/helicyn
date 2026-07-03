@@ -1,0 +1,61 @@
+/* ============================================================
+   HELICYN - patch notes / changelog (/patch-notes)
+   Extends styles.css + partner.css with the list/card components
+   this page needs. Entries are static markup (one .patchcard per
+   release note, newest first): this site has no build step, so
+   there is no templating layer to render a data file through; to
+   add an entry, copy an existing .patchcard block and edit it.
+   ============================================================ */
+
+.patchlist { display: grid; gap: 1.1rem; max-width: 760px; }
+
+.patchcard {
+  border: 1px solid var(--line); border-radius: 14px; padding: clamp(1.4rem, 3vw, 1.9rem);
+  background: var(--bg-1); display: grid; gap: 0.8rem; align-content: start;
+  position: relative;
+  transition: border-color 0.35s var(--ease), transform 0.35s var(--ease);
+}
+.patchcard:hover { border-color: var(--signal-line); }
+
+.patchcard__meta {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem;
+}
+.patchcard__date {
+  font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint);
+}
+.patchcard__read { font-size: 0.68rem; letter-spacing: 0.06em; color: var(--text-faint); }
+.patchcard__read::before { content: "\00b7"; margin-right: 0.9rem; color: var(--text-faint); }
+
+.patchtag {
+  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.3rem 0.7rem; border-radius: 100px; border: 1px solid var(--signal-line);
+  background: var(--signal-soft); color: var(--text); width: fit-content;
+}
+
+.patchcard__title { font-weight: 500; font-size: 1.15rem; letter-spacing: -0.01em; line-height: 1.3; }
+
+.patchcard__body { display: grid; gap: 0.5rem; padding-left: 1.1rem; }
+.patchcard__body li { color: var(--text-dim); font-size: 0.92rem; line-height: 1.6; }
+
+/* same cursor-tracked spotlight + tilt treatment as the other card
+   grids on the site (rolecard/stagecard/portalcard/benefitcard);
+   ambient.js's CARD_SEL/TILT_SEL include .patchcard, no new JS. */
+.patchcard::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  pointer-events: none; opacity: 0; z-index: 2;
+  background: radial-gradient(240px 240px at var(--cx, 50%) var(--cy, 50%),
+    color-mix(in srgb, var(--signal) 24%, transparent) 0%, transparent 62%);
+  mix-blend-mode: screen;
+  transition: opacity 0.45s var(--ease);
+}
+.patchcard:hover::after { opacity: 1; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .patchcard:hover {
+    transform: perspective(800px) rotateX(calc(var(--tilty, 0) * -3deg)) rotateY(calc(var(--tiltx, 0) * 4deg)) translateY(-3px);
+    box-shadow: 0 24px 60px -36px rgba(0,0,0,0.8);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .patchcard::after { display: none; }
+  .patchcard:hover { transform: none; }
+}

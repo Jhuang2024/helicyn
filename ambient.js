@@ -62,7 +62,7 @@
     }, { passive: true });
 
     /* ---- per-card spotlight (cursor-tracked sheen) -------- */
-    const CARD_SEL = '.demo-metric, .demo-region, .demo-rec, .cp-lifecell, .cp-rnode, .wl-staged__card, .demo-panel, .cp-queue__list li, .cp-assume, .archstack__panel, .compare__col, .cpcta__panel, .cap, .rolecard, .stagecard, .portalcard, .benefitcard, .signalboard__tile, .enginediagram__step';
+    const CARD_SEL = '.demo-metric, .demo-region, .demo-rec, .cp-lifecell, .cp-rnode, .wl-staged__card, .demo-panel, .cp-queue__list li, .cp-assume, .archstack__panel, .compare__col, .cpcta__panel, .cap, .rolecard, .stagecard, .portalcard, .benefitcard, .signalboard__tile, .enginediagram__step, .patchcard';
     let cardRaf = 0, lastEvt = null;
     function spot() {
       cardRaf = 0;
@@ -93,7 +93,7 @@
     }, { passive: true });
 
     /* ---- card tilt (cursor-tracked 3D lean) ---------------- */
-    const TILT_SEL = '.cap, .signalboard__tile, .enginediagram__step, .cpcta__panel, .rolecard, .stagecard, .portalcard, .benefitcard';
+    const TILT_SEL = '.cap, .signalboard__tile, .enginediagram__step, .cpcta__panel, .rolecard, .stagecard, .portalcard, .benefitcard, .patchcard';
     document.querySelectorAll(TILT_SEL).forEach((el) => {
       el.addEventListener('pointerleave', () => {
         el.style.setProperty('--tiltx', 0);

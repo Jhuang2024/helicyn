@@ -12,3 +12,5 @@
 /partner-portal        /partner-portal.html   200
 /partners              /partners.html         200
 /research              /research.html         200
+/patch-notes           /patch-notes.html      200
+/auth-callback          /auth-callback.html    200

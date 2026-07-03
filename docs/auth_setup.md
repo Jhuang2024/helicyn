@@ -74,12 +74,38 @@ This site has no build step, so there is nothing that reads
    `$SUPABASE_ANON_KEY` before publish). No such script exists yet in
    this repo since there is currently no build step; add one if/when a
    build step is introduced.
-2. In Supabase Auth settings, set the Site URL and Redirect URLs to your
-   production domain (e.g. `https://helicyn.com`) so magic-link email
-   redirects land on `/partner-portal.html` correctly
-   (`auth.js`'s `signInWithMagicLink` sets
-   `emailRedirectTo: origin + "/partner-portal.html"`).
-3. Confirm RLS is enabled on `founding_partner_applications` (the
+2. **In the Supabase dashboard, under Authentication -> URL
+   Configuration:**
+   - Set **Site URL** to `https://helicyn.com`. This is the fallback
+     Supabase uses for any auth email whose code did not specify an
+     explicit redirect, so a stale dev value here (e.g.
+     `http://localhost:3000`, a common framework default) sends real
+     users to a dead localhost link after they click "Confirm your
+     email" -- this was the root cause of the `otp_expired` /
+     `access_denied` error users were landing on.
+   - Add `https://helicyn.com/auth-callback.html` to **Redirect
+     URLs**. `signUpWithPassword` and `signInWithMagicLink` in
+     `auth.js` both now pass an explicit
+     `emailRedirectTo: <origin>/auth-callback.html`, but Supabase
+     rejects (silently falls back to Site URL) any redirect target
+     that is not also present in this allow-list, so both the code
+     change and this dashboard entry are required together.
+   - If you also test against a local static server, add that
+     origin's callback URL too (e.g.
+     `http://localhost:8000/auth-callback.html`) so local sign-ups
+     redirect correctly during development; it does not need to
+     replace the production entry.
+3. `/auth-callback.html` (+ `auth-callback.js`) is the single landing
+   page for both signup-confirmation and magic-link emails. It
+   establishes the session and redirects into `/partner-portal.html`
+   on success, and renders a real "link expired or already used, want
+   a new one?" UI (with a resend action) instead of exposing
+   Supabase's raw `#error=...` hash. `otp_expired` in particular can
+   also happen even with correct URL config, since the verification
+   token is single-use and some corporate/email-client link scanners
+   pre-fetch links before a real user clicks them; the resend flow on
+   that page is the recovery path.
+4. Confirm RLS is enabled on `founding_partner_applications` (the
    migration does this) before going live -- without RLS, the anon key
    would allow any authenticated user to read/write any row.
 
@@ -115,10 +141,15 @@ there is no fake/offline auth mode. If `supabase-config.js` is missing or
 still has placeholder values, every auth page shows a clear "Setup
 required" banner and disables its form instead of pretending to work.
 
-- **Sign up:** go to `/login.html`, "Sign up" tab, enter a real email +
-  password, submit. Supabase sends a confirmation email (check the
-  Supabase Auth dashboard logs if it doesn't arrive in a local/test
-  project).
+- **Sign up + email verification (full new-user path):** go to
+  `/login.html`, "Sign up" tab, enter a real email + password, submit.
+  Supabase sends a confirmation email; click it and confirm you land
+  on `/auth-callback.html`, see "Verified", and are redirected into
+  `/partner-portal.html` signed in, with no `#error=...` or raw hash
+  ever visible in the address bar. To test the failure path, wait for
+  a link to expire (or click a link twice) and confirm
+  `/auth-callback.html` shows the "link expired or already used" panel
+  with a working resend action, rather than the raw Supabase error.
 - **Sign in:** confirm the account, then use the "Sign in" tab
   (password) or "Magic link" method on `/login.html`.
 - **Sign out:** from `/login.html` (once signed in) or the "Sign out"
