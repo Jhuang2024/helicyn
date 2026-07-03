@@ -1,8 +1,8 @@
 // Site-wide nav auth state: swaps the nav's "Login" link for a "Sign
 // out" action wherever a real Supabase session exists, so signing out
-// is reachable from any page, not just /login.html and /partner-portal.html.
+// is reachable from any page, not just /login and /partner-portal.
 // No-ops entirely if Supabase isn't configured or the page has no
-// [data-nav-auth] link (e.g. /login.html and /partner-portal.html already
+// [data-nav-auth] link (e.g. /login and /partner-portal already
 // manage their own sign-in/out state in-page).
 import { checkClientReady, getSession, onAuthStateChange, signOut } from "./auth.js";
 
@@ -14,11 +14,11 @@ function render(link, session) {
       e.preventDefault();
       link.textContent = "Signing out...";
       await signOut().catch(() => {});
-      window.location.href = "index.html";
+      window.location.href = "/";
     };
   } else {
     link.textContent = "Login";
-    link.href = "login.html";
+    link.href = "login";
     link.onclick = null;
   }
 }

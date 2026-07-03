@@ -93,7 +93,7 @@ async function start() {
   }
   portalSignOutBtn.addEventListener("click", async () => {
     await signOut();
-    window.location.href = "login.html";
+    window.location.href = "login";
   });
   await onAuthStateChange(() => init());
   await init();

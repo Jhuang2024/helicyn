@@ -83,28 +83,51 @@ This site has no build step, so there is nothing that reads
      users to a dead localhost link after they click "Confirm your
      email" -- this was the root cause of the `otp_expired` /
      `access_denied` error users were landing on.
-   - Add `https://helicyn.com/auth-callback.html` to **Redirect
-     URLs**. `signUpWithPassword` and `signInWithMagicLink` in
-     `auth.js` both now pass an explicit
-     `emailRedirectTo: <origin>/auth-callback.html`, but Supabase
-     rejects (silently falls back to Site URL) any redirect target
-     that is not also present in this allow-list, so both the code
-     change and this dashboard entry are required together.
+   - Add `https://helicyn.com/auth-callback` (no `.html`; see the URL
+     structure note below) to **Redirect URLs**. `signUpWithPassword`,
+     `signInWithMagicLink`, and `requestPasswordReset` in `auth.js` all
+     pass an explicit `emailRedirectTo: <origin>/auth-callback`, but
+     Supabase rejects (silently falls back to Site URL) any redirect
+     target that is not also present in this allow-list, so both the
+     code and this dashboard entry are required together. If you
+     previously added the `.html` version, replace it with this
+     extensionless one -- Supabase matches the Redirect URL exactly.
    - If you also test against a local static server, add that
-     origin's callback URL too (e.g.
-     `http://localhost:8000/auth-callback.html`) so local sign-ups
-     redirect correctly during development; it does not need to
-     replace the production entry.
-3. `/auth-callback.html` (+ `auth-callback.js`) is the single landing
-   page for both signup-confirmation and magic-link emails. It
-   establishes the session and redirects into `/partner-portal.html`
-   on success, and renders a real "link expired or already used, want
-   a new one?" UI (with a resend action) instead of exposing
-   Supabase's raw `#error=...` hash. `otp_expired` in particular can
-   also happen even with correct URL config, since the verification
-   token is single-use and some corporate/email-client link scanners
-   pre-fetch links before a real user clicks them; the resend flow on
-   that page is the recovery path.
+     origin's callback URL too (e.g. `http://localhost:8000/auth-callback`,
+     or `.html` if using a plain static server -- see the note below)
+     so local sign-ups redirect correctly during development; it does
+     not need to replace the production entry.
+3. `/auth-callback` (served from `auth-callback.html` via the
+   `_redirects` rewrite; see the URL structure note below) is the
+   single landing page for both signup-confirmation and magic-link
+   emails, and for password-reset links (`type=recovery` in the
+   redirect shows a "set a new password" form instead). It establishes
+   the session and redirects into `/partner-portal` on success, and
+   renders a real "link expired or already used, want a new one?" UI
+   (with a resend action) instead of exposing Supabase's raw
+   `#error=...` hash. `otp_expired` in particular can also happen even
+   with correct URL config, since the verification token is single-use
+   and some corporate/email-client link scanners pre-fetch links
+   before a real user clicks them; the resend flow on that page is the
+   recovery path.
+
+### URL structure: no `.html` in links
+
+Every internal link, redirect, and JS `window.location` target uses the
+clean path (`/login`, `/partner-portal`, `/auth-callback`, ...), never
+the underlying `.html` filename. This works because `_redirects` has,
+for every page, a `200` rewrite (pretty URL serves the `.html` file's
+content with the URL bar staying clean) and a `301` redirect (an old
+`.html` link/bookmark permanently redirects to the clean path). Both
+directions require the **Netlify** redirect engine, so:
+
+- **Production (Netlify)**: works exactly as described above.
+- **Local static server** (e.g. `python3 -m http.server 8000`, per
+  "Local setup" above): has no redirect engine, so pretty paths like
+  `/login` 404 locally -- open pages directly by filename
+  (`/login.html`) when testing locally, or use a tool that honors
+  `_redirects` (e.g. the Netlify CLI's `netlify dev`) to test the
+  clean-URL behavior itself.
 4. Confirm RLS is enabled on `founding_partner_applications` (the
    migration does this) before going live -- without RLS, the anon key
    would allow any authenticated user to read/write any row.
@@ -142,26 +165,29 @@ still has placeholder values, every auth page shows a clear "Setup
 required" banner and disables its form instead of pretending to work.
 
 - **Sign up + email verification (full new-user path):** go to
-  `/login.html`, "Sign up" tab, enter a real email + password, submit.
+  `/login`, "Sign up" tab, enter a real email + password, submit.
   Supabase sends a confirmation email; click it and confirm you land
-  on `/auth-callback.html`, see "Verified", and are redirected into
-  `/partner-portal.html` signed in, with no `#error=...` or raw hash
+  on `/auth-callback`, see "Verified", and are redirected into
+  `/partner-portal` signed in, with no `#error=...` or raw hash
   ever visible in the address bar. To test the failure path, wait for
   a link to expire (or click a link twice) and confirm
-  `/auth-callback.html` shows the "link expired or already used" panel
+  `/auth-callback` shows the "link expired or already used" panel
   with a working resend action, rather than the raw Supabase error.
 - **Sign in:** confirm the account, then use the "Sign in" tab
-  (password) or "Magic link" method on `/login.html`.
-- **Sign out:** from `/login.html` (once signed in) or the "Sign out"
-  button in `/partner-portal.html`'s Account card.
-- **Partner portal protection:** open `/partner-portal.html` in a
+  (password) or "Magic link" method on `/login`.
+- **Forgot password:** "Forgot password?" on the Sign In tab, confirm
+  the reset email, and land on `/auth-callback` with a "set a new
+  password" form.
+- **Sign out:** from `/login` (once signed in), `/partner-portal`'s
+  Account card, or the nav's "Sign out" link on any page.
+- **Partner portal protection:** open `/partner-portal` in a
   logged-out browser/session -- it must show "Sign-in required" and a
-  link to `/login.html`, not any account or application data.
-- **Onboarding submission:** sign in, go to `/onboarding.html`, fill in
+  link to `/login`, not any account or application data.
+- **Onboarding submission:** sign in, go to `/onboarding`, fill in
   the required fields (company name, name, email, consent checkbox),
   submit, and confirm the success state ("Thanks. Your founding partner
   application has been submitted...") appears only after the Supabase
-  insert actually succeeds. Then reload `/partner-portal.html` and
+  insert actually succeeds. Then reload `/partner-portal` and
   confirm the submitted application (company name, submitted date,
   interests) appears under "Application status".
 

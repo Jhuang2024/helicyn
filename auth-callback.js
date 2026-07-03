@@ -179,7 +179,7 @@ function renderSetPasswordForm() {
       form.hidden = true;
       resultNotice.appendChild(buildNotice("ok", "Password updated", "Redirecting to the partner portal..."));
       setTimeout(() => {
-        window.location.replace("partner-portal.html");
+        window.location.replace("partner-portal");
       }, 900);
     } catch (updateErr) {
       resultNotice.appendChild(
@@ -218,7 +218,7 @@ async function run() {
   } else if (session) {
     renderNotice("ok", "Verified", `Signed in as ${session.user.email}. Redirecting to the partner portal...`);
     setTimeout(() => {
-      window.location.replace("partner-portal.html");
+      window.location.replace("partner-portal");
     }, 900);
   } else {
     renderNotice(

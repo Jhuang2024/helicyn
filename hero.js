@@ -217,7 +217,7 @@
   }
 
   // ---- input -----------------------------------------------
-  // .hero (homepage) or .control-head (control-plane.html) - both
+  // .hero (homepage) or .control-head (/control-plane) - both
   // render the same #field canvas and should get the same cursor
   // deflection/reticle instead of only the homepage reacting.
   const hero = document.querySelector('.hero, .control-head');

@@ -195,7 +195,7 @@ async function handleSubmit(e) {
     } else {
       await signInWithPassword(email, authPassword.value);
       setNotice("ok", "Signed in", "Redirecting to the partner portal...");
-      window.location.href = "partner-portal.html";
+      window.location.href = "partner-portal";
     }
   } catch (err) {
     setNotice("err", "Could not complete request", err.message || String(err));

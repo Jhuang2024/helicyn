@@ -24,7 +24,7 @@ const SUPABASE_JS_CDN_URL = "https://esm.sh/@supabase/supabase-js@2";
 // confirmed session (or an expired/invalid link) into a real UI instead
 // of a raw #error=... hash. See docs/auth_setup.md.
 function authCallbackUrl() {
-  return window.location.origin + "/auth-callback.html";
+  return window.location.origin + "/auth-callback";
 }
 
 // "Save login on this device": Supabase's client persists sessions to
@@ -233,7 +233,7 @@ export async function signOut() {
   if (error) throw error;
 }
 
-// Sends a password-reset email; the link lands on /auth-callback.html
+// Sends a password-reset email; the link lands on /auth-callback
 // with type=recovery, which shows a "set a new password" form (see
 // auth-callback.js) instead of redirecting straight into the portal.
 export async function requestPasswordReset(email) {
