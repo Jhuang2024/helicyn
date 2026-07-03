@@ -130,8 +130,15 @@
       const item = document.createElement('div');
       item.className = 'pcmdk__item' + (i === activeIdx ? ' is-active' : '');
       item.innerHTML = `<span>${page.label}</span><span class="arr" aria-hidden="true">→</span>`;
-      item.addEventListener('click', () => go(page));
-      item.addEventListener('mouseenter', () => { activeIdx = i; renderList(); });
+      // mousedown (not click) so selection still registers even if a
+      // mouseenter-driven highlight update runs between press and release;
+      // also avoids ever rebuilding the DOM node the pointer is over,
+      // which previously caused a mouseenter/rebuild loop that ate clicks
+      item.addEventListener('mousedown', (e) => { e.preventDefault(); go(page); });
+      item.addEventListener('mouseenter', () => {
+        activeIdx = i;
+        list.querySelectorAll('.pcmdk__item').forEach((el, idx) => el.classList.toggle('is-active', idx === i));
+      });
       list.appendChild(item);
     });
   }
