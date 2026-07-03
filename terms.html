@@ -18,6 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="partner.css" />
+<link rel="stylesheet" href="premium.css" />
 </head>
 <body>
 
@@ -36,6 +37,7 @@
     <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
   </button>
   <nav class="nav__right" id="navmenu" data-nav-menu>
+    <button type="button" class="navcmdk" data-cmdk-open aria-label="Open command menu (Ctrl+K)"><span class="navcmdk__icon" aria-hidden="true">&#8984;</span><span class="navcmdk__lbl">K</span></button>
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
       <span class="mono" data-clock>00:00:00 UTC</span>
@@ -53,7 +55,7 @@
 <section class="section pagehead">
   <div class="orbfield" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
   <div class="wrap">
-    <span class="eyebrow" data-reveal style="--i:0">Legal</span>
+    <span class="eyebrow" data-reveal style="--i:0" data-decrypt>Legal</span>
     <h1 data-reveal="mask" style="--i:1">Terms and Conditions</h1>
     <p data-reveal style="--i:2">Last updated July 3, 2026. These terms cover creating a Helicyn account and using this website. Helicyn is a pre-commercial research preview; these terms will be revised as the product and business model develop.</p>
   </div>
@@ -67,66 +69,68 @@
         <p>This is a working draft written for a pre-commercial research preview, not a substitute for review by a qualified lawyer. It will be replaced with counsel-reviewed terms before any commercial launch.</p>
       </div>
 
-      <div style="display:grid; gap:2.2rem;">
-        <div data-reveal>
-          <h2 style="font-weight:500; font-size:1.2rem; margin-bottom:0.7rem;">1. Acceptance of these terms</h2>
-          <p style="color:var(--text-dim); line-height:1.7;">By creating a Helicyn account, submitting a founding partner application, or otherwise using this website, you agree to these Terms and Conditions. If you do not agree, do not create an account or use the site.</p>
-        </div>
+      <hr class="psep psep--fade" />
 
-        <div data-reveal>
-          <h2 style="font-weight:500; font-size:1.2rem; margin-bottom:0.7rem;">2. What Helicyn is today</h2>
-          <p style="color:var(--text-dim); line-height:1.7;">Helicyn is a pre-commercial research preview: a public website, a research thesis and simulator, an interactive Control Plane demo, and a founding partner program. It is not a live production system managing any real data center, and nothing on this site should be read as a guarantee of specific savings, performance, or delivery timelines.</p>
-        </div>
+      <div style="display:grid; gap:0.7rem;">
+        <details class="paccordion" data-reveal open>
+          <summary class="paccordion__summary">1. Acceptance of these terms<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+          <div class="paccordion__body">By creating a Helicyn account, submitting a founding partner application, or otherwise using this website, you agree to these Terms and Conditions. If you do not agree, do not create an account or use the site.</div>
+        </details>
 
-        <div data-reveal>
-          <h2 style="font-weight:500; font-size:1.2rem; margin-bottom:0.7rem;">3. Accounts</h2>
-          <p style="color:var(--text-dim); line-height:1.7;">You must provide accurate information when creating an account (including your name and, if given, your job title) and keep your login credentials confidential. You're responsible for activity under your account. Account authentication is handled by Supabase Auth; Helicyn does not see or store your password.</p>
-        </div>
+        <details class="paccordion" data-reveal open>
+          <summary class="paccordion__summary">2. What Helicyn is today<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+          <div class="paccordion__body">Helicyn is a pre-commercial research preview: a public website, a research thesis and simulator, an interactive Control Plane demo, and a founding partner program. It is not a live production system managing any real data center, and nothing on this site should be read as a guarantee of specific savings, performance, or delivery timelines.</div>
+        </details>
 
-        <div data-reveal>
-          <h2 style="font-weight:500; font-size:1.2rem; margin-bottom:0.7rem;">4. Acceptable use</h2>
-          <p style="color:var(--text-dim); line-height:1.7;">You agree not to misuse the site or the Control Plane demo: no attempting to access another user's account or application data, no interfering with normal operation of the site, and no reverse engineering or scraping beyond what's needed for ordinary, individual use of the site.</p>
-        </div>
+        <details class="paccordion" data-reveal open>
+          <summary class="paccordion__summary">3. Accounts<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+          <div class="paccordion__body">You must provide accurate information when creating an account (including your name and, if given, your job title) and keep your login credentials confidential. You're responsible for activity under your account. Account authentication is handled by Supabase Auth; Helicyn does not see or store your password.</div>
+        </details>
 
-        <div data-reveal>
-          <h2 style="font-weight:500; font-size:1.2rem; margin-bottom:0.7rem;">5. Founding partner applications</h2>
-          <p style="color:var(--text-dim); line-height:1.7;">Submitting a founding partner application is an expression of interest, not a binding contract or a guarantee of acceptance. Founding partner benefits, pricing, and the staged business model described on this site are proposed and subject to change before commercial launch.</p>
-        </div>
+        <details class="paccordion" data-reveal open>
+          <summary class="paccordion__summary">4. Acceptable use<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+          <div class="paccordion__body">You agree not to misuse the site or the Control Plane demo: no attempting to access another user's account or application data, no interfering with normal operation of the site, and no reverse engineering or scraping beyond what's needed for ordinary, individual use of the site.</div>
+        </details>
 
-        <div data-reveal>
-          <h2 style="font-weight:500; font-size:1.2rem; margin-bottom:0.7rem;">6. Communications</h2>
-          <p style="color:var(--text-dim); line-height:1.7;">If you opt in at sign-up, Helicyn may email you product updates and patch notes. You can unsubscribe at any time using the link in those emails or by contacting us. Helicyn will still send account-related messages (like sign-in confirmations) that aren't part of this optional list.</p>
-        </div>
+        <details class="paccordion" data-reveal open>
+          <summary class="paccordion__summary">5. Founding partner applications<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+          <div class="paccordion__body">Submitting a founding partner application is an expression of interest, not a binding contract or a guarantee of acceptance. Founding partner benefits, pricing, and the staged business model described on this site are proposed and subject to change before commercial launch.</div>
+        </details>
 
-        <div data-reveal>
-          <h2 style="font-weight:500; font-size:1.2rem; margin-bottom:0.7rem;">7. Intellectual property</h2>
-          <p style="color:var(--text-dim); line-height:1.7;">The Helicyn name, site, research materials, and product design are owned by Helicyn. If you send feedback or suggestions, you agree Helicyn may use them without any obligation to you.</p>
-        </div>
+        <details class="paccordion" data-reveal open>
+          <summary class="paccordion__summary">6. Communications<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+          <div class="paccordion__body">If you opt in at sign-up, Helicyn may email you product updates and patch notes. You can unsubscribe at any time using the link in those emails or by contacting us. Helicyn will still send account-related messages (like sign-in confirmations) that aren't part of this optional list.</div>
+        </details>
 
-        <div data-reveal>
-          <h2 style="font-weight:500; font-size:1.2rem; margin-bottom:0.7rem;">8. No warranty</h2>
-          <p style="color:var(--text-dim); line-height:1.7;">The site, the Control Plane demo, and the founding partner program are provided "as is," as a research preview, without warranties of any kind, express or implied, including fitness for a particular purpose or non-infringement.</p>
-        </div>
+        <details class="paccordion" data-reveal open>
+          <summary class="paccordion__summary">7. Intellectual property<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+          <div class="paccordion__body">The Helicyn name, site, research materials, and product design are owned by Helicyn. If you send feedback or suggestions, you agree Helicyn may use them without any obligation to you.</div>
+        </details>
 
-        <div data-reveal>
-          <h2 style="font-weight:500; font-size:1.2rem; margin-bottom:0.7rem;">9. Limitation of liability</h2>
-          <p style="color:var(--text-dim); line-height:1.7;">To the fullest extent permitted by law, Helicyn is not liable for indirect, incidental, or consequential damages arising from your use of the site or an account, including any reliance on illustrative or simulated figures shown in the Control Plane demo or research materials.</p>
-        </div>
+        <details class="paccordion" data-reveal open>
+          <summary class="paccordion__summary">8. No warranty<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+          <div class="paccordion__body">The site, the Control Plane demo, and the founding partner program are provided "as is," as a research preview, without warranties of any kind, express or implied, including fitness for a particular purpose or non-infringement.</div>
+        </details>
 
-        <div data-reveal>
-          <h2 style="font-weight:500; font-size:1.2rem; margin-bottom:0.7rem;">10. Changes to these terms</h2>
-          <p style="color:var(--text-dim); line-height:1.7;">Helicyn may update these terms as the product and business model evolve, especially between this pre-commercial stage and any future commercial launch. Material changes will update the "Last updated" date above.</p>
-        </div>
+        <details class="paccordion" data-reveal open>
+          <summary class="paccordion__summary">9. Limitation of liability<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+          <div class="paccordion__body">To the fullest extent permitted by law, Helicyn is not liable for indirect, incidental, or consequential damages arising from your use of the site or an account, including any reliance on illustrative or simulated figures shown in the Control Plane demo or research materials.</div>
+        </details>
 
-        <div data-reveal>
-          <h2 style="font-weight:500; font-size:1.2rem; margin-bottom:0.7rem;">11. Termination</h2>
-          <p style="color:var(--text-dim); line-height:1.7;">You may stop using the site and request account deletion at any time by contacting Helicyn. Helicyn may suspend or terminate an account for violating the acceptable use section above.</p>
-        </div>
+        <details class="paccordion" data-reveal open>
+          <summary class="paccordion__summary">10. Changes to these terms<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+          <div class="paccordion__body">Helicyn may update these terms as the product and business model evolve, especially between this pre-commercial stage and any future commercial launch. Material changes will update the "Last updated" date above.</div>
+        </details>
 
-        <div data-reveal>
-          <h2 style="font-weight:500; font-size:1.2rem; margin-bottom:0.7rem;">12. Contact</h2>
-          <p style="color:var(--text-dim); line-height:1.7;">Questions about these terms can be sent to <a data-email-link href="#" style="text-decoration:underline;">the Helicyn team</a>.</p>
-        </div>
+        <details class="paccordion" data-reveal open>
+          <summary class="paccordion__summary">11. Termination<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+          <div class="paccordion__body">You may stop using the site and request account deletion at any time by contacting Helicyn. Helicyn may suspend or terminate an account for violating the acceptable use section above.</div>
+        </details>
+
+        <details class="paccordion" data-reveal open>
+          <summary class="paccordion__summary">12. Contact<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+          <div class="paccordion__body">Questions about these terms can be sent to <a data-email-link href="#" style="text-decoration:underline;">the Helicyn team</a>.</div>
+        </details>
       </div>
     </div>
   </div>
@@ -176,5 +180,6 @@
 <script src="ambient.js"></script>
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="nav-auth.js"></script>
+<script src="premium.js"></script>
 </body>
 </html>

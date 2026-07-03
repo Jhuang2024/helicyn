@@ -22,6 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="partner.css" />
+<link rel="stylesheet" href="premium.css" />
 <link rel="stylesheet" href="patch-notes.css" />
 </head>
 <body>
@@ -41,6 +42,7 @@
     <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
   </button>
   <nav class="nav__right" id="navmenu" data-nav-menu>
+    <button type="button" class="navcmdk" data-cmdk-open aria-label="Open command menu (Ctrl+K)"><span class="navcmdk__icon" aria-hidden="true">&#8984;</span><span class="navcmdk__lbl">K</span></button>
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
       <span class="mono" data-clock>00:00:00 UTC</span>
@@ -58,7 +60,7 @@
 <section class="section pagehead">
   <div class="orbfield" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
   <div class="wrap">
-    <span class="eyebrow" data-reveal style="--i:0">Patch notes</span>
+    <span class="eyebrow" data-reveal style="--i:0" data-decrypt>Patch notes</span>
     <h1 data-reveal="mask" style="--i:1">What's shipped on Helicyn.</h1>
     <p data-reveal style="--i:2">Product updates, design changes, performance work, and fixes, in the order they shipped. This is a pre-commercial research preview, so expect steady, incremental changes rather than a fixed release cadence.</p>
   </div>
@@ -66,12 +68,26 @@
 
 <section class="section" style="padding-top:0;">
   <div class="wrap">
+    <div class="ptabs" id="patchFilterTabs" style="position:relative; display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1.6rem;" data-reveal>
+      <span class="ptabs-indicator" id="patchTabsIndicator" aria-hidden="true"></span>
+      <button type="button" class="btn-ghost is-active" data-filter-tag="all" style="padding:0.5rem 0.9rem; position:relative; z-index:1;">All</button>
+      <button type="button" class="btn-ghost" data-filter-tag="Research" style="padding:0.5rem 0.9rem; position:relative; z-index:1;">Research</button>
+      <button type="button" class="btn-ghost" data-filter-tag="Fixes" style="padding:0.5rem 0.9rem; position:relative; z-index:1;">Fixes</button>
+      <button type="button" class="btn-ghost" data-filter-tag="Security" style="padding:0.5rem 0.9rem; position:relative; z-index:1;">Security</button>
+      <button type="button" class="btn-ghost" data-filter-tag="Growth" style="padding:0.5rem 0.9rem; position:relative; z-index:1;">Growth</button>
+      <button type="button" class="btn-ghost" data-filter-tag="Product" style="padding:0.5rem 0.9rem; position:relative; z-index:1;">Product</button>
+      <button type="button" class="btn-ghost" data-filter-tag="Design" style="padding:0.5rem 0.9rem; position:relative; z-index:1;">Design</button>
+      <button type="button" class="btn-ghost" data-filter-tag="Performance" style="padding:0.5rem 0.9rem; position:relative; z-index:1;">Performance</button>
+      <button type="button" class="btn-ghost" data-filter-tag="Launch" style="padding:0.5rem 0.9rem; position:relative; z-index:1;">Launch</button>
+    </div>
+    <hr class="psep psep--fade" />
     <div class="patchlist">
 
-      <article class="patchcard" data-reveal style="--i:0">
+      <article class="patchcard pglow-ring" data-reveal style="--i:0" data-tag="Research">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-07-03">July 3, 2026</time>
           <span class="patchtag">Research</span>
+          <span class="pbadge pbadge--signal">Latest</span>
           <span class="mono patchcard__read">1 min read</span>
         </div>
         <h3 class="patchcard__title">Published the Helicyn technical report</h3>
@@ -82,7 +98,7 @@
         </ul>
       </article>
 
-      <article class="patchcard" data-reveal style="--i:1">
+      <article class="patchcard" data-reveal style="--i:1" data-tag="Fixes">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-07-02">July 2, 2026</time>
           <span class="patchtag">Fixes</span>
@@ -96,7 +112,7 @@
         </ul>
       </article>
 
-      <article class="patchcard" data-reveal style="--i:1">
+      <article class="patchcard" data-reveal style="--i:1" data-tag="Fixes">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-06-28">June 28, 2026</time>
           <span class="patchtag">Fixes</span>
@@ -110,7 +126,7 @@
         </ul>
       </article>
 
-      <article class="patchcard" data-reveal style="--i:2">
+      <article class="patchcard" data-reveal style="--i:2" data-tag="Security">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-06-24">June 24, 2026</time>
           <span class="patchtag">Security</span>
@@ -124,7 +140,7 @@
         </ul>
       </article>
 
-      <article class="patchcard" data-reveal style="--i:3">
+      <article class="patchcard" data-reveal style="--i:3" data-tag="Growth">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-06-15">June 15, 2026</time>
           <span class="patchtag">Growth</span>
@@ -137,7 +153,7 @@
         </ul>
       </article>
 
-      <article class="patchcard" data-reveal style="--i:4">
+      <article class="patchcard" data-reveal style="--i:4" data-tag="Product">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-06-05">June 5, 2026</time>
           <span class="patchtag">Product</span>
@@ -151,7 +167,7 @@
         </ul>
       </article>
 
-      <article class="patchcard" data-reveal style="--i:5">
+      <article class="patchcard" data-reveal style="--i:5" data-tag="Security">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-05-22">May 22, 2026</time>
           <span class="patchtag">Security</span>
@@ -165,7 +181,7 @@
         </ul>
       </article>
 
-      <article class="patchcard" data-reveal style="--i:6">
+      <article class="patchcard" data-reveal style="--i:6" data-tag="Design">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-05-10">May 10, 2026</time>
           <span class="patchtag">Design</span>
@@ -179,7 +195,7 @@
         </ul>
       </article>
 
-      <article class="patchcard" data-reveal style="--i:6">
+      <article class="patchcard" data-reveal style="--i:6" data-tag="Performance">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-04-28">April 28, 2026</time>
           <span class="patchtag">Performance</span>
@@ -193,7 +209,7 @@
         </ul>
       </article>
 
-      <article class="patchcard" data-reveal style="--i:6">
+      <article class="patchcard" data-reveal style="--i:6" data-tag="Design">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-04-14">April 14, 2026</time>
           <span class="patchtag">Design</span>
@@ -207,7 +223,7 @@
         </ul>
       </article>
 
-      <article class="patchcard" data-reveal style="--i:6">
+      <article class="patchcard" data-reveal style="--i:6" data-tag="Product">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-03-30">March 30, 2026</time>
           <span class="patchtag">Product</span>
@@ -221,7 +237,7 @@
         </ul>
       </article>
 
-      <article class="patchcard" data-reveal style="--i:6">
+      <article class="patchcard" data-reveal style="--i:6" data-tag="Design">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-03-18">March 18, 2026</time>
           <span class="patchtag">Design</span>
@@ -235,7 +251,7 @@
         </ul>
       </article>
 
-      <article class="patchcard" data-reveal style="--i:6">
+      <article class="patchcard" data-reveal style="--i:6" data-tag="Launch">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-03-02">March 2, 2026</time>
           <span class="patchtag">Launch</span>
@@ -297,5 +313,37 @@
 <script src="ambient.js"></script>
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="nav-auth.js"></script>
+<script src="premium.js"></script>
+<script>
+(function () {
+  var tabs = document.getElementById('patchFilterTabs');
+  if (!tabs) return;
+  var indicator = document.getElementById('patchTabsIndicator');
+  var buttons = Array.from(tabs.querySelectorAll('[data-filter-tag]'));
+  var cards = Array.from(document.querySelectorAll('.patchcard'));
+  function moveIndicator(btn) {
+    if (!indicator) return;
+    indicator.style.width = btn.offsetWidth + 'px';
+    indicator.style.height = btn.offsetHeight + 'px';
+    indicator.style.transform = 'translate(' + btn.offsetLeft + 'px,' + btn.offsetTop + 'px)';
+  }
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      buttons.forEach(function (b) { b.classList.toggle('is-active', b === btn); });
+      moveIndicator(btn);
+      var tag = btn.getAttribute('data-filter-tag');
+      cards.forEach(function (card) {
+        card.style.display = (tag === 'all' || card.getAttribute('data-tag') === tag) ? '' : 'none';
+      });
+    });
+  });
+  var active = tabs.querySelector('.is-active');
+  if (active) setTimeout(function () { moveIndicator(active); }, 60);
+  window.addEventListener('resize', function () {
+    var a = tabs.querySelector('.is-active');
+    if (a) moveIndicator(a);
+  });
+})();
+</script>
 </body>
 </html>

@@ -22,6 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="partner.css" />
+<link rel="stylesheet" href="premium.css" />
 </head>
 <body>
 
@@ -40,6 +41,7 @@
     <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
   </button>
   <nav class="nav__right" id="navmenu" data-nav-menu>
+    <button type="button" class="navcmdk" data-cmdk-open aria-label="Open command menu (Ctrl+K)"><span class="navcmdk__icon" aria-hidden="true">&#8984;</span><span class="navcmdk__lbl">K</span></button>
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
       <span class="mono" data-clock>00:00:00 UTC</span>
@@ -70,7 +72,7 @@
     <g class="constellation__node is-signal" transform="translate(280,250)"><circle class="ring" r="7"></circle><circle class="dot" r="2.5" style="animation-delay:-1.8s"></circle></g>
   </svg>
   <div class="wrap">
-    <span class="eyebrow" data-reveal style="--i:0">Founding partner program</span>
+    <span class="eyebrow" data-reveal style="--i:0" data-decrypt>Founding partner program</span>
     <h1 data-reveal="mask" style="--i:1">Become a Helicyn founding partner</h1>
     <p data-reveal style="--i:2">Founding partners help shape Helicyn before commercial launch and receive early access, priority onboarding, and preferred launch pricing.</p>
     <div class="pagehead__cta" data-reveal style="--i:3">
@@ -89,24 +91,24 @@
       <h2>Operators, infrastructure teams, and research partners.</h2>
     </div>
     <div class="rolegrid" style="margin-top:2rem;">
-      <div class="rolecard" data-reveal style="--i:0">
+      <div class="rolecard" data-tilt data-reveal style="--i:0">
         <div class="rolecard__imgwrap"><img class="rolecard__img" src="images/server-aisle.jpg" alt="" loading="lazy" decoding="async" /></div>
         <div class="rolecard__title">Data center operators</div><p>Teams running facilities who want early input on workload/thermal/energy coordination.</p>
       </div>
-      <div class="rolecard" data-reveal style="--i:1">
+      <div class="rolecard" data-tilt data-reveal style="--i:1">
         <div class="rolecard__imgwrap"><img class="rolecard__img" src="images/compute.jpg" alt="" loading="lazy" decoding="async" /></div>
         <div class="rolecard__title">AI infrastructure teams</div><p>Teams managing GPU fleets across training and inference workloads.</p>
       </div>
-      <div class="rolecard" data-reveal style="--i:2">
+      <div class="rolecard" data-tilt data-reveal style="--i:2">
         <div class="rolecard__imgwrap"><img class="rolecard__img" src="images/fibre-networking.jpg" alt="" loading="lazy" decoding="async" /></div>
         <div class="rolecard__title">Cloud / platform teams</div><p>Teams operating multi-region compute platforms.</p>
       </div>
-      <div class="rolecard" data-reveal style="--i:3">
+      <div class="rolecard" data-tilt data-reveal style="--i:3">
         <div class="rolecard__imgwrap"><img class="rolecard__img" src="images/cooling.jpg" alt="" loading="lazy" decoding="async" /></div>
         <div class="rolecard__title">Energy &amp; cooling infrastructure teams</div><p>Teams responsible for power, cooling, and physical plant constraints.</p>
       </div>
-      <div class="rolecard" data-reveal style="--i:4"><div class="rolecard__title">Research / advisory partners</div><p>Researchers interested in the methodology behind the simulator and thesis.</p></div>
-      <div class="rolecard" data-reveal style="--i:5"><div class="rolecard__title">Investors / advisors</div><p>People evaluating the thesis, research direction, and staged business model.</p></div>
+      <div class="rolecard" data-tilt data-reveal style="--i:4"><div class="rolecard__title">Research / advisory partners</div><p>Researchers interested in the methodology behind the simulator and thesis.</p></div>
+      <div class="rolecard" data-tilt data-reveal style="--i:5"><div class="rolecard__title">Investors / advisors</div><p>People evaluating the thesis, research direction, and staged business model.</p></div>
     </div>
   </div>
 </section>
@@ -144,7 +146,7 @@
       <span class="stagerail__node"><span class="stagerail__dot"></span></span>
     </div>
     <div class="stagegrid" style="margin-top:0.6rem;">
-      <div class="stagecard is-now" data-reveal style="--i:0">
+      <div class="stagecard is-now pcard-beam" data-reveal style="--i:0">
         <span class="stagecard__tag"><span class="d" aria-hidden="true"></span>Stage 1 · Now</span>
         <h3>Founding Partner</h3>
         <p>Current stage. Pre-commercial and relationship-first: product feedback and validation with a small number of partners and operators.</p>
@@ -170,7 +172,7 @@
         <h3>Performance-Based Pricing</h3>
         <p>Proposed future stage, once savings are verified.</p>
         <ul>
-          <li>Customer keeps most of the verified savings</li>
+          <li data-tooltip="Verified via before/after measurement against agreed baselines, not self-reported estimates">Customer keeps most of the verified savings</li>
           <li>Helicyn receives an agreed percentage of verified savings</li>
         </ul>
         <div class="pricingstrip">
@@ -261,5 +263,6 @@
 <script src="ambient.js"></script>
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="nav-auth.js"></script>
+<script src="premium.js"></script>
 </body>
 </html>

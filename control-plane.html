@@ -27,6 +27,7 @@
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="control.css" />
 <link rel="stylesheet" href="partner.css" />
+<link rel="stylesheet" href="premium.css" />
 </head>
 <body>
 
@@ -46,6 +47,7 @@
     <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
   </button>
   <nav class="nav__right" id="navmenu" data-nav-menu>
+    <button type="button" class="navcmdk" data-cmdk-open aria-label="Open command menu (Ctrl+K)"><span class="navcmdk__icon" aria-hidden="true">&#8984;</span><span class="navcmdk__lbl">K</span></button>
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
       <span class="mono" data-clock>00:00:00 UTC</span>
@@ -93,10 +95,10 @@
   <div class="reticle" aria-hidden="true"></div>
   <div class="control-head__veil" aria-hidden="true"></div>
   <div class="demo-wrap control-head__inner">
-    <span class="eyebrow" data-reveal>Helicyn · control plane</span>
+    <span class="eyebrow" data-reveal data-decrypt>Helicyn · control plane</span>
     <div class="control-head__titlerow" data-reveal style="--i:1">
       <h1>Helicyn Control Plane</h1>
-      <span class="cp-demobadge"><span class="d" aria-hidden="true"></span>Interactive simulation</span>
+      <span class="cp-demobadge pglow-ring"><span class="d" aria-hidden="true"></span>Interactive simulation</span>
     </div>
     <div class="cp-opbadge" data-reveal style="--i:2" role="note" aria-label="Operating mode">
       <span class="cp-opbadge__seg"><span class="d" aria-hidden="true"></span>Operator-in-the-loop</span>
@@ -126,6 +128,7 @@
     <div class="demo-panel cp-cmdbar" data-reveal>
       <div class="cp-cmdgroup">
         <span class="k">Operating scenario</span>
+        <span class="pbadge pbadge--signal" style="margin-left:0.4rem;"><span class="pbadge__dot"></span>Live</span>
         <div class="cp-select" id="cp-scenario" data-value="normal">
           <button type="button" class="cp-select__btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Operating scenario">
             <span class="cp-select__val">Normal Operations</span>
@@ -196,7 +199,7 @@
         </linearGradient>
       </defs></svg>
 
-      <article class="demo-metric">
+      <article class="demo-metric" data-tilt>
         <span class="demo-metric__label">Modeled energy saved<button type="button" class="demo-tip" aria-label="About modeled energy saved">i<span class="demo-tip__pop" role="tooltip"><b>Modeled Energy Saved.</b> Simulated energy saved by coordinating workload placement, scheduling, and cooling instead of running each system independently.</span></button></span>
         <div class="demo-metric__value"><span data-metric="energy">18.7</span><span class="unit">MWh</span></div>
         <div class="demo-metric__trend" data-trend="energy"><span class="dir">↗</span> +2.3 MWh vs. yesterday</div>
@@ -208,7 +211,7 @@
         <span class="demo-metric__axis" aria-hidden="true"><span>00:00 UTC</span><span>24:00</span></span>
       </article>
 
-      <article class="demo-metric">
+      <article class="demo-metric" data-tilt>
         <span class="demo-metric__label">Estimated cost avoided<button type="button" class="demo-tip" aria-label="About cost avoided">i<span class="demo-tip__pop" role="tooltip"><b>Cost Avoided.</b> Spend avoided through grid arbitrage (running flexible load when and where power is cheaper), plus deferred non-urgent jobs.</span></button></span>
         <div class="demo-metric__value"><span data-metric="cost">$4,820</span></div>
         <div class="demo-metric__trend" data-trend="cost"><span class="dir">↗</span> +$610 vs. yesterday</div>
@@ -220,7 +223,7 @@
         <span class="demo-metric__axis" aria-hidden="true"><span>00:00 UTC</span><span>24:00</span></span>
       </article>
 
-      <article class="demo-metric">
+      <article class="demo-metric" data-tilt>
         <span class="demo-metric__label">Emissions shifted<button type="button" class="demo-tip" aria-label="About emissions shifted">i<span class="demo-tip__pop" role="tooltip"><b>Emissions Shifted.</b> Estimated emissions avoided by moving flexible workloads to lower-carbon regions or time windows.</span></button></span>
         <div class="demo-metric__value"><span data-metric="carbon">6.2</span><span class="unit">tCO₂e</span></div>
         <div class="demo-metric__trend" data-trend="carbon"><span class="dir">↗</span> +0.8 t vs. yesterday</div>
@@ -232,7 +235,7 @@
         <span class="demo-metric__axis" aria-hidden="true"><span>00:00 UTC</span><span>24:00</span></span>
       </article>
 
-      <article class="demo-metric">
+      <article class="demo-metric" data-tilt>
         <span class="demo-metric__label">Average PUE<button type="button" class="demo-tip" aria-label="About PUE">i<span class="demo-tip__pop" role="tooltip"><b>PUE.</b> Power Usage Effectiveness: the ratio of total facility energy to IT equipment energy. Lower is better.</span></button></span>
         <div class="demo-metric__value"><span data-metric="pue">1.18</span></div>
         <div class="demo-metric__trend" data-trend="pue"><span class="dir down">↘</span> −0.04 vs. yesterday</div>
@@ -244,7 +247,7 @@
         <span class="demo-metric__axis" aria-hidden="true"><span>00:00 UTC</span><span>24:00</span></span>
       </article>
 
-      <article class="demo-metric">
+      <article class="demo-metric" data-tilt>
         <span class="demo-metric__label">GPU utilization<button type="button" class="demo-tip demo-tip--end" aria-label="About GPU utilization">i<span class="demo-tip__pop" role="tooltip"><b>GPU Utilization.</b> Share of fleet GPU capacity doing useful work. Coordination keeps this high while shifting load.</span></button></span>
         <div class="demo-metric__value"><span data-metric="gpu">87</span><span class="unit">%</span></div>
         <div class="demo-metric__trend" data-trend="gpu"><span class="dir">↗</span> +5 pts vs. yesterday</div>
@@ -256,7 +259,7 @@
         <span class="demo-metric__axis" aria-hidden="true"><span>00:00 UTC</span><span>24:00</span></span>
       </article>
 
-      <article class="demo-metric">
+      <article class="demo-metric" data-tilt>
         <span class="demo-metric__label">Cooling load reduction<button type="button" class="demo-tip demo-tip--end" aria-label="About cooling load reduction">i<span class="demo-tip__pop" role="tooltip"><b>Cooling Load Reduction.</b> Reduction in cooling demand from thermal-aware workload placement and setpoint coordination.</span></button></span>
         <div class="demo-metric__value"><span data-metric="cooling">11.4</span><span class="unit">%</span></div>
         <div class="demo-metric__trend" data-trend="cooling"><span class="dir">↗</span> +1.6 pts vs. yesterday</div>
@@ -1013,5 +1016,6 @@
 <script src="enhance.js"></script>
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="nav-auth.js"></script>
+<script src="premium.js"></script>
 </body>
 </html>

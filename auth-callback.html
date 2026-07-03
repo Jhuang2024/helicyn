@@ -18,6 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="partner.css" />
+<link rel="stylesheet" href="premium.css" />
 </head>
 <body>
 
@@ -36,6 +37,7 @@
     <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
   </button>
   <nav class="nav__right" id="navmenu" data-nav-menu>
+    <button type="button" class="navcmdk" data-cmdk-open aria-label="Open command menu (Ctrl+K)"><span class="navcmdk__icon" aria-hidden="true">&#8984;</span><span class="navcmdk__lbl">K</span></button>
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
       <span class="mono" data-clock>00:00:00 UTC</span>
@@ -52,7 +54,7 @@
 <section class="section pagehead">
   <div class="orbfield" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
   <div class="wrap">
-    <span class="eyebrow" data-reveal style="--i:0">Account access</span>
+    <span class="eyebrow" data-reveal style="--i:0" data-decrypt>Account access</span>
     <h1 data-reveal="mask" style="--i:1">Confirming your account</h1>
     <p data-reveal style="--i:2">One moment. This page finishes signing you in after a verification or magic link email.</p>
   </div>
@@ -62,8 +64,11 @@
   <div class="wrap">
     <div id="configNotice"></div>
 
-    <div id="callbackCard" class="authcard">
-      <div id="callbackNotice"></div>
+    <div id="callbackCard" class="authcard pcard-beam">
+      <div id="callbackNotice">
+        <div class="pskeleton" style="height:1.1rem; width:60%; margin-bottom:0.6rem;"></div>
+        <div class="pskeleton" style="height:0.85rem; width:90%;"></div>
+      </div>
       <div class="authcard__foot">
         <a href="login">← Back to sign in</a>
         <a href="/">← Back to homepage</a>
@@ -117,5 +122,6 @@
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="nav-auth.js"></script>
 <script type="module" src="auth-callback.js"></script>
+<script src="premium.js"></script>
 </body>
 </html>

@@ -22,6 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="partner.css" />
+<link rel="stylesheet" href="premium.css" />
 </head>
 <body>
 
@@ -40,6 +41,7 @@
     <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
   </button>
   <nav class="nav__right" id="navmenu" data-nav-menu>
+    <button type="button" class="navcmdk" data-cmdk-open aria-label="Open command menu (Ctrl+K)"><span class="navcmdk__icon" aria-hidden="true">&#8984;</span><span class="navcmdk__lbl">K</span></button>
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
       <span class="mono" data-clock>00:00:00 UTC</span>
@@ -68,7 +70,7 @@
     <g class="constellation__node is-signal" transform="translate(280,250)"><circle class="ring" r="7"></circle><circle class="dot" r="2.5" style="animation-delay:-1.8s"></circle></g>
   </svg>
   <div class="wrap">
-    <span class="eyebrow" data-reveal style="--i:0">Research · published</span>
+    <span class="eyebrow" data-reveal style="--i:0" data-decrypt>Research · published</span>
     <h1 data-reveal="mask" style="--i:1">Helicyn research</h1>
     <p data-reveal style="--i:2">Helicyn's technical report, <em>Machine Learning as a Coordination Layer for AI Infrastructure</em>, is published. It presents the coordination framework, methodology, simulator-based results, figures, and discussion in full; this page summarizes it, all findings remain <strong>simulated, research/prototype, and assumption-bound</strong>.</p>
     <div class="pagehead__cta" data-reveal style="--i:3">
@@ -83,9 +85,9 @@
   <div class="wrap">
     <div class="sec-head" data-reveal>
       <span class="eyebrow">Status</span>
-      <h2>Published: Machine Learning as a Coordination Layer for AI Infrastructure.</h2>
+      <h2 class="ptext-shimmer">Published: Machine Learning as a Coordination Layer for AI Infrastructure.</h2>
     </div>
-    <div class="comingsoon comingsoon--soon" style="margin-top:1.6rem;" data-reveal>
+    <div class="comingsoon comingsoon--soon pcard-beam" style="margin-top:1.6rem; border-radius:12px;" data-reveal>
       <span class="comingsoon__badge"><span class="d" aria-hidden="true"></span>Published · July 2026</span>
       <h3 class="comingsoon__title">Machine Learning as a Coordination Layer for AI Infrastructure</h3>
       <p>Helicyn's technical report is now available in full: the coordination framework, literature review,
@@ -199,6 +201,29 @@
   </div>
 </section>
 
+<section class="section section--line">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">FAQ</span>
+      <h2>Common questions about the report.</h2>
+    </div>
+    <div style="margin-top:1.6rem; max-width:68ch;" data-reveal>
+      <details class="paccordion" open>
+        <summary class="paccordion__summary">Is this the final version of the report?<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <div class="paccordion__body">Yes. This is the finalized methodology, parameters, results, figures, and discussion. Future revisions will be posted here with an updated date.</div>
+      </details>
+      <details class="paccordion">
+        <summary class="paccordion__summary">Where do the figures and tables come from?<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <div class="paccordion__body">They're generated directly from the <code>helicyn-sim</code> experiment runs described in the methodology section, not hand-drawn or illustrative.</div>
+      </details>
+      <details class="paccordion">
+        <summary class="paccordion__summary">Can I download a PDF copy?<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <div class="paccordion__body">Yes, use the "Download PDF" link in the Status section above, or on the <a href="report">report page</a> itself.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
 <section class="section access">
   <div class="wrap">
     <div data-reveal>
@@ -256,5 +281,6 @@
 <script src="ambient.js"></script>
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="nav-auth.js"></script>
+<script src="premium.js"></script>
 </body>
 </html>

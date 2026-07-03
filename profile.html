@@ -18,6 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="partner.css" />
+<link rel="stylesheet" href="premium.css" />
 </head>
 <body>
 
@@ -36,6 +37,7 @@
     <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
   </button>
   <nav class="nav__right" id="navmenu" data-nav-menu>
+    <button type="button" class="navcmdk" data-cmdk-open aria-label="Open command menu (Ctrl+K)"><span class="navcmdk__icon" aria-hidden="true">&#8984;</span><span class="navcmdk__lbl">K</span></button>
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
       <span class="mono" data-clock>00:00:00 UTC</span>
@@ -53,7 +55,7 @@
 <section class="section pagehead">
   <div class="orbfield" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
   <div class="wrap">
-    <span class="eyebrow" data-reveal style="--i:0">Account</span>
+    <span class="eyebrow" data-reveal style="--i:0" data-decrypt>Account</span>
     <h1 data-reveal="mask" style="--i:1">Your profile</h1>
     <p data-reveal style="--i:2">Update the name and job title on your account, and your email preferences.</p>
   </div>
@@ -71,13 +73,13 @@
       </div>
     </div>
 
-    <div id="profileView" class="authcard" hidden>
+    <div id="profileView" class="authcard pcard-beam" hidden>
       <span class="eyebrow">Profile</span>
 
       <div class="profileavatar">
         <span class="profileavatar__preview" id="profileAvatarPreview" aria-hidden="true"></span>
         <div class="profileavatar__controls">
-          <label class="btn" for="profileAvatarInput" style="cursor:pointer;">Change photo</label>
+          <label class="btn" for="profileAvatarInput" style="cursor:pointer;" data-tooltip="PNG, JPEG, or WebP">Change photo</label>
           <input type="file" id="profileAvatarInput" accept="image/png,image/jpeg,image/webp" class="visually-hidden" />
           <span class="mono" id="profileAvatarLoading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Uploading<span class="loadingdots"></span></span>
           <span class="formfield__err" id="profileAvatarErr"></span>
@@ -104,10 +106,11 @@
           <input type="url" id="profileLinkedin" name="linkedin_url" autocomplete="url" placeholder="https://www.linkedin.com/in/yourname" />
           <span class="formfield__err" id="profileLinkedinErr"></span>
         </div>
-        <div class="checkfield">
+        <label class="pswitch">
           <input type="checkbox" id="profileNewsletter" name="newsletter_opt_in" />
-          <label for="profileNewsletter">Send me product updates and patch notes by email.</label>
-        </div>
+          <span class="pswitch__track"><span class="pswitch__thumb"></span></span>
+          <span>Send me product updates and patch notes by email.</span>
+        </label>
         <div class="formsubmit">
           <button class="btn" type="submit" id="profileSaveBtn">Save changes <span class="arr" aria-hidden="true">→</span></button>
           <span class="mono" id="profileLoading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Working<span class="loadingdots"></span></span>
@@ -168,5 +171,6 @@
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="nav-auth.js"></script>
 <script type="module" src="profile.js"></script>
+<script src="premium.js"></script>
 </body>
 </html>

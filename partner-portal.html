@@ -18,6 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="partner.css" />
+<link rel="stylesheet" href="premium.css" />
 </head>
 <body>
 
@@ -36,6 +37,7 @@
     <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
   </button>
   <nav class="nav__right" id="navmenu" data-nav-menu>
+    <button type="button" class="navcmdk" data-cmdk-open aria-label="Open command menu (Ctrl+K)"><span class="navcmdk__icon" aria-hidden="true">&#8984;</span><span class="navcmdk__lbl">K</span></button>
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
       <span class="mono" data-clock>00:00:00 UTC</span>
@@ -63,7 +65,7 @@
     <g class="constellation__node" transform="translate(210,220)"><circle class="ring" r="6"></circle><circle class="dot" r="2"></circle></g>
   </svg>
   <div class="wrap">
-    <span class="eyebrow" data-reveal style="--i:0">Partner portal</span>
+    <span class="eyebrow" data-reveal style="--i:0" data-decrypt>Partner portal</span>
     <h1 data-reveal="mask" style="--i:1">Partner portal</h1>
     <p data-reveal style="--i:2">Your founding partner account, application status, and research/prototype links.</p>
   </div>
@@ -83,7 +85,7 @@
 
     <div id="portalView" hidden>
       <div class="portalgrid">
-        <div class="portalcard" data-reveal style="--i:0">
+        <div class="portalcard" data-reveal style="--i:0" data-tilt>
           <h3>Account</h3>
           <div class="portalcard__row"><span class="k">Signed in as</span><span class="v" id="portalEmail"></span></div>
           <div class="portalcard__actions">
@@ -112,14 +114,14 @@
             <li>Early access</li>
             <li>Direct product input</li>
             <li>Priority onboarding</li>
-            <li>1 year free or permanently discounted pricing when Helicyn launches</li>
+            <li data-tooltip="Exact terms are confirmed individually with each founding partner">1 year free or permanently discounted pricing when Helicyn launches</li>
           </ul>
         </div>
 
         <div class="portalcard portalcard--wide" data-reveal style="--i:3">
           <h3>Product stages</h3>
           <div class="stagegrid" style="margin-top:0.4rem;">
-            <div class="stagecard is-now">
+            <div class="stagecard is-now pcard-beam">
               <span class="stagecard__tag"><span class="d" aria-hidden="true"></span>Stage 1 · Now</span>
               <h3>Founding Partner</h3>
               <p>Pre-commercial. Relationship-first product feedback and validation.</p>
@@ -197,5 +199,6 @@
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="nav-auth.js"></script>
 <script type="module" src="partner-portal.js"></script>
+<script src="premium.js"></script>
 </body>
 </html>

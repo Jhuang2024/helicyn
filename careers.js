@@ -36,6 +36,7 @@ function initAccordion() {
 
   function expand(card, body) {
     card.open = true;
+    card.classList.add("pcard-beam");
     const target = body.scrollHeight;
     body.style.overflow = "hidden";
     const anim = body.animate([{ height: "0px" }, { height: `${target}px` }], {
@@ -46,6 +47,7 @@ function initAccordion() {
   }
 
   function collapse(card) {
+    card.classList.remove("pcard-beam");
     const body = card.querySelector(".hirecard__body");
     const start = body.scrollHeight;
     body.style.overflow = "hidden";

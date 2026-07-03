@@ -23,6 +23,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="partner.css" />
+<link rel="stylesheet" href="premium.css" />
 </head>
 <body>
 
@@ -41,6 +42,7 @@
     <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
   </button>
   <nav class="nav__right" id="navmenu" data-nav-menu>
+    <button type="button" class="navcmdk" data-cmdk-open aria-label="Open command menu (Ctrl+K)"><span class="navcmdk__icon" aria-hidden="true">&#8984;</span><span class="navcmdk__lbl">K</span></button>
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
       <span class="mono" data-clock>00:00:00 UTC</span>
@@ -58,9 +60,25 @@
 <section class="section pagehead">
   <div class="orbfield" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
   <div class="wrap">
-    <span class="eyebrow" data-reveal style="--i:0">We're hiring</span>
+    <span class="eyebrow" data-reveal style="--i:0" data-decrypt>We're hiring</span>
     <h1 data-reveal="mask" style="--i:1">Join the founding team</h1>
     <p data-reveal style="--i:2">We're looking for a small founding team to help build Helicyn: a CTO, COO, CMO, and CFO. This round is open only to current UC Berkeley students based in the San Francisco Bay Area.</p>
+    <div class="pmarquee" data-reveal style="margin-top:1.4rem; --i:3" aria-hidden="true">
+      <div class="pmarquee__track">
+        <span class="pmarquee__item"><span class="d"></span>Chief Technology Officer</span>
+        <span class="pmarquee__item"><span class="d"></span>Chief Operating Officer</span>
+        <span class="pmarquee__item"><span class="d"></span>Chief Marketing Officer</span>
+        <span class="pmarquee__item"><span class="d"></span>Chief Financial Officer</span>
+        <span class="pmarquee__item"><span class="d"></span>UC Berkeley students only</span>
+        <span class="pmarquee__item"><span class="d"></span>SF Bay Area based</span>
+        <span class="pmarquee__item"><span class="d"></span>Chief Technology Officer</span>
+        <span class="pmarquee__item"><span class="d"></span>Chief Operating Officer</span>
+        <span class="pmarquee__item"><span class="d"></span>Chief Marketing Officer</span>
+        <span class="pmarquee__item"><span class="d"></span>Chief Financial Officer</span>
+        <span class="pmarquee__item"><span class="d"></span>UC Berkeley students only</span>
+        <span class="pmarquee__item"><span class="d"></span>SF Bay Area based</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -110,7 +128,7 @@
                   <input type="url" id="cto_resume_url" name="resume_url" placeholder="https://" />
                 </div>
                 <div class="formfield">
-                  <label class="formfield__label" for="cto_availability">Availability</label>
+                  <label class="formfield__label" for="cto_availability" data-tooltip="e.g. 15 hrs/week, starting Fall 2026">Availability</label>
                   <input type="text" id="cto_availability" name="availability" placeholder="Hours/week and earliest start date" />
                 </div>
               </div>
@@ -122,10 +140,11 @@
                 <label class="formfield__label" for="cto_q2">Why does treating ML as a coordination layer, rather than isolated optimization, interest you technically? <span class="req">*</span></label>
                 <textarea id="cto_q2" name="q2" required></textarea>
               </div>
-              <div class="checkfield">
+              <label class="pswitch" for="cto_eligible">
                 <input type="checkbox" id="cto_eligible" name="eligible" required />
-                <label for="cto_eligible">I'm a current UC Berkeley student and based in the San Francisco Bay Area. <span class="req">*</span></label>
-              </div>
+                <span class="pswitch__track"><span class="pswitch__thumb"></span></span>
+                <span>I'm a current UC Berkeley student and based in the San Francisco Bay Area. <span class="req">*</span></span>
+              </label>
               <div class="formsubmit">
                 <button class="btn" type="submit">Submit CTO application <span class="arr" aria-hidden="true">→</span></button>
                 <span class="mono hireform__loading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Submitting<span class="loadingdots"></span></span>
@@ -166,7 +185,7 @@
                   <input type="url" id="coo_resume_url" name="resume_url" placeholder="https://" />
                 </div>
                 <div class="formfield">
-                  <label class="formfield__label" for="coo_availability">Availability</label>
+                  <label class="formfield__label" for="coo_availability" data-tooltip="e.g. 15 hrs/week, starting Fall 2026">Availability</label>
                   <input type="text" id="coo_availability" name="availability" placeholder="Hours/week and earliest start date" />
                 </div>
               </div>
@@ -178,10 +197,11 @@
                 <label class="formfield__label" for="coo_q2">How would you prioritize the first 90 days of operations at a 4-person, pre-seed startup? <span class="req">*</span></label>
                 <textarea id="coo_q2" name="q2" required></textarea>
               </div>
-              <div class="checkfield">
+              <label class="pswitch" for="coo_eligible">
                 <input type="checkbox" id="coo_eligible" name="eligible" required />
-                <label for="coo_eligible">I'm a current UC Berkeley student and based in the San Francisco Bay Area. <span class="req">*</span></label>
-              </div>
+                <span class="pswitch__track"><span class="pswitch__thumb"></span></span>
+                <span>I'm a current UC Berkeley student and based in the San Francisco Bay Area. <span class="req">*</span></span>
+              </label>
               <div class="formsubmit">
                 <button class="btn" type="submit">Submit COO application <span class="arr" aria-hidden="true">→</span></button>
                 <span class="mono hireform__loading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Submitting<span class="loadingdots"></span></span>
@@ -222,7 +242,7 @@
                   <input type="url" id="cmo_resume_url" name="resume_url" placeholder="https://" />
                 </div>
                 <div class="formfield">
-                  <label class="formfield__label" for="cmo_availability">Availability</label>
+                  <label class="formfield__label" for="cmo_availability" data-tooltip="e.g. 15 hrs/week, starting Fall 2026">Availability</label>
                   <input type="text" id="cmo_availability" name="availability" placeholder="Hours/week and earliest start date" />
                 </div>
               </div>
@@ -234,10 +254,11 @@
                 <label class="formfield__label" for="cmo_q2">What's a growth or content channel you'd bet on first for a deep-tech, pre-commercial startup, and why? <span class="req">*</span></label>
                 <textarea id="cmo_q2" name="q2" required></textarea>
               </div>
-              <div class="checkfield">
+              <label class="pswitch" for="cmo_eligible">
                 <input type="checkbox" id="cmo_eligible" name="eligible" required />
-                <label for="cmo_eligible">I'm a current UC Berkeley student and based in the San Francisco Bay Area. <span class="req">*</span></label>
-              </div>
+                <span class="pswitch__track"><span class="pswitch__thumb"></span></span>
+                <span>I'm a current UC Berkeley student and based in the San Francisco Bay Area. <span class="req">*</span></span>
+              </label>
               <div class="formsubmit">
                 <button class="btn" type="submit">Submit CMO application <span class="arr" aria-hidden="true">→</span></button>
                 <span class="mono hireform__loading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Submitting<span class="loadingdots"></span></span>
@@ -278,7 +299,7 @@
                   <input type="url" id="cfo_resume_url" name="resume_url" placeholder="https://" />
                 </div>
                 <div class="formfield">
-                  <label class="formfield__label" for="cfo_availability">Availability</label>
+                  <label class="formfield__label" for="cfo_availability" data-tooltip="e.g. 15 hrs/week, starting Fall 2026">Availability</label>
                   <input type="text" id="cfo_availability" name="availability" placeholder="Hours/week and earliest start date" />
                 </div>
               </div>
@@ -290,10 +311,11 @@
                 <label class="formfield__label" for="cfo_q2">How would you think about runway and pricing for a pre-commercial company that only charges on verified savings later? <span class="req">*</span></label>
                 <textarea id="cfo_q2" name="q2" required></textarea>
               </div>
-              <div class="checkfield">
+              <label class="pswitch" for="cfo_eligible">
                 <input type="checkbox" id="cfo_eligible" name="eligible" required />
-                <label for="cfo_eligible">I'm a current UC Berkeley student and based in the San Francisco Bay Area. <span class="req">*</span></label>
-              </div>
+                <span class="pswitch__track"><span class="pswitch__thumb"></span></span>
+                <span>I'm a current UC Berkeley student and based in the San Francisco Bay Area. <span class="req">*</span></span>
+              </label>
               <div class="formsubmit">
                 <button class="btn" type="submit">Submit CFO application <span class="arr" aria-hidden="true">→</span></button>
                 <span class="mono hireform__loading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Submitting<span class="loadingdots"></span></span>
@@ -353,5 +375,6 @@
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="nav-auth.js"></script>
 <script type="module" src="careers.js"></script>
+<script src="premium.js"></script>
 </body>
 </html>

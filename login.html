@@ -18,6 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="partner.css" />
+<link rel="stylesheet" href="premium.css" />
 </head>
 <body>
 
@@ -36,6 +37,7 @@
     <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
   </button>
   <nav class="nav__right" id="navmenu" data-nav-menu>
+    <button type="button" class="navcmdk" data-cmdk-open aria-label="Open command menu (Ctrl+K)"><span class="navcmdk__icon" aria-hidden="true">&#8984;</span><span class="navcmdk__lbl">K</span></button>
     <span class="nav__meta">
       <span class="statusdot" aria-hidden="true"></span>
       <span class="mono" data-clock>00:00:00 UTC</span>
@@ -60,7 +62,7 @@
     <g class="constellation__node" transform="translate(140,190)"><circle class="ring" r="6"></circle><circle class="dot" r="2"></circle></g>
   </svg>
   <div class="wrap">
-    <span class="eyebrow" data-reveal style="--i:0">Partner access</span>
+    <span class="eyebrow" data-reveal style="--i:0" data-decrypt>Partner access</span>
     <h1 data-reveal="mask" style="--i:1">Partner access</h1>
     <p data-reveal style="--i:2">Founding partner accounts are used for application status, research access, and onboarding updates.</p>
   </div>
@@ -79,7 +81,7 @@
       </div>
     </div>
 
-    <div id="authView" class="authcard">
+    <div id="authView" class="authcard pcard-beam">
       <div class="authcard__tabs" role="tablist" aria-label="Sign in or sign up">
         <button class="authcard__tab is-active" type="button" data-auth-tab="signin" role="tab" aria-selected="true">Sign in</button>
         <button class="authcard__tab" type="button" data-auth-tab="signup" role="tab" aria-selected="false">Sign up</button>
@@ -116,10 +118,11 @@
           <button type="button" class="btn-ghost" id="forgotPasswordBtn" style="font-size:0.8rem;">Forgot password?</button>
         </div>
         <div id="forgotPasswordNotice"></div>
-        <div class="checkfield">
+        <label class="pswitch">
           <input type="checkbox" id="authRememberMe" name="remember_me" checked />
-          <label for="authRememberMe">Save my login on this device.</label>
-        </div>
+          <span class="pswitch__track"><span class="pswitch__thumb"></span></span>
+          <span>Save my login on this device.</span>
+        </label>
         <div id="authSignupExtras" class="formgrid" hidden>
           <div class="checkfield">
             <input type="checkbox" id="authNewsletter" name="newsletter_opt_in" checked />
@@ -193,5 +196,6 @@
 <script src="ambient.js"></script>
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="login.js"></script>
+<script src="premium.js"></script>
 </body>
 </html>
