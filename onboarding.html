@@ -72,7 +72,8 @@
 
     <div class="onboardgrid">
     <div>
-    <nav class="stepper" aria-label="Application sections">
+    <div class="centerwrap">
+    <nav class="stepper" aria-label="Application sections" style="margin-bottom:1.75rem;">
       <span class="stepper__step" data-step-for="step-company"><span class="n">1</span><span class="lbl">Company</span></span>
       <span class="stepper__connector" aria-hidden="true"></span>
       <span class="stepper__step" data-step-for="step-contact"><span class="n">2</span><span class="lbl">Contact</span></span>
@@ -84,7 +85,7 @@
       <span class="stepper__step" data-step-for="step-consent"><span class="n">5</span><span class="lbl">Consent</span></span>
     </nav>
 
-    <div id="authGate" class="authnotice authnotice--info" style="margin:1.75rem 0 2rem;" hidden>
+    <div id="authGate" class="authnotice authnotice--info" style="margin:0 0 2rem;" hidden>
       <span class="authnotice__title">Sign in required</span>
       <p>You need a founding partner account before submitting an application (so you can view its status later in the partner portal). This takes under a minute.</p>
       <div class="pagehead__cta" style="margin-top:0.6rem;">
@@ -92,12 +93,12 @@
       </div>
     </div>
 
-    <div id="alreadySubmitted" class="authnotice authnotice--ok" style="margin:1.75rem 0 2rem;" hidden>
+    <div id="alreadySubmitted" class="authnotice authnotice--ok" style="margin:0 0 2rem;" hidden>
       <span class="authnotice__title">Application already submitted</span>
       <p>You already have a founding partner application on file. View or track it in the <a href="partner-portal.html" style="text-decoration:underline;">partner portal</a>.</p>
     </div>
 
-    <div id="successView" class="authnotice authnotice--ok" style="margin:1.75rem 0 2rem;" hidden>
+    <div id="successView" class="authnotice authnotice--ok" style="margin:0 0 2rem;" hidden>
       <span class="authnotice__title">Application submitted</span>
       <p>Thanks. Your founding partner application has been submitted. You can view its status in the partner portal.</p>
       <div class="pagehead__cta" style="margin-top:0.6rem;">
@@ -235,6 +236,7 @@
         <div id="submitNotice"></div>
       </div>
     </form>
+    </div>
     </div>
 
     <aside class="trustpanel" data-reveal>
