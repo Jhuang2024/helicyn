@@ -16,6 +16,8 @@
 /auth-callback.html     /auth-callback    301
 /terms.html             /terms            301
 /profile.html           /profile          301
+/report.html            /report           301
+/careers.html           /careers          301
 # Pretty URL → file
 /control-plane        /control-plane.html  200
 /login                 /login.html            200
@@ -27,3 +29,5 @@
 /auth-callback          /auth-callback.html    200
 /terms                  /terms.html            200
 /profile                /profile.html          200
+/report                 /report.html           200
+/careers                /careers.html          200

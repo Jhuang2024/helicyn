@@ -335,6 +335,41 @@ export async function getMyFoundingPartnerApplication() {
   return data;
 }
 
+// ---- founding-team job applications --------------------------------------
+
+const JOB_APPLICATIONS_TABLE = "job_applications";
+
+export async function submitJobApplication(fields) {
+  const client = await requireClient();
+  const { data: sessionData, error: sessionError } = await client.auth.getSession();
+  if (sessionError) throw sessionError;
+  const session = sessionData.session;
+  if (!session) throw new Error("You must be signed in to submit an application.");
+
+  const { data, error } = await client
+    .from(JOB_APPLICATIONS_TABLE)
+    .insert({ ...fields, user_id: session.user.id })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function getMyJobApplications() {
+  const client = await requireClient();
+  const { data: sessionData, error: sessionError } = await client.auth.getSession();
+  if (sessionError) throw sessionError;
+  const session = sessionData.session;
+  if (!session) return [];
+
+  const { data, error } = await client
+    .from(JOB_APPLICATIONS_TABLE)
+    .select("*")
+    .eq("user_id", session.user.id);
+  if (error) throw error;
+  return data || [];
+}
+
 // ---- shared UI helper ---------------------------------------------------
 
 export function renderConfigError(container, message) {

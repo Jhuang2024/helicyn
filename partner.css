@@ -587,3 +587,28 @@
 }
 .profileavatar__preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .profileavatar__controls { display: grid; gap: 0.3rem; }
+
+/* ============================================================
+   HIRING (careers page role application accordions)
+   ============================================================ */
+.hirelist { display: grid; gap: 0.9rem; }
+.hirecard {
+  border: 1px solid var(--line); border-radius: 12px; background: var(--bg-1);
+  overflow: hidden; transition: border-color 0.35s var(--ease);
+}
+.hirecard[open], .hirecard:hover { border-color: var(--signal-line); }
+.hirecard__summary {
+  list-style: none; cursor: pointer; padding: 1.1rem 1.3rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.hirecard__summary::-webkit-details-marker { display: none; }
+.hirecard__role { font-weight: 500; font-size: 1.05rem; letter-spacing: -0.005em; }
+.hirecard__desc { color: var(--text-dim); font-size: 0.88rem; line-height: 1.5; margin-top: 0.3rem; }
+.hirecard__toggle {
+  flex: none; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line-2);
+  display: grid; place-items: center; font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-dim);
+  transition: transform 0.3s var(--ease);
+}
+.hirecard[open] .hirecard__toggle { transform: rotate(45deg); }
+.hirecard__body { padding: 0 1.3rem 1.3rem; border-top: 1px solid var(--line); padding-top: 1.2rem; }
+.hirecard__already { padding: 1rem 1.3rem 1.3rem; }

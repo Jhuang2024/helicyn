@@ -61,6 +61,7 @@
     <a class="navlink" href="research">Research</a>
     <a class="navlink" href="patch-notes">Patch notes</a>
     <a class="navlink" href="partners">Founding Partners</a>
+    <a class="navlink" href="careers">Careers</a>
     <a class="navlink" href="control-plane"><span class="lbl-full">Control plane</span><span class="lbl-short">Demo</span></a>
     <a class="navlink" href="login" data-nav-auth>Login</a>
     <a class="navlink navlink--cta" href="onboarding"><span class="lbl-full">Apply as partner</span><span class="lbl-short">Apply</span> <span class="arr" aria-hidden="true">↗</span></a>
@@ -90,7 +91,7 @@
         <div class="hero__cta" data-reveal style="--i:3">
           <a class="btn" href="control-plane" data-magnetic="0.2">View control plane <span class="arr" aria-hidden="true">→</span></a>
           <a class="btn" href="onboarding" data-magnetic="0.2">Apply as founding partner <span class="arr" aria-hidden="true">→</span></a>
-          <a class="btn-ghost" href="#thesis"><span class="dot" aria-hidden="true"></span> Thesis preview</a>
+          <a class="btn-ghost" href="report"><span class="dot" aria-hidden="true"></span> Read the report</a>
         </div>
         <div class="hero__status" data-reveal style="--i:4" role="note" aria-label="What this preview demonstrates">
           <span class="hero__pill"><span class="d" aria-hidden="true"></span>Research preview</span>
@@ -316,9 +317,9 @@
       <p data-reveal style="--i:3"><span class="lift">Our thesis is that the next generation of AI infrastructure software will not optimize one layer in isolation. It will coordinate compute, energy, cooling, and physical constraints as one system.</span></p>
       <p data-reveal style="--i:4">We start with energy and thermal optimization for AI data centers. The direction is an operating layer for large-scale computational and physical infrastructure.</p>
       <div class="manifesto__thesisrow" data-reveal style="--i:5">
-        <button class="btn" type="button" data-thesis-open data-magnetic="0.2">Thesis status <span class="arr" aria-hidden="true">→</span></button>
+        <a class="btn" href="report" data-magnetic="0.2">Read the report <span class="arr" aria-hidden="true">→</span></a>
         <a class="btn-ghost" href="research" data-magnetic="0.15"><span class="dot" aria-hidden="true"></span> Research page</a>
-        <span class="manifesto__thesisnote">Preliminary technical paper expected late&nbsp;July.</span>
+        <span class="manifesto__thesisnote">Full technical report published.</span>
       </div>
     </div>
   </div>
@@ -512,7 +513,7 @@
       <p class="lift">The next step is validating these methods against published research, synthetic fleet simulation, and technical review.</p>
       <div class="current__meta">
         <span class="current__chip"><span class="d" aria-hidden="true"></span>Simulation / prototype</span>
-        <span class="current__chip">Preliminary paper · late July</span>
+        <span class="current__chip">Technical report published</span>
       </div>
     </div>
   </div>
@@ -547,6 +548,26 @@
       <a class="btn" href="partners" data-magnetic="0.2">Learn about founding partners <span class="arr" aria-hidden="true">→</span></a>
       <a class="btn" href="onboarding" data-magnetic="0.2">Apply as founding partner <span class="arr" aria-hidden="true">→</span></a>
       <a class="btn-ghost" href="research"><span class="dot" aria-hidden="true"></span> Research</a>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== HIRING ============================ -->
+<section class="section section--line" id="hiring" data-screen-label="hiring">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">We're hiring</span>
+      <h2 data-reveal="mask" style="--i:1">Join a small founding team.</h2>
+      <p style="color:var(--text-dim); max-width:64ch;">We're looking for a CTO, COO, CMO, and CFO to help build Helicyn from the ground up. Open only to current UC Berkeley students based in the San Francisco Bay Area.</p>
+    </div>
+    <div class="rolegrid" data-reveal style="--i:2; margin-top:2rem;">
+      <div class="rolecard"><div class="rolecard__title">Chief Technology Officer</div><p>Own the simulator, ML prototype, and technical roadmap end to end.</p></div>
+      <div class="rolecard"><div class="rolecard__title">Chief Operating Officer</div><p>Keep a small team, its partners, and its timelines on track.</p></div>
+      <div class="rolecard"><div class="rolecard__title">Chief Marketing Officer</div><p>Shape how Helicyn's coordination-first thesis reaches operators and partners.</p></div>
+      <div class="rolecard"><div class="rolecard__title">Chief Financial Officer</div><p>Own the model, the runway, and the eventual pricing mechanics.</p></div>
+    </div>
+    <div class="pagehead__cta" data-reveal style="--i:3">
+      <a class="btn" href="careers" data-magnetic="0.2">View roles and apply <span class="arr" aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
@@ -596,8 +617,10 @@
       <div class="fcol" data-reveal style="--i:1">
         <h4>Company</h4>
         <a href="research">Thesis / Research</a>
+        <a href="report">Read the Report</a>
         <a href="patch-notes">Patch Notes</a>
         <a href="partners">Founding Partners</a>
+        <a href="careers">Careers</a>
         <a href="control-plane">Control Plane</a>
         <a href="onboarding">Onboarding</a>
         <a href="login">Login</a>
@@ -619,22 +642,6 @@
     </div>
   </div>
 </footer>
-
-<!-- ===================== THESIS MODAL ========================== -->
-<div class="modal" id="thesis-modal" hidden>
-  <div class="modal__backdrop" data-modal-close></div>
-  <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="thesis-modal-title" aria-describedby="thesis-modal-body">
-    <button class="modal__close" type="button" data-modal-close aria-label="Dismiss">
-      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6"></path></svg>
-    </button>
-    <span class="eyebrow" id="thesis-modal-title">Thesis · status</span>
-    <p class="modal__body" id="thesis-modal-body">The full Helicyn thesis is currently being written. A preliminary version is expected in late&nbsp;July.</p>
-    <div class="modal__actions">
-      <a class="btn" href="research">View research page <span class="arr" aria-hidden="true">→</span></a>
-      <button class="btn-ghost" type="button" data-modal-close><span class="dot" aria-hidden="true"></span> Close</button>
-    </div>
-  </div>
-</div>
 
 <template id="__bundler_thumbnail">
   <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">

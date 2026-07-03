@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>document.documentElement.className += ' js';</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#08090b" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Helicyn · We're Hiring</title>
+<meta name="description" content="Helicyn is hiring a small founding team: CTO, COO, CMO, and CFO. Open to current UC Berkeley students based in the San Francisco Bay Area." />
+<link rel="canonical" href="https://helicyn.com/careers" />
+<meta name="robots" content="noindex" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://helicyn.com/careers" />
+<meta property="og:title" content="Helicyn · We're Hiring" />
+<meta property="og:description" content="Join Helicyn's founding team: CTO, COO, CMO, and CFO roles for current UC Berkeley students based in the SF Bay Area." />
+<meta property="og:image" content="https://helicyn.com/og-image.png" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="favicon-180.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="partner.css" />
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+<div class="progress"></div>
+
+<header class="nav" data-screen-label="nav">
+  <a class="brand" href="/" aria-label="Helicyn home" data-magnetic="0.18">
+    <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
+      <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
+    </svg>
+    <span class="brand__name">Helicyn</span>
+  </a>
+  <button class="navtoggle" type="button" aria-expanded="false" aria-controls="navmenu" data-nav-toggle aria-label="Toggle menu">
+    <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
+  </button>
+  <nav class="nav__right" id="navmenu" data-nav-menu>
+    <span class="nav__meta">
+      <span class="statusdot" aria-hidden="true"></span>
+      <span class="mono" data-clock>00:00:00 UTC</span>
+    </span>
+    <a class="navlink" href="research">Research</a>
+    <a class="navlink" href="patch-notes">Patch notes</a>
+    <a class="navlink" href="partners">Founding Partners</a>
+    <a class="navlink" href="careers">Careers</a>
+    <a class="navlink" href="login" data-nav-auth>Login</a>
+    <a class="navlink navlink--cta" href="onboarding"><span class="lbl-full">Apply as partner</span><span class="lbl-short">Apply</span> <span class="arr" aria-hidden="true">↗</span></a>
+  </nav>
+</header>
+
+<main id="main" tabindex="-1">
+<section class="section pagehead">
+  <div class="orbfield" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
+  <div class="wrap">
+    <span class="eyebrow" data-reveal style="--i:0">We're hiring</span>
+    <h1 data-reveal="mask" style="--i:1">Join the founding team</h1>
+    <p data-reveal style="--i:2">We're looking for a small founding team to help build Helicyn: a CTO, COO, CMO, and CFO. This round is open only to current UC Berkeley students based in the San Francisco Bay Area.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="wrap">
+    <div id="configNotice"></div>
+
+    <div id="authGate" class="authnotice authnotice--info" style="margin:0 0 2rem;" hidden>
+      <span class="authnotice__title">Sign in required</span>
+      <p>Sign in or create a founding partner account to apply. Your name, email, and LinkedIn autofill from your profile.</p>
+      <div class="pagehead__cta" style="margin-top:0.6rem;">
+        <a class="btn" href="login" data-magnetic="0.2">Sign in or create an account <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <div id="rolesWrap" hidden>
+      <div class="hirelist">
+
+        <details class="hirecard" data-reveal data-role-card="cto">
+          <summary class="hirecard__summary">
+            <div>
+              <span class="hirecard__role">Chief Technology Officer</span>
+              <p class="hirecard__desc">Own the simulator, ML prototype, and technical roadmap end to end.</p>
+            </div>
+            <span class="hirecard__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="hirecard__body">
+            <div id="cto_already" class="hirecard__already" hidden>
+              <p style="color:var(--text-dim);">You've already applied for this role. We'll follow up by email.</p>
+            </div>
+            <form class="formgrid hireform" data-role="cto" id="cto_form">
+              <div class="formgrid formgrid--2col">
+                <div class="formfield">
+                  <label class="formfield__label" for="cto_full_name">Full name <span class="req">*</span></label>
+                  <input type="text" id="cto_full_name" name="full_name" required />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="cto_email">Email <span class="req">*</span></label>
+                  <input type="email" id="cto_email" name="email" required />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="cto_linkedin">LinkedIn</label>
+                  <input type="url" id="cto_linkedin" name="linkedin" placeholder="https://linkedin.com/in/..." />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="cto_resume_url">Resume / GitHub / portfolio link</label>
+                  <input type="url" id="cto_resume_url" name="resume_url" placeholder="https://" />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="cto_availability">Availability</label>
+                  <input type="text" id="cto_availability" name="availability" placeholder="Hours/week and earliest start date" />
+                </div>
+              </div>
+              <div class="formfield">
+                <label class="formfield__label" for="cto_q1">What's the most technically complex system or project you've built, and what was the hardest part? <span class="req">*</span></label>
+                <textarea id="cto_q1" name="q1" required></textarea>
+              </div>
+              <div class="formfield">
+                <label class="formfield__label" for="cto_q2">Why does treating ML as a coordination layer, rather than isolated optimization, interest you technically? <span class="req">*</span></label>
+                <textarea id="cto_q2" name="q2" required></textarea>
+              </div>
+              <div class="checkfield">
+                <input type="checkbox" id="cto_eligible" name="eligible" required />
+                <label for="cto_eligible">I'm a current UC Berkeley student and based in the San Francisco Bay Area. <span class="req">*</span></label>
+              </div>
+              <div class="formsubmit">
+                <button class="btn" type="submit">Submit CTO application <span class="arr" aria-hidden="true">→</span></button>
+                <span class="mono hireform__loading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Submitting<span class="loadingdots"></span></span>
+              </div>
+              <div class="hireform__notice"></div>
+            </form>
+          </div>
+        </details>
+
+        <details class="hirecard" data-reveal data-role-card="coo">
+          <summary class="hirecard__summary">
+            <div>
+              <span class="hirecard__role">Chief Operating Officer</span>
+              <p class="hirecard__desc">Keep a small team, its partners, and its timelines on track.</p>
+            </div>
+            <span class="hirecard__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="hirecard__body">
+            <div id="coo_already" class="hirecard__already" hidden>
+              <p style="color:var(--text-dim);">You've already applied for this role. We'll follow up by email.</p>
+            </div>
+            <form class="formgrid hireform" data-role="coo" id="coo_form">
+              <div class="formgrid formgrid--2col">
+                <div class="formfield">
+                  <label class="formfield__label" for="coo_full_name">Full name <span class="req">*</span></label>
+                  <input type="text" id="coo_full_name" name="full_name" required />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="coo_email">Email <span class="req">*</span></label>
+                  <input type="email" id="coo_email" name="email" required />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="coo_linkedin">LinkedIn</label>
+                  <input type="url" id="coo_linkedin" name="linkedin" placeholder="https://linkedin.com/in/..." />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="coo_resume_url">Resume / portfolio link</label>
+                  <input type="url" id="coo_resume_url" name="resume_url" placeholder="https://" />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="coo_availability">Availability</label>
+                  <input type="text" id="coo_availability" name="availability" placeholder="Hours/week and earliest start date" />
+                </div>
+              </div>
+              <div class="formfield">
+                <label class="formfield__label" for="coo_q1">Describe a time you kept a small team or project on track under ambiguity. <span class="req">*</span></label>
+                <textarea id="coo_q1" name="q1" required></textarea>
+              </div>
+              <div class="formfield">
+                <label class="formfield__label" for="coo_q2">How would you prioritize the first 90 days of operations at a 4-person, pre-seed startup? <span class="req">*</span></label>
+                <textarea id="coo_q2" name="q2" required></textarea>
+              </div>
+              <div class="checkfield">
+                <input type="checkbox" id="coo_eligible" name="eligible" required />
+                <label for="coo_eligible">I'm a current UC Berkeley student and based in the San Francisco Bay Area. <span class="req">*</span></label>
+              </div>
+              <div class="formsubmit">
+                <button class="btn" type="submit">Submit COO application <span class="arr" aria-hidden="true">→</span></button>
+                <span class="mono hireform__loading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Submitting<span class="loadingdots"></span></span>
+              </div>
+              <div class="hireform__notice"></div>
+            </form>
+          </div>
+        </details>
+
+        <details class="hirecard" data-reveal data-role-card="cmo">
+          <summary class="hirecard__summary">
+            <div>
+              <span class="hirecard__role">Chief Marketing Officer</span>
+              <p class="hirecard__desc">Shape how Helicyn's coordination-first thesis reaches operators and partners.</p>
+            </div>
+            <span class="hirecard__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="hirecard__body">
+            <div id="cmo_already" class="hirecard__already" hidden>
+              <p style="color:var(--text-dim);">You've already applied for this role. We'll follow up by email.</p>
+            </div>
+            <form class="formgrid hireform" data-role="cmo" id="cmo_form">
+              <div class="formgrid formgrid--2col">
+                <div class="formfield">
+                  <label class="formfield__label" for="cmo_full_name">Full name <span class="req">*</span></label>
+                  <input type="text" id="cmo_full_name" name="full_name" required />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="cmo_email">Email <span class="req">*</span></label>
+                  <input type="email" id="cmo_email" name="email" required />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="cmo_linkedin">LinkedIn</label>
+                  <input type="url" id="cmo_linkedin" name="linkedin" placeholder="https://linkedin.com/in/..." />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="cmo_resume_url">Resume / writing portfolio link</label>
+                  <input type="url" id="cmo_resume_url" name="resume_url" placeholder="https://" />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="cmo_availability">Availability</label>
+                  <input type="text" id="cmo_availability" name="availability" placeholder="Hours/week and earliest start date" />
+                </div>
+              </div>
+              <div class="formfield">
+                <label class="formfield__label" for="cmo_q1">Pitch Helicyn's positioning in three or four sentences, as if to a technical data center operator. <span class="req">*</span></label>
+                <textarea id="cmo_q1" name="q1" required></textarea>
+              </div>
+              <div class="formfield">
+                <label class="formfield__label" for="cmo_q2">What's a growth or content channel you'd bet on first for a deep-tech, pre-commercial startup, and why? <span class="req">*</span></label>
+                <textarea id="cmo_q2" name="q2" required></textarea>
+              </div>
+              <div class="checkfield">
+                <input type="checkbox" id="cmo_eligible" name="eligible" required />
+                <label for="cmo_eligible">I'm a current UC Berkeley student and based in the San Francisco Bay Area. <span class="req">*</span></label>
+              </div>
+              <div class="formsubmit">
+                <button class="btn" type="submit">Submit CMO application <span class="arr" aria-hidden="true">→</span></button>
+                <span class="mono hireform__loading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Submitting<span class="loadingdots"></span></span>
+              </div>
+              <div class="hireform__notice"></div>
+            </form>
+          </div>
+        </details>
+
+        <details class="hirecard" data-reveal data-role-card="cfo">
+          <summary class="hirecard__summary">
+            <div>
+              <span class="hirecard__role">Chief Financial Officer</span>
+              <p class="hirecard__desc">Own the model, the runway, and the eventual pricing mechanics.</p>
+            </div>
+            <span class="hirecard__toggle" aria-hidden="true">+</span>
+          </summary>
+          <div class="hirecard__body">
+            <div id="cfo_already" class="hirecard__already" hidden>
+              <p style="color:var(--text-dim);">You've already applied for this role. We'll follow up by email.</p>
+            </div>
+            <form class="formgrid hireform" data-role="cfo" id="cfo_form">
+              <div class="formgrid formgrid--2col">
+                <div class="formfield">
+                  <label class="formfield__label" for="cfo_full_name">Full name <span class="req">*</span></label>
+                  <input type="text" id="cfo_full_name" name="full_name" required />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="cfo_email">Email <span class="req">*</span></label>
+                  <input type="email" id="cfo_email" name="email" required />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="cfo_linkedin">LinkedIn</label>
+                  <input type="url" id="cfo_linkedin" name="linkedin" placeholder="https://linkedin.com/in/..." />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="cfo_resume_url">Resume / portfolio link</label>
+                  <input type="url" id="cfo_resume_url" name="resume_url" placeholder="https://" />
+                </div>
+                <div class="formfield">
+                  <label class="formfield__label" for="cfo_availability">Availability</label>
+                  <input type="text" id="cfo_availability" name="availability" placeholder="Hours/week and earliest start date" />
+                </div>
+              </div>
+              <div class="formfield">
+                <label class="formfield__label" for="cfo_q1">What's your experience with financial modeling, fundraising, or startup accounting? <span class="req">*</span></label>
+                <textarea id="cfo_q1" name="q1" required></textarea>
+              </div>
+              <div class="formfield">
+                <label class="formfield__label" for="cfo_q2">How would you think about runway and pricing for a pre-commercial company that only charges on verified savings later? <span class="req">*</span></label>
+                <textarea id="cfo_q2" name="q2" required></textarea>
+              </div>
+              <div class="checkfield">
+                <input type="checkbox" id="cfo_eligible" name="eligible" required />
+                <label for="cfo_eligible">I'm a current UC Berkeley student and based in the San Francisco Bay Area. <span class="req">*</span></label>
+              </div>
+              <div class="formsubmit">
+                <button class="btn" type="submit">Submit CFO application <span class="arr" aria-hidden="true">→</span></button>
+                <span class="mono hireform__loading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Submitting<span class="loadingdots"></span></span>
+              </div>
+              <div class="hireform__notice"></div>
+            </form>
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer" data-screen-label="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__brand" data-reveal style="--i:0">
+        <span class="brand" data-magnetic="0.15">
+          <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true" style="width:20px;height:20px;">
+            <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
+            <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
+          </svg>
+          <span class="brand__name">Helicyn</span>
+        </span>
+        <p class="footer__tagline">The coordination layer for large-scale physical and computational systems.</p>
+      </div>
+      <div class="fcol" data-reveal style="--i:1">
+        <h4>Company</h4>
+        <a href="research">Thesis / Research</a>
+        <a href="report">Read the Report</a>
+        <a href="patch-notes">Patch Notes</a>
+        <a href="partners">Founding Partners</a>
+        <a href="careers">Careers</a>
+        <a href="control-plane">Control Plane</a>
+        <a href="onboarding">Onboarding</a>
+        <a href="login">Login</a>
+      </div>
+      <div class="fcol" data-reveal style="--i:2">
+        <h4>Connect</h4>
+        <a href="https://www.linkedin.com/company/helicyn/" target="_blank" rel="noopener noreferrer">Follow us on LinkedIn <span class="arr" aria-hidden="true">↗</span></a>
+        <a data-email-link href="#">Email us</a>
+        <a href="terms">Terms and Conditions</a>
+      </div>
+    </div>
+    <div class="footer__base">
+      <span class="mono">© 2026 Helicyn · All rights reserved</span>
+      <span class="statusband__item"><span class="statusdot" aria-hidden="true"></span><span class="mono">Research preview · Build v0.3.0</span></span>
+      <span class="mono">v0.3.0 / build 2026.07.01</span>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script src="ambient.js"></script>
+<script type="module" src="supabase-config.js"></script>
+<script type="module" src="nav-auth.js"></script>
+<script type="module" src="careers.js"></script>
+</body>
+</html>
