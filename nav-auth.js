@@ -29,7 +29,15 @@ function buildProfileMenu(session) {
   const avatar = document.createElement("span");
   avatar.className = "profilemenu__avatar";
   avatar.setAttribute("aria-hidden", "true");
-  avatar.textContent = initials(session);
+  const avatarUrl = (session.user.user_metadata || {}).avatar_url;
+  if (avatarUrl) {
+    const img = document.createElement("img");
+    img.src = avatarUrl;
+    img.alt = "";
+    avatar.appendChild(img);
+  } else {
+    avatar.textContent = initials(session);
+  }
   trigger.appendChild(avatar);
 
   const panel = document.createElement("div");

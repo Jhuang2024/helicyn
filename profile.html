@@ -73,6 +73,16 @@
     <div id="profileView" class="authcard" hidden>
       <span class="eyebrow">Profile</span>
 
+      <div class="profileavatar">
+        <span class="profileavatar__preview" id="profileAvatarPreview" aria-hidden="true"></span>
+        <div class="profileavatar__controls">
+          <label class="btn-ghost" for="profileAvatarInput" style="cursor:pointer;"><span class="dot" aria-hidden="true"></span> Change photo</label>
+          <input type="file" id="profileAvatarInput" accept="image/png,image/jpeg,image/webp" class="visually-hidden" />
+          <span class="mono" id="profileAvatarLoading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Uploading<span class="loadingdots"></span></span>
+          <span class="formfield__err" id="profileAvatarErr"></span>
+        </div>
+      </div>
+
       <form id="profileForm" class="formgrid" novalidate>
         <div class="formfield">
           <label class="formfield__label" for="profileEmail">Email</label>

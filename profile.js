@@ -9,12 +9,17 @@ import {
   getSession,
   onAuthStateChange,
   updateProfile,
+  uploadAvatar,
   signOut,
 } from "./auth.js";
 
 const configNotice = document.getElementById("configNotice");
 const signInRequired = document.getElementById("signInRequired");
 const profileView = document.getElementById("profileView");
+const profileAvatarPreview = document.getElementById("profileAvatarPreview");
+const profileAvatarInput = document.getElementById("profileAvatarInput");
+const profileAvatarLoading = document.getElementById("profileAvatarLoading");
+const profileAvatarErr = document.getElementById("profileAvatarErr");
 const profileForm = document.getElementById("profileForm");
 const profileEmail = document.getElementById("profileEmail");
 const profileFullName = document.getElementById("profileFullName");
@@ -26,6 +31,26 @@ const profileSaveBtn = document.getElementById("profileSaveBtn");
 const profileLoading = document.getElementById("profileLoading");
 const profileNotice = document.getElementById("profileNotice");
 const profileSignOutBtn = document.getElementById("profileSignOutBtn");
+
+const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
+
+function renderAvatarPreview(session) {
+  const meta = session.user.user_metadata || {};
+  profileAvatarPreview.innerHTML = "";
+  if (meta.avatar_url) {
+    const img = document.createElement("img");
+    img.src = meta.avatar_url;
+    img.alt = "";
+    profileAvatarPreview.appendChild(img);
+    return;
+  }
+  const fullName = (meta.full_name || "").trim();
+  const parts = fullName.split(/\s+/).filter(Boolean);
+  const letters = fullName
+    ? (parts[0][0] || "") + (parts[1] ? parts[1][0] : "")
+    : (session.user.email || "?")[0];
+  profileAvatarPreview.textContent = letters.toUpperCase();
+}
 
 function setNotice(kind, title, message) {
   profileNotice.innerHTML = "";
@@ -49,6 +74,36 @@ function fillForm(session) {
   profileJobTitle.value = meta.job_title || "";
   profileLinkedin.value = meta.linkedin_url || "";
   profileNewsletter.checked = meta.newsletter_opt_in !== false;
+  renderAvatarPreview(session);
+}
+
+async function handleAvatarChange() {
+  profileAvatarErr.textContent = "";
+  const file = profileAvatarInput.files && profileAvatarInput.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    profileAvatarErr.textContent = "Choose an image file (PNG, JPEG, or WebP).";
+    profileAvatarInput.value = "";
+    return;
+  }
+  if (file.size > MAX_AVATAR_BYTES) {
+    profileAvatarErr.textContent = "Image is too large; please use one under 5MB.";
+    profileAvatarInput.value = "";
+    return;
+  }
+
+  profileAvatarLoading.hidden = false;
+  try {
+    await uploadAvatar(file);
+    const session = await getSession();
+    renderAvatarPreview(session);
+  } catch (err) {
+    profileAvatarErr.textContent = err.message || String(err);
+  } finally {
+    profileAvatarLoading.hidden = true;
+    profileAvatarInput.value = "";
+  }
 }
 
 function normalizeLinkedinUrl(raw) {
@@ -117,6 +172,7 @@ async function start() {
     return;
   }
   profileForm.addEventListener("submit", handleSubmit);
+  profileAvatarInput.addEventListener("change", handleAvatarChange);
   profileSignOutBtn.addEventListener("click", async () => {
     await signOut();
     window.location.href = "/";

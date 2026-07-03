@@ -265,6 +265,38 @@ export async function updateProfile({ full_name, job_title, linkedin_url, newsle
   return data;
 }
 
+// Uploads a profile picture to the "avatars" Storage bucket (see
+// supabase/migrations/002_avatar_storage.sql -- must be run against the
+// project before this works) at "<user_id>/avatar.<ext>", overwriting
+// any previous upload, then saves the public URL onto the user's
+// profile. Returns the new avatar_url.
+const AVATAR_BUCKET = "avatars";
+
+export async function uploadAvatar(file) {
+  const client = await requireClient();
+  const { data: sessionData, error: sessionError } = await client.auth.getSession();
+  if (sessionError) throw sessionError;
+  const session = sessionData.session;
+  if (!session) throw new Error("You must be signed in to upload a profile picture.");
+
+  const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+  const path = `${session.user.id}/avatar.${ext}`;
+
+  const { error: uploadError } = await client.storage
+    .from(AVATAR_BUCKET)
+    .upload(path, file, { upsert: true, contentType: file.type || "image/jpeg" });
+  if (uploadError) throw uploadError;
+
+  const { data: urlData } = client.storage.from(AVATAR_BUCKET).getPublicUrl(path);
+  // cache-bust so the new image shows immediately instead of whatever
+  // the browser/CDN cached for the previous upload at this same path
+  const avatarUrl = `${urlData.publicUrl}?v=${Date.now()}`;
+
+  const { data, error } = await client.auth.updateUser({ data: { avatar_url: avatarUrl } });
+  if (error) throw error;
+  return data;
+}
+
 // ---- founding partner applications -------------------------------------
 
 const APPLICATIONS_TABLE = "founding_partner_applications";

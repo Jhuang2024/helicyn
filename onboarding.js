@@ -130,7 +130,15 @@ async function init() {
     return;
   }
 
-  document.getElementById("email").value = session.user.email || "";
+  const emailField = document.getElementById("email");
+  const nameField = document.getElementById("name");
+  const roleTitleField = document.getElementById("role_title");
+  const linkedinField = document.getElementById("linkedin");
+  const meta = session.user.user_metadata || {};
+  if (!emailField.value) emailField.value = session.user.email || "";
+  if (!nameField.value) nameField.value = meta.full_name || "";
+  if (!roleTitleField.value) roleTitleField.value = meta.job_title || "";
+  if (!linkedinField.value) linkedinField.value = meta.linkedin_url || "";
 
   const existing = await getMyFoundingPartnerApplication().catch(() => null);
   if (existing) {

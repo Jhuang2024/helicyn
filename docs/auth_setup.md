@@ -49,8 +49,13 @@ This site has no build step, so there is nothing that reads
 ## Local setup
 
 1. Create a Supabase project at supabase.com (or use an existing one).
-2. In the Supabase SQL editor, run
-   `supabase/migrations/001_founding_partner_applications.sql`.
+2. In the Supabase SQL editor, run, in order:
+   `supabase/migrations/001_founding_partner_applications.sql`, then
+   `supabase/migrations/002_avatar_storage.sql` (creates the public
+   `avatars` Storage bucket + RLS policies the profile picture upload
+   on `/profile` needs -- without this, uploads fail with a bucket/RLS
+   error, but the rest of the site works fine since it's the only
+   feature that depends on Storage).
 3. In Project Settings -> API, copy the Project URL and the `anon`
    public key.
 4. `cp supabase-config.example.js supabase-config.js` at the repo root,
@@ -189,7 +194,16 @@ required" banner and disables its form instead of pretending to work.
   application has been submitted...") appears only after the Supabase
   insert actually succeeds. Then reload `/partner-portal` and
   confirm the submitted application (company name, submitted date,
-  interests) appears under "Application status".
+  interests) appears under "Application status". If you've set full
+  name/job title/LinkedIn on `/profile` first, confirm `/onboarding`'s
+  Name, Role/title, and LinkedIn fields arrive pre-filled from that
+  (email is always pre-filled from the account regardless).
+- **Profile + avatar:** on `/profile`, edit full name/job title/LinkedIn
+  and save; confirm the nav's account dropdown (top right, on any page)
+  picks up the new name/email immediately. Upload a photo via "Change
+  photo"; confirm both the profile page's preview and the nav avatar
+  switch from initials to the photo (requires
+  `002_avatar_storage.sql` to have been run -- see "Local setup").
 
 ## What not to commit
 
