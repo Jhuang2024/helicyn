@@ -180,7 +180,10 @@
 @keyframes pshimmer-move { to { background-position: -200% center; } }
 
 /* ---- 14. Typewriter (magic-ui Typing Animation) --------------- */
-.ptypewriter { border-right: 2px solid var(--signal); animation: pcaret-blink 0.9s step-end infinite; }
+.ptypewriter {
+  display: inline-block; width: fit-content; max-width: 100%; vertical-align: top;
+  border-right: 2px solid var(--signal); animation: pcaret-blink 0.9s step-end infinite;
+}
 @keyframes pcaret-blink { 50% { border-color: transparent; } }
 
 /* ---- 15. Tilt card (magic-ui 3D tilt) -------------------------- */
