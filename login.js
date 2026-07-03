@@ -10,6 +10,8 @@ import {
   signInWithPassword,
   signInWithMagicLink,
   signOut,
+  requestPasswordReset,
+  setRememberMe,
 } from "./auth.js";
 
 const configNotice = document.getElementById("configNotice");
@@ -28,6 +30,9 @@ const authSignupExtras = document.getElementById("authSignupExtras");
 const authNewsletter = document.getElementById("authNewsletter");
 const authTerms = document.getElementById("authTerms");
 const authTermsErr = document.getElementById("authTermsErr");
+const authRememberMe = document.getElementById("authRememberMe");
+const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
+const forgotPasswordNotice = document.getElementById("forgotPasswordNotice");
 const authSubmitBtn = document.getElementById("authSubmitBtn");
 const authLoading = document.getElementById("authLoading");
 const authNotice = document.getElementById("authNotice");
@@ -58,6 +63,8 @@ document.querySelectorAll("[data-auth-tab]").forEach((btn) => {
     });
     authSignupFields.hidden = mode !== "signup";
     authSignupExtras.hidden = mode !== "signup";
+    forgotPasswordBtn.hidden = mode !== "signin";
+    forgotPasswordNotice.innerHTML = "";
     authFullNameErr.textContent = "";
     authTermsErr.textContent = "";
     clearFieldInvalid(authFullName);
@@ -74,11 +81,7 @@ document.querySelectorAll("[data-auth-method]").forEach((btn) => {
   });
 });
 
-function setNotice(kind, title, message) {
-  if (!message) {
-    authNotice.innerHTML = "";
-    return;
-  }
+function buildNotice(kind, title, message) {
   const div = document.createElement("div");
   div.className = `authnotice authnotice--${kind}`;
   div.setAttribute("role", "alert");
@@ -88,9 +91,38 @@ function setNotice(kind, title, message) {
   const bodyEl = document.createElement("p");
   bodyEl.textContent = message;
   div.append(titleEl, bodyEl);
-  authNotice.innerHTML = "";
-  authNotice.appendChild(div);
+  return div;
 }
+
+function setNotice(kind, title, message) {
+  authNotice.innerHTML = "";
+  if (!message) return;
+  authNotice.appendChild(buildNotice(kind, title, message));
+}
+
+forgotPasswordBtn.addEventListener("click", async () => {
+  forgotPasswordNotice.innerHTML = "";
+  authEmailErr.textContent = "";
+  clearFieldInvalid(authEmail);
+  const email = authEmail.value.trim();
+  if (!EMAIL_RE.test(email)) {
+    markInvalid(authEmail, authEmailErr, "Enter a valid email address to reset your password.");
+    return;
+  }
+  forgotPasswordBtn.disabled = true;
+  try {
+    await requestPasswordReset(email);
+    forgotPasswordNotice.appendChild(
+      buildNotice("ok", "Check your email", `A password reset link was sent to ${email}.`)
+    );
+  } catch (err) {
+    forgotPasswordNotice.appendChild(
+      buildNotice("err", "Could not send reset email", err.message || String(err))
+    );
+  } finally {
+    forgotPasswordBtn.disabled = false;
+  }
+});
 
 function markInvalid(input, errEl, message) {
   errEl.textContent = message;
@@ -144,6 +176,8 @@ async function handleSubmit(e) {
           terms_accepted_at: new Date().toISOString(),
         }
       : undefined;
+
+  setRememberMe(authRememberMe.checked);
 
   authSubmitBtn.disabled = true;
   authLoading.hidden = false;

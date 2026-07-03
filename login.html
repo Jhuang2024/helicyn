@@ -112,6 +112,12 @@
           <label class="formfield__label" for="authPassword">Password <span class="req">*</span></label>
           <input type="password" id="authPassword" name="password" autocomplete="current-password" placeholder="••••••••" />
           <span class="formfield__err" id="authPasswordErr"></span>
+          <button type="button" class="btn-ghost" id="forgotPasswordBtn" style="font-size:0.8rem;">Forgot password?</button>
+        </div>
+        <div id="forgotPasswordNotice"></div>
+        <div class="checkfield">
+          <input type="checkbox" id="authRememberMe" name="remember_me" checked />
+          <label for="authRememberMe">Save my login on this device.</label>
         </div>
         <div id="authSignupExtras" class="formgrid" hidden>
           <div class="checkfield">

@@ -6,7 +6,7 @@
 // into a real UI instead of leaving the raw Supabase error exposed at
 // the address bar, and never leaves the tokens/error sitting in the
 // URL after it's done with them. See auth.js and docs/auth_setup.md.
-import { checkClientReady, renderConfigError, getSession, resendSignupEmail } from "./auth.js";
+import { checkClientReady, renderConfigError, getSession, resendSignupEmail, updatePassword } from "./auth.js";
 
 const configNotice = document.getElementById("configNotice");
 const callbackCard = document.getElementById("callbackCard");
@@ -15,10 +15,16 @@ const callbackFoot = callbackCard.querySelector(".authcard__foot");
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function parseHashParams() {
-  const raw = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
-  return new URLSearchParams(raw);
+// Captured synchronously, before any `await` -- the Supabase client's own
+// detectSessionInUrl processes (and then strips) this same hash
+// asynchronously as part of client init, so reading window.location.hash
+// again later, after an `await`, can race it and find nothing left to
+// parse. This copy is guaranteed to still hold the original value.
+function parseHashParams(raw) {
+  const stripped = raw.startsWith("#") ? raw.slice(1) : raw;
+  return new URLSearchParams(stripped);
 }
+const initialHashParams = parseHashParams(window.location.hash);
 
 function clearHash() {
   window.history.replaceState(null, "", window.location.pathname + window.location.search);
@@ -115,6 +121,77 @@ function renderResendForm(message) {
   });
 }
 
+function renderSetPasswordForm() {
+  renderNotice("info", "Choose a new password", "You're verified. Set a new password to finish resetting your account.");
+
+  const form = document.createElement("form");
+  form.className = "formgrid";
+  form.setAttribute("novalidate", "");
+
+  const field = document.createElement("div");
+  field.className = "formfield";
+  const label = document.createElement("label");
+  label.className = "formfield__label";
+  label.htmlFor = "newPassword";
+  label.innerHTML = 'New password <span class="req">*</span>';
+  const input = document.createElement("input");
+  input.type = "password";
+  input.id = "newPassword";
+  input.name = "password";
+  input.autocomplete = "new-password";
+  input.placeholder = "••••••••";
+  const err = document.createElement("span");
+  err.className = "formfield__err";
+  err.id = "newPasswordErr";
+  field.append(label, input, err);
+
+  const submitRow = document.createElement("div");
+  submitRow.className = "formsubmit";
+  const btn = document.createElement("button");
+  btn.className = "btn";
+  btn.type = "submit";
+  btn.innerHTML = 'Set new password <span class="arr" aria-hidden="true">→</span>';
+  const loading = document.createElement("span");
+  loading.className = "mono";
+  loading.style.fontSize = "0.7rem";
+  loading.style.color = "var(--text-faint)";
+  loading.hidden = true;
+  loading.innerHTML = 'Working<span class="loadingdots"></span>';
+  submitRow.append(btn, loading);
+
+  const resultNotice = document.createElement("div");
+
+  form.append(field, submitRow, resultNotice);
+  callbackCard.insertBefore(form, callbackFoot);
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    err.textContent = "";
+    if (input.value.length < 8) {
+      err.textContent = "Use at least 8 characters.";
+      return;
+    }
+    btn.disabled = true;
+    loading.hidden = false;
+    resultNotice.innerHTML = "";
+    try {
+      await updatePassword(input.value);
+      form.hidden = true;
+      resultNotice.appendChild(buildNotice("ok", "Password updated", "Redirecting to the partner portal..."));
+      setTimeout(() => {
+        window.location.replace("partner-portal.html");
+      }, 900);
+    } catch (updateErr) {
+      resultNotice.appendChild(
+        buildNotice("err", "Could not update password", (updateErr && updateErr.message) || String(updateErr))
+      );
+    } finally {
+      btn.disabled = false;
+      loading.hidden = true;
+    }
+  });
+}
+
 async function run() {
   const status = await checkClientReady();
   if (!status.ready) {
@@ -122,9 +199,8 @@ async function run() {
     return;
   }
 
-  const params = parseHashParams();
-  if (params.has("error")) {
-    const code = params.get("error_code") || "";
+  if (initialHashParams.has("error")) {
+    const code = initialHashParams.get("error_code") || "";
     clearHash();
     const message =
       code === "otp_expired"
@@ -134,9 +210,12 @@ async function run() {
     return;
   }
 
+  const isRecovery = initialHashParams.get("type") === "recovery";
   const session = await getSession().catch(() => null);
   clearHash();
-  if (session) {
+  if (session && isRecovery) {
+    renderSetPasswordForm();
+  } else if (session) {
     renderNotice("ok", "Verified", `Signed in as ${session.user.email}. Redirecting to the partner portal...`);
     setTimeout(() => {
       window.location.replace("partner-portal.html");

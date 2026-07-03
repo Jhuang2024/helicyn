@@ -27,6 +27,59 @@ function authCallbackUrl() {
   return window.location.origin + "/auth-callback.html";
 }
 
+// "Save login on this device": Supabase's client persists sessions to
+// one storage object, set once at client creation, so honoring a
+// per-sign-in choice means routing that storage through a small
+// adapter that checks a remembered preference (itself in localStorage,
+// since it has to survive the tab closing to be read on the *next*
+// visit) and reads/writes the actual session to either localStorage
+// (survives closing the browser) or sessionStorage (cleared when the
+// tab/browser closes) accordingly.
+const REMEMBER_KEY = "helicyn.rememberMe";
+
+function rememberMe() {
+  try {
+    return window.localStorage.getItem(REMEMBER_KEY) !== "0";
+  } catch {
+    return true;
+  }
+}
+
+export function setRememberMe(remember) {
+  try {
+    window.localStorage.setItem(REMEMBER_KEY, remember ? "1" : "0");
+  } catch {
+    // ignore (private browsing / storage disabled) -- falls back to "remember"
+  }
+}
+
+const deviceStorage = {
+  getItem(key) {
+    try {
+      return (rememberMe() ? window.localStorage : window.sessionStorage).getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  setItem(key, value) {
+    try {
+      const remember = rememberMe();
+      (remember ? window.localStorage : window.sessionStorage).setItem(key, value);
+      (remember ? window.sessionStorage : window.localStorage).removeItem(key);
+    } catch {
+      // ignore
+    }
+  },
+  removeItem(key) {
+    try {
+      window.localStorage.removeItem(key);
+      window.sessionStorage.removeItem(key);
+    } catch {
+      // ignore
+    }
+  },
+};
+
 function looksConfigured(url, key) {
   return Boolean(
     url &&
@@ -74,7 +127,7 @@ async function initClient() {
     _initPromise = import(SUPABASE_JS_CDN_URL)
       .then(({ createClient }) => {
         _client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storage: deviceStorage },
         });
         return _client;
       })
@@ -177,6 +230,25 @@ export async function resendSignupEmail(email) {
 export async function signOut() {
   const client = await requireClient();
   const { error } = await client.auth.signOut();
+  if (error) throw error;
+}
+
+// Sends a password-reset email; the link lands on /auth-callback.html
+// with type=recovery, which shows a "set a new password" form (see
+// auth-callback.js) instead of redirecting straight into the portal.
+export async function requestPasswordReset(email) {
+  const client = await requireClient();
+  const { error } = await client.auth.resetPasswordForEmail(email, {
+    redirectTo: authCallbackUrl(),
+  });
+  if (error) throw error;
+}
+
+// Called from the auth callback page once a recovery session (from the
+// link above) is active.
+export async function updatePassword(newPassword) {
+  const client = await requireClient();
+  const { error } = await client.auth.updateUser({ password: newPassword });
   if (error) throw error;
 }
 
