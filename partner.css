@@ -84,7 +84,13 @@
   font-size: 0.98rem;
   transition: border-color 0.35s var(--ease), background 0.35s var(--ease);
 }
-.formfield select { appearance: none; cursor: pointer; }
+.formfield select {
+  appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='rgba(238,242,247,0.45)' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.95rem center; background-size: 11px 8px;
+  padding-right: 2.4rem;
+}
+.formfield select option { background: var(--bg-1); color: var(--text); }
 .formfield textarea { resize: vertical; min-height: 6.5rem; line-height: 1.5; }
 .formfield input::placeholder, .formfield textarea::placeholder { color: var(--text-faint); }
 .formfield input:focus-visible, .formfield select:focus-visible, .formfield textarea:focus-visible {
@@ -95,8 +101,18 @@
 
 .checkfield { display: flex; align-items: flex-start; gap: 0.75rem; }
 .checkfield input[type="checkbox"] {
-  margin-top: 0.2rem; width: 16px; height: 16px; flex: none; accent-color: var(--signal); cursor: pointer;
+  appearance: none; -webkit-appearance: none; position: relative;
+  margin-top: 0.2rem; width: 16px; height: 16px; flex: none; cursor: pointer;
+  border: 1px solid var(--line-2); border-radius: 4px; background: var(--bg-1);
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
 }
+.checkfield input[type="checkbox"]:hover { border-color: var(--signal-line); }
+.checkfield input[type="checkbox"]:checked { background: var(--signal); border-color: var(--signal); }
+.checkfield input[type="checkbox"]:checked::after {
+  content: ""; position: absolute; left: 4px; top: 0px; width: 5px; height: 9px;
+  border: solid var(--bg); border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+.checkfield input[type="checkbox"]:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
 .checkfield label { font-size: 0.88rem; color: var(--text-dim); line-height: 1.5; cursor: pointer; }
 
 .multicheck { display: flex; flex-wrap: wrap; gap: 0.55rem; }
