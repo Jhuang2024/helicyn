@@ -15,6 +15,7 @@
 /patch-notes.html       /patch-notes      301
 /auth-callback.html     /auth-callback    301
 /terms.html             /terms            301
+/profile.html           /profile          301
 # Pretty URL → file
 /control-plane        /control-plane.html  200
 /login                 /login.html            200
@@ -25,3 +26,4 @@
 /patch-notes           /patch-notes.html      200
 /auth-callback          /auth-callback.html    200
 /terms                  /terms.html            200
+/profile                /profile.html          200

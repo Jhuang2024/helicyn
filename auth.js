@@ -252,6 +252,19 @@ export async function updatePassword(newPassword) {
   if (error) throw error;
 }
 
+// Used by the /profile page to edit the fields captured at sign-up.
+// Unlike profileMetadata() above (which omits empty optional fields so
+// signup doesn't overwrite anything), this sends exactly what's passed
+// so clearing a field on the profile page actually clears it.
+export async function updateProfile({ full_name, job_title, newsletter_opt_in }) {
+  const client = await requireClient();
+  const { data, error } = await client.auth.updateUser({
+    data: { full_name, job_title, newsletter_opt_in },
+  });
+  if (error) throw error;
+  return data;
+}
+
 // ---- founding partner applications -------------------------------------
 
 const APPLICATIONS_TABLE = "founding_partner_applications";

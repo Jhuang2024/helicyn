@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<script>document.documentElement.className += ' js';</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#08090b" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Helicyn · Profile</title>
+<meta name="description" content="Edit your Helicyn account profile: name, job title, and email preferences." />
+<meta name="robots" content="noindex" />
+<link rel="canonical" href="https://helicyn.com/profile" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="apple-touch-icon" href="favicon-180.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="partner.css" />
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+<div class="progress"></div>
+
+<header class="nav" data-screen-label="nav">
+  <a class="brand" href="/" aria-label="Helicyn home" data-magnetic="0.18">
+    <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
+      <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
+    </svg>
+    <span class="brand__name">Helicyn</span>
+  </a>
+  <button class="navtoggle" type="button" aria-expanded="false" aria-controls="navmenu" data-nav-toggle aria-label="Toggle menu">
+    <span class="navtoggle__bar"></span><span class="navtoggle__bar"></span><span class="navtoggle__bar"></span>
+  </button>
+  <nav class="nav__right" id="navmenu" data-nav-menu>
+    <span class="nav__meta">
+      <span class="statusdot" aria-hidden="true"></span>
+      <span class="mono" data-clock>00:00:00 UTC</span>
+    </span>
+    <a class="navlink" href="research">Research</a>
+    <a class="navlink" href="patch-notes">Patch notes</a>
+    <a class="navlink" href="partners">Founding Partners</a>
+    <a class="navlink" href="control-plane"><span class="lbl-full">Control plane</span><span class="lbl-short">Demo</span></a>
+    <a class="navlink" href="login" data-nav-auth>Login</a>
+  </nav>
+</header>
+
+<main id="main" tabindex="-1">
+<section class="section pagehead">
+  <div class="orbfield" aria-hidden="true"><span class="orb orb--a"></span><span class="orb orb--b"></span></div>
+  <div class="wrap">
+    <span class="eyebrow" data-reveal style="--i:0">Account</span>
+    <h1 data-reveal="mask" style="--i:1">Your profile</h1>
+    <p data-reveal style="--i:2">Update the name and job title on your account, and your email preferences.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="wrap">
+    <div id="configNotice"></div>
+
+    <div id="signInRequired" class="authnotice authnotice--info centerwrap" hidden>
+      <span class="authnotice__title">Sign-in required</span>
+      <p>Viewing and editing your profile requires a real, signed-in Helicyn account.</p>
+      <div class="pagehead__cta" style="margin-top:0.6rem;">
+        <a class="btn" href="login" data-magnetic="0.2">Sign in <span class="arr" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+
+    <div id="profileView" class="authcard" hidden>
+      <span class="eyebrow">Profile</span>
+
+      <form id="profileForm" class="formgrid" novalidate>
+        <div class="formfield">
+          <label class="formfield__label" for="profileEmail">Email</label>
+          <input type="email" id="profileEmail" disabled />
+        </div>
+        <div class="formgrid formgrid--2col">
+          <div class="formfield">
+            <label class="formfield__label" for="profileFullName">Full name</label>
+            <input type="text" id="profileFullName" name="full_name" autocomplete="name" placeholder="Jane Doe" />
+          </div>
+          <div class="formfield">
+            <label class="formfield__label" for="profileJobTitle">Job title</label>
+            <input type="text" id="profileJobTitle" name="job_title" autocomplete="organization-title" placeholder="VP Infrastructure" />
+          </div>
+        </div>
+        <div class="checkfield">
+          <input type="checkbox" id="profileNewsletter" name="newsletter_opt_in" />
+          <label for="profileNewsletter">Send me product updates and patch notes by email.</label>
+        </div>
+        <div class="formsubmit">
+          <button class="btn" type="submit" id="profileSaveBtn">Save changes <span class="arr" aria-hidden="true">→</span></button>
+          <span class="mono" id="profileLoading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Working<span class="loadingdots"></span></span>
+        </div>
+        <div id="profileNotice"></div>
+      </form>
+
+      <div class="authcard__foot">
+        <a href="partner-portal">← Back to partner portal</a>
+        <button class="btn-ghost" type="button" id="profileSignOutBtn" style="justify-content:flex-start;"><span class="dot" aria-hidden="true"></span> Sign out</button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer" data-screen-label="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__brand" data-reveal style="--i:0">
+        <span class="brand" data-magnetic="0.15">
+          <svg class="brand__mark" viewBox="0 0 18 18" fill="none" aria-hidden="true" style="width:20px;height:20px;">
+            <circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>
+            <circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle>
+          </svg>
+          <span class="brand__name">Helicyn</span>
+        </span>
+        <p class="footer__tagline">The coordination layer for large-scale physical and computational systems.</p>
+      </div>
+      <div class="fcol" data-reveal style="--i:1">
+        <h4>Company</h4>
+        <a href="research">Thesis / Research</a>
+        <a href="patch-notes">Patch Notes</a>
+        <a href="partners">Founding Partners</a>
+        <a href="control-plane">Control Plane</a>
+        <a href="onboarding">Onboarding</a>
+        <a href="login">Login</a>
+      </div>
+      <div class="fcol" data-reveal style="--i:2">
+        <h4>Connect</h4>
+        <a href="https://www.linkedin.com/company/helicyn/" target="_blank" rel="noopener noreferrer">Follow us on LinkedIn <span class="arr" aria-hidden="true">↗</span></a>
+        <a data-email-link href="#">Email us</a>
+        <a href="terms">Terms and Conditions</a>
+      </div>
+    </div>
+    <div class="footer__base">
+      <span class="mono">© 2026 Helicyn · All rights reserved</span>
+      <span class="statusband__item"><span class="statusdot" aria-hidden="true"></span><span class="mono">Research preview · Build v0.3.0</span></span>
+      <span class="mono">v0.3.0 / build 2026.07.01</span>
+    </div>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+<script src="ambient.js"></script>
+<script type="module" src="supabase-config.js"></script>
+<script type="module" src="nav-auth.js"></script>
+<script type="module" src="profile.js"></script>
+</body>
+</html>
