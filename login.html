@@ -113,6 +113,19 @@
           <input type="password" id="authPassword" name="password" autocomplete="current-password" placeholder="••••••••" />
           <span class="formfield__err" id="authPasswordErr"></span>
         </div>
+        <div id="authSignupExtras" class="formgrid" hidden>
+          <div class="checkfield">
+            <input type="checkbox" id="authNewsletter" name="newsletter_opt_in" checked />
+            <label for="authNewsletter">Send me product updates and patch notes by email. You can unsubscribe anytime.</label>
+          </div>
+          <div>
+            <div class="checkfield">
+              <input type="checkbox" id="authTerms" name="terms_accepted" />
+              <label for="authTerms">I agree to the <a href="terms.html" target="_blank" rel="noopener noreferrer" style="text-decoration:underline;">Terms and Conditions</a>. <span class="req">*</span></label>
+            </div>
+            <span class="formfield__err" id="authTermsErr"></span>
+          </div>
+        </div>
         <div class="formsubmit">
           <button class="btn" type="submit" id="authSubmitBtn">Sign in <span class="arr" aria-hidden="true">→</span></button>
           <span class="mono" id="authLoading" style="font-size:0.7rem; color:var(--text-faint);" hidden>Working<span class="loadingdots"></span></span>
@@ -156,6 +169,7 @@
         <h4>Connect</h4>
         <a href="https://www.linkedin.com/company/helicyn/" target="_blank" rel="noopener noreferrer">Follow us on LinkedIn <span class="arr" aria-hidden="true">↗</span></a>
         <a data-email-link href="#">Email us</a>
+        <a href="terms.html">Terms and Conditions</a>
       </div>
     </div>
     <div class="footer__base">

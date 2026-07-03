@@ -24,6 +24,10 @@ const authPasswordField = document.getElementById("authPasswordField");
 const authSignupFields = document.getElementById("authSignupFields");
 const authFullName = document.getElementById("authFullName");
 const authJobTitle = document.getElementById("authJobTitle");
+const authSignupExtras = document.getElementById("authSignupExtras");
+const authNewsletter = document.getElementById("authNewsletter");
+const authTerms = document.getElementById("authTerms");
+const authTermsErr = document.getElementById("authTermsErr");
 const authSubmitBtn = document.getElementById("authSubmitBtn");
 const authLoading = document.getElementById("authLoading");
 const authNotice = document.getElementById("authNotice");
@@ -53,7 +57,9 @@ document.querySelectorAll("[data-auth-tab]").forEach((btn) => {
       b.setAttribute("aria-selected", b === btn ? "true" : "false");
     });
     authSignupFields.hidden = mode !== "signup";
+    authSignupExtras.hidden = mode !== "signup";
     authFullNameErr.textContent = "";
+    authTermsErr.textContent = "";
     clearFieldInvalid(authFullName);
     updateSubmitLabel();
   });
@@ -106,6 +112,7 @@ async function handleSubmit(e) {
   authEmailErr.textContent = "";
   authPasswordErr.textContent = "";
   authFullNameErr.textContent = "";
+  authTermsErr.textContent = "";
   clearFieldInvalid(authEmail);
   clearFieldInvalid(authPassword);
   clearFieldInvalid(authFullName);
@@ -123,8 +130,20 @@ async function handleSubmit(e) {
     markInvalid(authFullName, authFullNameErr, "Full name is required.");
     return;
   }
+  if (mode === "signup" && !authTerms.checked) {
+    authTermsErr.textContent = "You must agree to the Terms and Conditions to create an account.";
+    authTerms.focus();
+    return;
+  }
   const profile =
-    mode === "signup" ? { full_name: authFullName.value.trim(), job_title: authJobTitle.value.trim() } : undefined;
+    mode === "signup"
+      ? {
+          full_name: authFullName.value.trim(),
+          job_title: authJobTitle.value.trim(),
+          newsletter_opt_in: authNewsletter.checked,
+          terms_accepted_at: new Date().toISOString(),
+        }
+      : undefined;
 
   authSubmitBtn.disabled = true;
   authLoading.hidden = false;

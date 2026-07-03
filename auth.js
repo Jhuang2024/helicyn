@@ -119,15 +119,17 @@ export async function onAuthStateChange(callback) {
   return data.subscription;
 }
 
-// profile ({ full_name, job_title }) becomes the new user's
-// auth.users.user_metadata -- captured at account creation so it's
-// available immediately, without waiting on the separate founding
-// partner application form.
+// profile ({ full_name, job_title, newsletter_opt_in, terms_accepted_at })
+// becomes the new user's auth.users.user_metadata -- captured at account
+// creation so it's available immediately, without waiting on the
+// separate founding partner application form.
 function profileMetadata(profile) {
   if (!profile) return undefined;
   const data = {};
   if (profile.full_name) data.full_name = profile.full_name;
   if (profile.job_title) data.job_title = profile.job_title;
+  if (typeof profile.newsletter_opt_in === "boolean") data.newsletter_opt_in = profile.newsletter_opt_in;
+  if (profile.terms_accepted_at) data.terms_accepted_at = profile.terms_accepted_at;
   return Object.keys(data).length ? data : undefined;
 }
 

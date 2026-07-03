@@ -140,10 +140,11 @@
   background: transparent; cursor: pointer; transition: all 0.3s var(--ease);
 }
 .authcard__tab.is-active { color: var(--text); border-color: var(--signal-line); background: var(--signal-soft); }
-.authcard__method { display: flex; gap: 0.5rem; margin-top: -0.4rem; }
+.authcard__method { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; margin-top: -0.4rem; }
 .authcard__methodlink {
   font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em; color: var(--text-faint);
   text-decoration: underline; text-underline-offset: 3px; cursor: pointer; background: none; border: 0;
+  padding: 0; margin: 0; line-height: inherit;
 }
 .authcard__methodlink:hover { color: var(--text); }
 .authcard__foot { display: grid; gap: 0.5rem; padding-top: 0.6rem; border-top: 1px solid var(--line); }
@@ -418,7 +419,7 @@
    runs (no-JS), every step just renders in its neutral state and
    the form remains fully usable top-to-bottom.
    ============================================================ */
-.stepper { display: flex; flex-wrap: wrap; gap: 0.5rem 0; margin-bottom: clamp(1.6rem, 3vh, 2.2rem); }
+.stepper { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 0; margin-bottom: clamp(1.6rem, 3vh, 2.2rem); }
 .stepper__step {
   display: flex; align-items: center; gap: 0.55rem;
   font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase;
