@@ -673,26 +673,26 @@
       <span class="eyebrow">FAQ</span>
       <h2 data-reveal="mask" style="--i:1">Common questions.</h2>
     </div>
-    <div style="margin-top:1.6rem; max-width:68ch; --i:2;" data-reveal>
-      <details class="paccordion">
-        <summary class="paccordion__summary">What is Helicyn?<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
-        <div class="paccordion__body">Helicyn is a coordination layer for AI infrastructure: a research-backed simulation and control-plane prototype that coordinates compute placement, power availability, cooling capacity, and carbon-aware scheduling across a fleet of data centers, instead of optimizing each system in isolation.</div>
+    <div style="margin-top:1.6rem; max-width:68ch;">
+      <details class="paccordion faqcard" data-reveal style="--i:2">
+        <summary class="paccordion__summary"><span class="faqcard__q"><span class="faqcard__idx">01</span>What is Helicyn?</span><svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <span class="faqcard__sweep" aria-hidden="true"></span><div class="paccordion__body">Helicyn is a coordination layer for AI infrastructure: a research-backed simulation and control-plane prototype that coordinates compute placement, power availability, cooling capacity, and carbon-aware scheduling across a fleet of data centers, instead of optimizing each system in isolation.</div>
       </details>
-      <details class="paccordion">
-        <summary class="paccordion__summary">Who is it for?<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
-        <div class="paccordion__body">Data center operators and infrastructure teams running GPU workloads at fleet scale, who need to coordinate compute, energy, and thermal constraints across multiple regions rather than tuning one facility at a time.</div>
+      <details class="paccordion faqcard" data-reveal style="--i:3">
+        <summary class="paccordion__summary"><span class="faqcard__q"><span class="faqcard__idx">02</span>Who is it for?</span><svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <span class="faqcard__sweep" aria-hidden="true"></span><div class="paccordion__body">Data center operators and infrastructure teams running GPU workloads at fleet scale, who need to coordinate compute, energy, and thermal constraints across multiple regions rather than tuning one facility at a time.</div>
       </details>
-      <details class="paccordion">
-        <summary class="paccordion__summary">How does it reduce data center energy cost?<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
-        <div class="paccordion__body">By routing AI workloads with energy coordination in mind: shifting placement and timing based on regional power availability, cooling headroom, and carbon intensity, then surfacing operator-approved recommendations instead of acting unilaterally.</div>
+      <details class="paccordion faqcard" data-reveal style="--i:4">
+        <summary class="paccordion__summary"><span class="faqcard__q"><span class="faqcard__idx">03</span>How does it reduce data center energy cost?</span><svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <span class="faqcard__sweep" aria-hidden="true"></span><div class="paccordion__body">By routing AI workloads with energy coordination in mind: shifting placement and timing based on regional power availability, cooling headroom, and carbon intensity, then surfacing operator-approved recommendations instead of acting unilaterally.</div>
       </details>
-      <details class="paccordion">
-        <summary class="paccordion__summary">Is it a cooling system?<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
-        <div class="paccordion__body">No. Helicyn doesn't cool, power, or physically operate anything. It's a software coordination layer that reads signals from compute, energy, and cooling systems and recommends workload-placement actions across them.</div>
+      <details class="paccordion faqcard" data-reveal style="--i:5">
+        <summary class="paccordion__summary"><span class="faqcard__q"><span class="faqcard__idx">04</span>Is it a cooling system?</span><svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <span class="faqcard__sweep" aria-hidden="true"></span><div class="paccordion__body">No. Helicyn doesn't cool, power, or physically operate anything. It's a software coordination layer that reads signals from compute, energy, and cooling systems and recommends workload-placement actions across them.</div>
       </details>
-      <details class="paccordion">
-        <summary class="paccordion__summary">Is there a demo?<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
-        <div class="paccordion__body">Yes. The <a href="control-plane" style="text-decoration:underline;">control plane demo</a> is an interactive, simulation-backed walkthrough of the coordination logic: workload placement, thermal-aware scheduling, and operator-approved actions.</div>
+      <details class="paccordion faqcard" data-reveal style="--i:6">
+        <summary class="paccordion__summary"><span class="faqcard__q"><span class="faqcard__idx">05</span>Is there a demo?</span><svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <span class="faqcard__sweep" aria-hidden="true"></span><div class="paccordion__body">Yes. The <a href="control-plane" style="text-decoration:underline;">control plane demo</a> is an interactive, simulation-backed walkthrough of the coordination logic: workload placement, thermal-aware scheduling, and operator-approved actions.</div>
       </details>
     </div>
   </div>

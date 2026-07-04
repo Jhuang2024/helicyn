@@ -95,6 +95,16 @@
 .paccordion[open] .paccordion__chev { transform: rotate(180deg); color: var(--signal); }
 .paccordion__body { padding: 0 1.2rem 1.1rem; color: var(--text-dim); font-size: 0.9rem; line-height: 1.6; border-top: 1px solid var(--line); padding-top: 0.9rem; }
 
+/* ---- 8b. FAQ card variant: numbered index + hover/open sweep -- */
+.faqcard { position: relative; transition: border-color 0.5s var(--ease), background 0.6s var(--ease); }
+.faqcard:hover { border-color: var(--line-2); background: color-mix(in srgb, var(--bg-2) 60%, var(--bg-1)); }
+.faqcard[open] { border-color: var(--signal-line); }
+.faqcard__sweep { position: absolute; left: 0; top: -1px; height: 1px; width: 0; background: var(--signal-line); transition: width 0.7s var(--ease); pointer-events: none; }
+.faqcard:hover .faqcard__sweep, .faqcard[open] .faqcard__sweep { width: 100%; }
+.faqcard__q { display: inline-flex; align-items: baseline; gap: 0.9rem; }
+.faqcard__idx { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em; color: var(--text-ghost); transition: color 0.5s var(--ease); }
+.faqcard:hover .faqcard__idx, .faqcard[open] .faqcard__idx { color: var(--signal); }
+
 /* ---- 9. Command palette (shadcn Command / cmdk) --------------
    Built and injected entirely by premium.js. */
 .pcmdk-backdrop {
