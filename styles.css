@@ -655,6 +655,29 @@ section { position: relative; }
 .availnotice__title { font-weight: 600; color: var(--text); font-size: 0.94rem; }
 .availnotice__sub { color: var(--text-dim); font-size: 0.86rem; margin-top: 0.3rem; }
 
+.contactcard {
+  display: flex; align-items: center; gap: 0.9rem;
+  margin-top: 0.9rem; max-width: 46ch;
+  padding: 1.05rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg-1);
+}
+.contactcard__avatar {
+  position: relative; flex: none;
+  width: 42px; height: 42px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--bg-raise); border: 1px solid var(--line-2);
+  color: var(--text);
+}
+.contactcard__avatar svg { width: 18px; height: 18px; }
+.contactcard__status {
+  position: absolute; right: -1px; bottom: -1px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--ok); border: 2px solid var(--bg-1);
+}
+.contactcard .contactcard__sub { color: var(--text-dim); font-size: 0.85rem; margin-top: 0; }
+
 .form { display: grid; gap: 0.9rem; }
 .field {
   position: relative;
