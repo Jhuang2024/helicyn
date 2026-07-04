@@ -294,4 +294,23 @@
     document.querySelectorAll('[data-thesis-open]').forEach((b) => b.addEventListener('click', openModal));
     thesisModal.querySelectorAll('[data-modal-close]').forEach((b) => b.addEventListener('click', closeModal));
   }
+
+  // ---- back to top -------------------------------------------
+  (function () {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'backtotop';
+    btn.setAttribute('aria-label', 'Back to top');
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    document.body.appendChild(btn);
+    function onScrollTop() {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      btn.classList.toggle('is-visible', y > 480);
+    }
+    document.addEventListener('scroll', onScrollTop, { passive: true });
+    onScrollTop();
+    btn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: prm ? 'auto' : 'smooth' });
+    });
+  })();
 })();
