@@ -15,18 +15,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#08090b" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<title>Helicyn · Infrastructure Intelligence for AI Data Centers</title>
-<meta name="description" content="Helicyn is building a coordination layer for AI infrastructure, helping operators route workloads across compute, power, cooling, carbon, and thermal constraints." />
+<title>Helicyn | AI Coordination Layer for Data Center Energy</title>
+<meta name="description" content="Helicyn is an AI coordination layer for data centers: routing GPU workloads across compute, power, cooling, and carbon-aware energy scheduling." />
 <link rel="canonical" href="https://helicyn.com/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Helicyn" />
 <meta property="og:url" content="https://helicyn.com/" />
-<meta property="og:title" content="Helicyn · Infrastructure Intelligence for AI Data Centers" />
-<meta property="og:description" content="A coordination layer for AI infrastructure: routing workloads across compute, power, cooling, carbon, and thermal constraints." />
+<meta property="og:title" content="Helicyn | AI Coordination Layer for Data Center Energy" />
+<meta property="og:description" content="Helicyn is an AI coordination layer for data centers: routing GPU workloads across compute, power, cooling, and carbon-aware energy scheduling." />
 <meta property="og:image" content="https://helicyn.com/og-image.png" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Helicyn · Infrastructure Intelligence for AI Data Centers" />
-<meta name="twitter:description" content="A coordination layer for AI infrastructure: routing workloads across compute, power, cooling, carbon, and thermal constraints." />
+<meta name="twitter:title" content="Helicyn | AI Coordination Layer for Data Center Energy" />
+<meta name="twitter:description" content="Helicyn is an AI coordination layer for data centers: routing GPU workloads across compute, power, cooling, and carbon-aware energy scheduling." />
 <meta name="twitter:image" content="https://helicyn.com/og-image.png" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png" />
@@ -56,6 +56,52 @@
       "name": "Helicyn",
       "url": "https://helicyn.com/",
       "publisher": { "@id": "https://helicyn.com/#organization" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://helicyn.com/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Helicyn?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Helicyn is a coordination layer for AI infrastructure: a research-backed simulation and control-plane prototype that coordinates compute placement, power availability, cooling capacity, and carbon-aware scheduling across a fleet of data centers, instead of optimizing each system in isolation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Who is it for?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Data center operators and infrastructure teams running GPU workloads at fleet scale, who need to coordinate compute, energy, and thermal constraints across multiple regions rather than tuning one facility at a time."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does it reduce data center energy cost?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "By routing AI workloads with energy coordination in mind: shifting placement and timing based on regional power availability, cooling headroom, and carbon intensity, then surfacing operator-approved recommendations instead of acting unilaterally."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it a cooling system?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Helicyn doesn't cool, power, or physically operate anything. It's a software coordination layer that reads signals from compute, energy, and cooling systems and recommends workload-placement actions across them."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a demo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The control plane demo is an interactive, simulation-backed walkthrough of the coordination logic: workload placement, thermal-aware scheduling, and operator-approved actions."
+          }
+        }
+      ]
     }
   ]
 }
@@ -616,6 +662,38 @@
     </div>
     <div class="pagehead__cta" data-reveal style="--i:3">
       <a class="btn" href="careers" data-magnetic="0.2">View roles and apply <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ========================== FAQ =============================== -->
+<section class="section section--line" id="faq" data-screen-label="faq">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">FAQ</span>
+      <h2 data-reveal="mask" style="--i:1">Common questions.</h2>
+    </div>
+    <div style="margin-top:1.6rem; max-width:68ch; --i:2;" data-reveal>
+      <details class="paccordion">
+        <summary class="paccordion__summary">What is Helicyn?<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <div class="paccordion__body">Helicyn is a coordination layer for AI infrastructure: a research-backed simulation and control-plane prototype that coordinates compute placement, power availability, cooling capacity, and carbon-aware scheduling across a fleet of data centers, instead of optimizing each system in isolation.</div>
+      </details>
+      <details class="paccordion">
+        <summary class="paccordion__summary">Who is it for?<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <div class="paccordion__body">Data center operators and infrastructure teams running GPU workloads at fleet scale, who need to coordinate compute, energy, and thermal constraints across multiple regions rather than tuning one facility at a time.</div>
+      </details>
+      <details class="paccordion">
+        <summary class="paccordion__summary">How does it reduce data center energy cost?<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <div class="paccordion__body">By routing AI workloads with energy coordination in mind: shifting placement and timing based on regional power availability, cooling headroom, and carbon intensity, then surfacing operator-approved recommendations instead of acting unilaterally.</div>
+      </details>
+      <details class="paccordion">
+        <summary class="paccordion__summary">Is it a cooling system?<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <div class="paccordion__body">No. Helicyn doesn't cool, power, or physically operate anything. It's a software coordination layer that reads signals from compute, energy, and cooling systems and recommends workload-placement actions across them.</div>
+      </details>
+      <details class="paccordion">
+        <summary class="paccordion__summary">Is there a demo?<svg class="paccordion__chev" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></summary>
+        <div class="paccordion__body">Yes. The <a href="control-plane" style="text-decoration:underline;">control plane demo</a> is an interactive, simulation-backed walkthrough of the coordination logic: workload placement, thermal-aware scheduling, and operator-approved actions.</div>
+      </details>
     </div>
   </div>
 </section>
