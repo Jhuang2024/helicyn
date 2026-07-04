@@ -642,26 +642,13 @@ section { position: relative; }
 .access h2 { font-weight: 500; font-size: clamp(1.8rem, 3.4vw, 2.8rem); letter-spacing: -0.025em; line-height: 1.08; max-width: 16ch; text-wrap: balance; }
 .access p { color: var(--text-dim); margin-top: 1.1rem; max-width: 46ch; }
 
-.availnotice {
-  display: flex; align-items: flex-start; gap: 0.85rem;
+.contactcard {
+  display: flex; align-items: center; gap: 0.9rem;
   margin-top: 1.5rem; max-width: 46ch;
   padding: 1.05rem 1.2rem;
   border: 1px solid var(--ok-line);
   border-radius: 12px;
   background: linear-gradient(180deg, var(--ok-soft), transparent);
-}
-.availnotice__icon { flex: none; width: 20px; height: 20px; margin-top: 0.1rem; color: var(--ok); }
-.availnotice__icon svg { display: block; width: 100%; height: 100%; }
-.availnotice__title { font-weight: 600; color: var(--text); font-size: 0.94rem; }
-.availnotice__sub { color: var(--text-dim); font-size: 0.86rem; margin-top: 0.3rem; }
-
-.contactcard {
-  display: flex; align-items: center; gap: 0.9rem;
-  margin-top: 0.9rem; max-width: 46ch;
-  padding: 1.05rem 1.2rem;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--bg-1);
 }
 .contactcard__avatar {
   position: relative; flex: none;
