@@ -37,6 +37,7 @@
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="partner.css" />
 <link rel="stylesheet" href="premium.css" />
+<link rel="stylesheet" href="redesign.css" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -149,6 +150,7 @@
 
   <div class="hero__content">
     <div class="wrap">
+      <div class="hero__composite">
       <div class="hero__grid">
         <span class="eyebrow" data-reveal style="--i:0" data-decrypt>Deep infrastructure · intelligence · scale</span>
         <div class="hero__logo" id="heroLogo" data-reveal style="--i:1">
@@ -175,8 +177,40 @@
           <span class="hero__pill hero__pill--fade">Compute · Energy · Thermal</span>
         </div>
       </div>
+
+      <aside class="opsurface-wrap" data-reveal style="--i:3">
+      <div class="opsurface" data-opsurface role="img" aria-label="Simulated coordination console preview">
+        <div class="opsurface__head">
+          <span class="opsurface__title"><span class="d" aria-hidden="true"></span>Operating surface</span>
+          <span class="opsurface__sim">Simulated</span>
+        </div>
+        <span class="opsurface__grouplbl">Regions · utilization</span>
+        <div class="opsurface__regions">
+          <div class="opsurface__region is-constrained"><span class="r">VIRGINIA</span><span class="track"><span class="fill" data-w="84"></span></span><span class="s">Constrained</span></div>
+          <div class="opsurface__region"><span class="r">OREGON</span><span class="track"><span class="fill" data-w="58"></span></span><span class="s">Available</span></div>
+          <div class="opsurface__region"><span class="r">FRANKFURT</span><span class="track"><span class="fill" data-w="61"></span></span><span class="s">Available</span></div>
+          <div class="opsurface__region is-constrained"><span class="r">SINGAPORE</span><span class="track"><span class="fill" data-w="79"></span></span><span class="s">Constrained</span></div>
+          <div class="opsurface__region"><span class="r">TOKYO</span><span class="track"><span class="fill" data-w="54"></span></span><span class="s">Available</span></div>
+        </div>
+        <span class="opsurface__grouplbl">Workload queue</span>
+        <div class="opsurface__queue">
+          <div class="opsurface__job is-hot"><span>train-04 · flexible</span><span class="st">shift → Oregon</span></div>
+          <div class="opsurface__job"><span>infer-11 · latency-bound</span><span class="st">hold · Virginia</span></div>
+          <div class="opsurface__job"><span>batch-07 · deferrable</span><span class="st">defer · 2h window</span></div>
+        </div>
+        <div class="opsurface__sigs">
+          <div class="opsurface__sig"><span class="k">Power</span><span class="v" data-base="62" data-amp="3" data-dec="0">62<em>$/MWh</em></span></div>
+          <div class="opsurface__sig"><span class="k">Carbon</span><span class="v" data-base="312" data-amp="9" data-dec="0">312<em>g/kWh</em></span></div>
+          <div class="opsurface__sig"><span class="k">Cooling</span><span class="v" data-base="18" data-amp="1.6" data-dec="0">18<em>% headroom</em></span></div>
+        </div>
+        <div class="opsurface__foot"><span class="d" aria-hidden="true"></span>2 recommendations pending operator review</div>
+      </div>
+      </aside>
+      </div>
     </div>
   </div>
+
+  <div class="hero__horizon" aria-hidden="true"></div>
 
   <div class="scrollcue">
     <span class="scrollcue__line" aria-hidden="true"></span>
@@ -189,7 +223,7 @@
 </section>
 
 <!-- =================== HERO STATEMENT =========================== -->
-<section class="section herostatement" id="overview" data-screen-label="overview">
+<section class="section herostatement" id="overview" data-screen-label="overview" data-chapter="Overview">
   <div class="wrap hero__layout">
     <div class="herostatement__wrap">
       <h2 class="herostatement__lead" data-reveal="mask">Helicyn coordinates compute, energy, and thermal systems across AI&nbsp;infrastructure.</h2>
@@ -280,9 +314,11 @@
 </section>
 
 <!-- ============ ARCHITECTURE STACK (interactive) =============== -->
-<section class="section section--line archstack" id="architecture" data-screen-label="architecture-stack">
+<section class="section section--line archstack" id="architecture" data-screen-label="architecture-stack" data-chapter="Stack">
+  <span class="secindex" aria-hidden="true">02</span>
   <div class="wrap">
     <div class="sec-head archstack__head">
+      <div class="chapterkick" data-reveal style="--i:0"><span class="n">CH 02 · OPERATING STACK</span><span class="rule" aria-hidden="true"></span></div>
       <span class="eyebrow" data-reveal style="--i:0">Why this matters · one coordinated stack</span>
       <h2 data-reveal="mask" style="--i:1">AI infrastructure is no longer a single-site problem.</h2>
       <p class="archstack__lead" data-reveal style="--i:2">Training, inference, cooling, power, and grid conditions now move on different clocks. A cluster may have spare GPUs but no cooling headroom. A region may have cheap power but high carbon intensity. Helicyn coordinates eight layers together instead of optimizing each in isolation. Select a layer to see what it contributes.</p>
@@ -322,22 +358,24 @@
 </section>
 
 <!-- =================== SIGNAL INTAKE BOARD ====================== -->
-<section class="section section--line signalboard" id="signals" data-screen-label="signal-intake-board">
+<section class="section section--line signalboard section--panel" id="signals" data-screen-label="signal-intake-board" data-chapter="Signals">
   <div class="wrap">
+   <div class="panelshell">
     <div class="sec-head">
+      <div class="chapterkick" data-reveal style="--i:0"><span class="n">CH 03 · TELEMETRY WALL</span><span class="rule" aria-hidden="true"></span></div>
       <span class="eyebrow" data-reveal style="--i:0">What Helicyn observes</span>
       <h2 data-reveal="mask" style="--i:1">Eight signals, one board.</h2>
       <p class="signalboard__lead" data-reveal style="--i:2">Every coordination decision starts with the same simulated telemetry, read together instead of by separate teams on separate dashboards.</p>
     </div>
     <div class="signalboard__grid" data-reveal style="--i:3">
-      <div class="signalboard__tile"><span class="signalboard__k">Workload queues</span><span class="signalboard__v">Queued &amp; running jobs</span></div>
-      <div class="signalboard__tile"><span class="signalboard__k">GPU utilization</span><span class="signalboard__v">Fleet-wide %</span></div>
-      <div class="signalboard__tile"><span class="signalboard__k">SLA constraints</span><span class="signalboard__v">Deadline &amp; latency risk</span></div>
-      <div class="signalboard__tile"><span class="signalboard__k">Power prices</span><span class="signalboard__v">$ / MWh, by region</span></div>
-      <div class="signalboard__tile"><span class="signalboard__k">Carbon intensity</span><span class="signalboard__v">g CO₂e / kWh</span></div>
-      <div class="signalboard__tile"><span class="signalboard__k">Cooling telemetry</span><span class="signalboard__v">Zone load &amp; setpoints</span></div>
-      <div class="signalboard__tile"><span class="signalboard__k">Thermal headroom</span><span class="signalboard__v">Margin to limit</span></div>
-      <div class="signalboard__tile"><span class="signalboard__k">Regional capacity</span><span class="signalboard__v">Spare GPU by region</span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">Workload queues</span><span class="signalboard__v">Queued &amp; running jobs</span><span class="signalboard__meter" aria-hidden="true" style="--md:0s"></span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">GPU utilization</span><span class="signalboard__v">Fleet-wide %</span><span class="signalboard__meter" aria-hidden="true" style="--md:-0.5s"></span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">SLA constraints</span><span class="signalboard__v">Deadline &amp; latency risk</span><span class="signalboard__meter" aria-hidden="true" style="--md:-1.1s"></span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">Power prices</span><span class="signalboard__v">$ / MWh, by region</span><span class="signalboard__meter" aria-hidden="true" style="--md:-1.7s"></span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">Carbon intensity</span><span class="signalboard__v">g CO₂e / kWh</span><span class="signalboard__meter" aria-hidden="true" style="--md:-2.2s"></span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">Cooling telemetry</span><span class="signalboard__v">Zone load &amp; setpoints</span><span class="signalboard__meter" aria-hidden="true" style="--md:-2.8s"></span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">Thermal headroom</span><span class="signalboard__v">Margin to limit</span><span class="signalboard__meter" aria-hidden="true" style="--md:-0.8s"></span></div>
+      <div class="signalboard__tile"><span class="signalboard__k">Regional capacity</span><span class="signalboard__v">Spare GPU by region</span><span class="signalboard__meter" aria-hidden="true" style="--md:-2s"></span></div>
     </div>
     <div class="signalboard__feed" aria-hidden="true" data-reveal style="--i:4">
       <svg viewBox="0 0 1000 60" preserveAspectRatio="none">
@@ -366,13 +404,16 @@
       </div>
     </div>
     <span class="signalboard__engine" data-reveal style="--i:4"><span class="d" aria-hidden="true"></span>Feeds the coordination engine</span>
+   </div>
   </div>
 </section>
 
 <!-- ================ COORDINATION ENGINE DIAGRAM ================= -->
-<section class="section section--line enginediagram" id="engine" data-screen-label="coordination-engine-diagram">
+<section class="section section--line enginediagram" id="engine" data-screen-label="coordination-engine-diagram" data-chapter="Engine">
+  <span class="secindex" aria-hidden="true">04</span>
   <div class="wrap">
     <div class="sec-head">
+      <div class="chapterkick" data-reveal style="--i:0"><span class="n">CH 04 · DECISION GRAPH</span><span class="rule" aria-hidden="true"></span></div>
       <span class="eyebrow" data-reveal style="--i:0">What Helicyn evaluates</span>
       <h2 data-reveal="mask" style="--i:1">From signal to verified action.</h2>
       <p class="enginediagram__lead" data-reveal style="--i:2">Six steps turn an observed constraint into an operator-approved, verified outcome.</p>
@@ -389,7 +430,7 @@
 </section>
 
 <!-- ========================= THESIS ============================ -->
-<section class="section manifesto" id="thesis" data-screen-label="thesis">
+<section class="section manifesto" id="thesis" data-screen-label="thesis" data-chapter="Thesis">
   <div class="gridwash" aria-hidden="true"></div>
   <svg class="constellation" aria-hidden="true" viewBox="0 0 360 360" preserveAspectRatio="xMidYMid meet">
     <g class="constellation__link"><path d="M50,64 L176,150"></path></g>
@@ -420,24 +461,44 @@
 </section>
 
 <!-- ======================= PHYSICAL LAYER ======================= -->
-<section class="photoband" aria-label="The physical infrastructure layers Helicyn coordinates" data-screen-label="physical-layer">
+<section class="physband" id="physical" aria-label="The physical infrastructure layers Helicyn coordinates" data-screen-label="physical-layer" data-chapter="Physical">
   <div class="wrap">
-    <div class="photoband__grid" data-reveal>
-      <figure class="photoband__item">
-        <img class="photoband__img" src="images/compute.webp" alt="AI accelerator compute hardware" loading="lazy" decoding="async" />
-        <figcaption>Compute</figcaption>
+    <div class="physband__head" data-reveal>
+      <h2>The physical infrastructure layers Helicyn coordinates.</h2>
+      <span class="mono">Compute · Energy · Cooling · Facility</span>
+    </div>
+    <div class="physband__grid" data-reveal style="--i:1">
+      <figure class="physband__item physband__feature">
+        <img class="physband__img" src="images/gpu-infrastructure.jpg" alt="AI accelerator compute hardware" loading="lazy" decoding="async" />
+        <figcaption class="physband__cap">
+          <span class="idx">Layer 01</span>
+          <span class="t">Compute</span>
+          <span class="s">GPU clusters · utilization · thermal load</span>
+        </figcaption>
       </figure>
-      <figure class="photoband__item">
-        <img class="photoband__img" src="images/energy.jpg" alt="Electrical grid infrastructure" loading="lazy" decoding="async" />
-        <figcaption>Energy</figcaption>
+      <figure class="physband__item physband__side">
+        <img class="physband__img" src="images/energy.jpg" alt="Electrical grid infrastructure" loading="lazy" decoding="async" />
+        <figcaption class="physband__cap">
+          <span class="idx">Layer 02</span>
+          <span class="t">Energy</span>
+          <span class="s">Power prices · grid conditions · carbon</span>
+        </figcaption>
       </figure>
-      <figure class="photoband__item">
-        <img class="photoband__img" src="images/cooling.webp" alt="Data center cooling infrastructure" loading="lazy" decoding="async" />
-        <figcaption>Cooling</figcaption>
+      <figure class="physband__item physband__side">
+        <img class="physband__img" src="images/cooling.webp" alt="Data center cooling infrastructure" loading="lazy" decoding="async" />
+        <figcaption class="physband__cap">
+          <span class="idx">Layer 03</span>
+          <span class="t">Cooling</span>
+          <span class="s">Zone load · setpoints · headroom</span>
+        </figcaption>
       </figure>
-      <figure class="photoband__item">
-        <img class="photoband__img" src="images/facility.jpg" alt="Data center facility, aerial view" loading="lazy" decoding="async" />
-        <figcaption>Facility</figcaption>
+      <figure class="physband__item physband__pano">
+        <img class="physband__img" src="images/abstract-infrastructure.jpg" alt="Abstract data infrastructure" loading="lazy" decoding="async" />
+        <figcaption class="physband__cap">
+          <span class="idx">Layer 04</span>
+          <span class="t">Facility</span>
+          <span class="s">One coordination layer across the physical plant</span>
+        </figcaption>
       </figure>
     </div>
   </div>
@@ -542,7 +603,7 @@
 </section>
 
 <!-- ====================== CONTROL PLANE ========================= -->
-<section class="section section--line cpcta" id="control-plane" data-screen-label="control-plane">
+<section class="section section--line cpcta" id="control-plane" data-screen-label="control-plane" data-chapter="Control">
   <div class="wrap">
     <div class="cpcta__copy" data-reveal>
       <span class="eyebrow">Control plane simulation</span>
@@ -562,6 +623,7 @@
       <a class="btn" href="control-plane" data-magnetic="0.2">View interactive demo <span class="arr" aria-hidden="true">→</span></a>
     </div>
 
+    <div class="cpcta__panelstack">
     <a class="cpcta__panel pcard-beam" href="control-plane" aria-label="View interactive demo" data-reveal style="--i:1" data-tilt>
       <div class="cpcta__phead">
         <span class="ttl">Helicyn · Interactive demo</span>
@@ -581,8 +643,19 @@
         <span class="cpcta__reclabel"><span class="d" aria-hidden="true"></span>Recommended · pending approval</span>
         <p>Shift <strong>18%</strong> of flexible training from US-WEST to US-CENTRAL during peak grid load.</p>
       </div>
+      <div class="cpcta__shift" aria-hidden="true">
+        <span class="qh">US-WEST load · simulated shift</span>
+        <div class="cpcta__shiftrow is-before"><span class="k">Before</span><span class="track"><span class="fill" style="--w:84%"></span><span class="pct">84%</span></span></div>
+        <div class="cpcta__shiftrow"><span class="k">After</span><span class="track"><span class="fill" style="--w:66%"></span><span class="pct">66%</span></span></div>
+      </div>
+      <div class="cpcta__queue" aria-hidden="true">
+        <span class="qh">Operator queue · simulated</span>
+        <div class="cpcta__qrow is-review"><span>Rebalance US-WEST training load</span><span class="st"><span class="d"></span>Review</span></div>
+        <div class="cpcta__qrow is-applied"><span>Defer batch queue · off-peak window</span><span class="st"><span class="d"></span>Applied</span></div>
+      </div>
       <span class="cpcta__open">Enter the simulation <span class="arr" aria-hidden="true">→</span></span>
     </a>
+    </div>
   </div>
 </section>
 
@@ -614,7 +687,7 @@
 </section>
 
 <!-- =================== FOUNDING PARTNER PROGRAM ================= -->
-<section class="section section--line" id="founding-partner-program" data-screen-label="founding-partner-program">
+<section class="section section--line" id="founding-partner-program" data-screen-label="founding-partner-program" data-chapter="Partners">
   <div class="wrap">
     <div class="sec-head" data-reveal>
       <span class="eyebrow">Founding Partner Program</span>
@@ -699,7 +772,7 @@
 </section>
 
 <!-- ========================== ACCESS =========================== -->
-<section class="section access" id="access" data-screen-label="access">
+<section class="section access" id="access" data-screen-label="access" data-chapter="Contact">
   <div class="wrap">
     <div data-reveal>
       <span class="eyebrow">Quick contact</span>
@@ -795,5 +868,6 @@
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="nav-auth.js"></script>
 <script src="premium.js"></script>
+<script src="redesign.js" defer></script>
 </body>
 </html>

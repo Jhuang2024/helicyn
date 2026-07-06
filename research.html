@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="partner.css" />
 <link rel="stylesheet" href="premium.css" />
+<link rel="stylesheet" href="redesign.css" />
 </head>
 <body>
 
@@ -74,6 +75,11 @@
     <span class="eyebrow" data-reveal style="--i:0" data-decrypt>Research · published</span>
     <h1 data-reveal="mask" style="--i:1">Helicyn research</h1>
     <p data-reveal style="--i:2">Helicyn's technical report, <em>Machine Learning as a Coordination Layer for AI Infrastructure</em>, is published. It presents the coordination framework, methodology, simulator-based results, figures, and discussion in full; this page summarizes it, all findings remain <strong>simulated, research/prototype, and assumption-bound</strong>.</p>
+    <div class="pagehead__meta" data-reveal style="--i:2">
+      <span class="chip"><span class="d" aria-hidden="true"></span>Published · July 2026</span>
+      <span class="chip">Simulator-based evaluation</span>
+      <span class="chip chip--warn"><span class="d" aria-hidden="true"></span>Simulated · not validated on real hardware</span>
+    </div>
     <div class="pagehead__cta" data-reveal style="--i:3">
       <a class="btn" href="report" data-magnetic="0.2">Read the full report <span class="arr" aria-hidden="true">→</span></a>
       <a class="btn" href="control-plane" data-magnetic="0.2">View control plane <span class="arr" aria-hidden="true">→</span></a>
@@ -301,5 +307,6 @@
 <script type="module" src="supabase-config.js"></script>
 <script type="module" src="nav-auth.js"></script>
 <script src="premium.js"></script>
+<script src="redesign.js" defer></script>
 </body>
 </html>
