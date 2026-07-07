@@ -272,8 +272,7 @@
   border-color: var(--signal-line);
   background: color-mix(in srgb, var(--signal-soft) 30%, var(--surf-floating));
   box-shadow: inset 3px 0 0 var(--signal), var(--glow-signal);
-  transform: translateX(6px);
-  transition: transform var(--dur-2) var(--ease-spring), background var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+  transition: background var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
 }
 .archstack__layer.is-related { border-color: color-mix(in srgb, var(--signal-line) 55%, var(--line)); }
 .archstack__panel {
@@ -284,7 +283,6 @@
   border-color: var(--line-2);
   box-shadow: var(--shadow-2);
 }
-@media (prefers-reduced-motion: reduce) { .archstack__layer.is-active { transform: none; } }
 @media (max-width: 859.98px) {
   .archstack__layers { gap: 4px; }
 }
