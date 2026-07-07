@@ -94,55 +94,6 @@
     spy();
   })();
 
-  /* ---- 4 · hero operating surface (simulated console) ------
-     Deterministic drift over fixed base values; every value is
-     inside the panel labeled "Simulated". Reduced-motion: the
-     static base values simply stay put. */
-  (function opsurface() {
-    var root = $('[data-opsurface]');
-    if (!root) return;
-    var fills = $$('.opsurface__region .fill', root);
-    var sigs = $$('.opsurface__sig .v', root);
-    var jobs = $$('.opsurface__job', root);
-    // settle bars in on load
-    requestAnimationFrame(function () {
-      fills.forEach(function (f) { f.style.width = f.getAttribute('data-w') + '%'; });
-    });
-    if (reduce) return;
-
-    var t = 0;
-    var hot = 0;
-    setInterval(function () {
-      t++;
-      // drift each region bar around its base by ±4%
-      fills.forEach(function (f, i) {
-        var base = parseFloat(f.getAttribute('data-w')) || 50;
-        var w = base + Math.sin(t * 0.7 + i * 1.7) * 4;
-        f.style.width = w.toFixed(1) + '%';
-      });
-      // drift signal readouts around their base values
-      sigs.forEach(function (v) {
-        var base = parseFloat(v.getAttribute('data-base'));
-        var amp = parseFloat(v.getAttribute('data-amp')) || 1;
-        var dec = parseInt(v.getAttribute('data-dec') || '0', 10);
-        if (isNaN(base)) return;
-        var n = base + Math.sin(t * 0.9 + base) * amp;
-        var unit = v.querySelector('em');
-        v.childNodes[0].textContent = n.toFixed(dec);
-        if (unit) v.appendChild(unit);
-        v.classList.remove('is-ticking');
-        void v.offsetWidth;
-        v.classList.add('is-ticking');
-      });
-      // rotate the highlighted queue row
-      if (jobs.length) {
-        jobs.forEach(function (j) { j.classList.remove('is-hot'); });
-        jobs[hot % jobs.length].classList.add('is-hot');
-        hot++;
-      }
-    }, 2600);
-  })();
-
   /* ---- 5 · physical layer parallax --------------------------
      Slow scroll-linked drift on the editorial photo band. */
   (function parallax() {
