@@ -268,17 +268,6 @@
   background: var(--surf-raised);
   box-shadow: var(--shadow-1);
 }
-@media (min-width: 860px) {
-  /* stepped offsets → reads as a physical layer stack */
-  .archstack__layers li:nth-child(1) .archstack__layer { margin-left: 0; }
-  .archstack__layers li:nth-child(2) .archstack__layer { margin-left: 6px; }
-  .archstack__layers li:nth-child(3) .archstack__layer { margin-left: 12px; }
-  .archstack__layers li:nth-child(4) .archstack__layer { margin-left: 18px; }
-  .archstack__layers li:nth-child(5) .archstack__layer { margin-left: 24px; }
-  .archstack__layers li:nth-child(6) .archstack__layer { margin-left: 30px; }
-  .archstack__layers li:nth-child(7) .archstack__layer { margin-left: 36px; }
-  .archstack__layers li:nth-child(8) .archstack__layer { margin-left: 42px; }
-}
 .archstack__layer.is-active {
   border-color: var(--signal-line);
   background: color-mix(in srgb, var(--signal-soft) 30%, var(--surf-floating));
