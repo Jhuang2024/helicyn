@@ -16,6 +16,13 @@
   STATE.motion = STATE.motion ?? 0.6;   // 0..1
   STATE.signal = '#3f7dff';
 
+  // field "ink" (dots/edges) flips with the theme so it stays
+  // visible against either a near-black or a near-white canvas
+  let ink = document.documentElement.getAttribute('data-theme') === 'light' ? '20,21,26' : '232,238,246';
+  window.addEventListener('helicyn:theme', (e) => {
+    ink = e.detail.theme === 'light' ? '20,21,26' : '232,238,246';
+  });
+
   let W = 0, H = 0, dpr = 1;
   let grid = [];           // fine field points
   let nodes = [];          // sparse network nodes
@@ -124,7 +131,7 @@
       const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
       const dm = Math.hypot(mx - mouse.x, my - mouse.y);
       const near = mouse.active ? Math.max(0, 1 - dm / 280) : 0;
-      ctx.strokeStyle = `rgba(232,238,246,${0.05 + near * 0.10})`;
+      ctx.strokeStyle = `rgba(${ink},${0.05 + near * 0.10})`;
       ctx.beginPath();
       ctx.moveTo(a.x + px, a.y + py);
       ctx.lineTo(b.x + px, b.y + py);
@@ -152,7 +159,7 @@
           rad = 0.9 + f * 1.3;
         }
       }
-      ctx.fillStyle = `rgba(232,238,246,${a})`;
+      ctx.fillStyle = `rgba(${ink},${a})`;
       ctx.beginPath();
       ctx.arc(x, y, rad, 0, Math.PI * 2);
       ctx.fill();
@@ -168,7 +175,7 @@
       // ring
       ctx.strokeStyle = n.accent
         ? `rgba(63,125,255,${0.30 + near * 0.5})`
-        : `rgba(232,238,246,${0.14 + near * 0.4})`;
+        : `rgba(${ink},${0.14 + near * 0.4})`;
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.arc(x, y, n.r + 2.5 + breath * 1.2, 0, Math.PI * 2);
@@ -176,7 +183,7 @@
       // core
       ctx.fillStyle = n.accent
         ? `rgba(63,125,255,${0.55 + near * 0.4})`
-        : `rgba(232,238,246,${0.30 + near * 0.5})`;
+        : `rgba(${ink},${0.30 + near * 0.5})`;
       ctx.beginPath();
       ctx.arc(x, y, n.r * 0.6, 0, Math.PI * 2);
       ctx.fill();
