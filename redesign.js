@@ -38,7 +38,7 @@
       '<circle class="ring" cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1" opacity="0.85"></circle>' +
       '<circle class="dot" cx="9" cy="9" r="2" fill="currentColor"></circle></svg></span>' +
       '<span class="sysitem"><span class="k">Status</span><span class="v">Research preview</span></span>' +
-      '<span class="sysitem"><span class="k">Build</span><span class="v">v1.0.0 &middot; 2026.07</span></span>' +
+      '<span class="sysitem"><span class="k">Build</span><span class="v">v1.0.1 &middot; 2026.07</span></span>' +
       '<span class="sysitem"><span class="k">Clock</span><span class="v" data-clock>00:00:00 UTC</span></span>';
     base.parentNode.insertBefore(sys, base);
     // drive the injected clock (main.js grabbed its [data-clock] list earlier)

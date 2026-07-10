@@ -1243,10 +1243,12 @@ body.is-pointer .cp-ambient { opacity: 1; }
 
 /* ============================================================
    MOBILE NAV TOGGLE
-   Site nav grew from 2 links + a CTA to 4 links + a CTA (Research,
-   Partners, Control Plane, Login, Apply) once Phase 5 pages were added.
-   Below 860px that collapses into a slide-in panel instead of shrinking
-   labels indefinitely, so the header stays usable on phones.
+   Site nav grew from 2 links + a CTA to 6 links + search + theme toggle
+   + a CTA once Phase 5 pages and the theme switcher were added — that no
+   longer fits down to 1180px wide (it was overflowing off-screen at
+   860-1150px, including standard tablet-landscape widths). Below 1180px
+   it collapses into a slide-in panel instead of shrinking indefinitely,
+   so the header stays usable on tablets and phones.
    ============================================================ */
 .navtoggle {
   display: none;
@@ -1264,7 +1266,7 @@ body.is-pointer .cp-ambient { opacity: 1; }
 .navtoggle[aria-expanded="true"] .navtoggle__bar:nth-child(2) { opacity: 0; }
 .navtoggle[aria-expanded="true"] .navtoggle__bar:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
 
-@media (max-width: 860px) {
+@media (max-width: 1180px) {
   .navtoggle { display: inline-flex; }
   .nav__right {
     position: fixed; top: 0; right: 0; height: 100vh; width: min(78vw, 320px);
