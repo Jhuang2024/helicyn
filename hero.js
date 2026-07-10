@@ -14,7 +14,7 @@
   // tunables (read from CSS-driven globals if present)
   const STATE = (window.__helicyn = window.__helicyn || {});
   STATE.motion = STATE.motion ?? 0.6;   // 0..1
-  STATE.signal = '#d9f65c';
+  STATE.signal = '#3f7dff';
 
   let W = 0, H = 0, dpr = 1;
   let grid = [];           // fine field points
@@ -167,7 +167,7 @@
       const col = n.accent ? STATE.signal : '232,238,246';
       // ring
       ctx.strokeStyle = n.accent
-        ? `rgba(217,246,92,${0.30 + near * 0.5})`
+        ? `rgba(63,125,255,${0.30 + near * 0.5})`
         : `rgba(232,238,246,${0.14 + near * 0.4})`;
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -175,7 +175,7 @@
       ctx.stroke();
       // core
       ctx.fillStyle = n.accent
-        ? `rgba(217,246,92,${0.55 + near * 0.4})`
+        ? `rgba(63,125,255,${0.55 + near * 0.4})`
         : `rgba(232,238,246,${0.30 + near * 0.5})`;
       ctx.beginPath();
       ctx.arc(x, y, n.r * 0.6, 0, Math.PI * 2);
@@ -202,14 +202,14 @@
       const x2 = a.x + (b.x - a.x) * t2 + px;
       const y2 = a.y + (b.y - a.y) * t2 + py;
       const grad = ctx.createLinearGradient(x2, y2, x, y);
-      grad.addColorStop(0, 'rgba(217,246,92,0)');
-      grad.addColorStop(1, 'rgba(217,246,92,0.7)');
+      grad.addColorStop(0, 'rgba(63,125,255,0)');
+      grad.addColorStop(1, 'rgba(63,125,255,0.7)');
       ctx.strokeStyle = grad; ctx.lineWidth = 1.4;
       ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x, y); ctx.stroke();
       // head
-      ctx.fillStyle = 'rgba(243,255,196,0.95)';
+      ctx.fillStyle = 'rgba(196,215,255,0.95)';
       ctx.beginPath(); ctx.arc(x, y, 1.7, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = 'rgba(217,246,92,0.25)';
+      ctx.fillStyle = 'rgba(63,125,255,0.25)';
       ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill();
     }
 
