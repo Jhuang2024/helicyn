@@ -37,7 +37,7 @@
   // ---- confetti burst (magic-ui style, div-based, no canvas) --
   window.premiumConfetti = function premiumConfetti(originEl) {
     if (prm) return;
-    const colors = ['oklch(0.74 0.13 240)', 'oklch(0.8 0.12 85)', '#eef2f7', 'oklch(0.74 0.13 240 / 0.6)'];
+    const colors = ['oklch(0.92 0.2 122)', 'oklch(0.8 0.12 85)', '#f5f6f8', 'oklch(0.92 0.2 122 / 0.6)'];
     const r = originEl ? originEl.getBoundingClientRect() : { left: window.innerWidth / 2, top: window.innerHeight / 3, width: 0, height: 0 };
     const cx = r.left + r.width / 2;
     const cy = r.top + Math.min(r.height, 40) / 2;
