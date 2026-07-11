@@ -10,3 +10,19 @@ supabase-config.js
 
 # OS / editor cruft
 .DS_Store
+
+# React / Vite build artifacts and dependencies
+node_modules/
+dist/
+dist-ssr/
+*.local
+.vite/
+
+# Test / tooling output
+coverage/
+playwright-report/
+test-results/
+.eslintcache
+
+# Internal migration working notes (not shipped)
+migration-notes/
