@@ -14,13 +14,34 @@
   // tunables (read from CSS-driven globals if present)
   const STATE = (window.__helicyn = window.__helicyn || {});
   STATE.motion = STATE.motion ?? 0.6;   // 0..1
-  STATE.signal = '#3f7dff';
+
+  // resolve a CSS custom property to an "r,g,b" triple by painting it
+  // to a 1px canvas — works whatever colour space the token uses
+  // (oklch, rgb, hex), so the accent has a single source of truth in
+  // modern.css and this canvas follows it automatically.
+  function cssRGB(varName, fallback) {
+    try {
+      const probe = document.createElement('span');
+      probe.style.cssText = 'color:var(' + varName + ');position:absolute;left:-9999px';
+      document.body.appendChild(probe);
+      const col = getComputedStyle(probe).color;
+      document.body.removeChild(probe);
+      const cv = document.createElement('canvas'); cv.width = cv.height = 1;
+      const cx = cv.getContext('2d');
+      cx.fillStyle = col; cx.fillRect(0, 0, 1, 1);
+      const d = cx.getImageData(0, 0, 1, 1).data;
+      return d[0] + ',' + d[1] + ',' + d[2];
+    } catch (e) { return fallback; }
+  }
+  let sig = cssRGB('--signal', '63,201,189');
+  STATE.signal = 'rgb(' + sig + ')';
 
   // field "ink" (dots/edges) flips with the theme so it stays
   // visible against either a near-black or a near-white canvas
   let ink = document.documentElement.getAttribute('data-theme') === 'light' ? '20,21,26' : '232,238,246';
   window.addEventListener('helicyn:theme', (e) => {
     ink = e.detail.theme === 'light' ? '20,21,26' : '232,238,246';
+    sig = cssRGB('--signal', sig);
   });
 
   let W = 0, H = 0, dpr = 1;
@@ -174,7 +195,7 @@
       const col = n.accent ? STATE.signal : '232,238,246';
       // ring
       ctx.strokeStyle = n.accent
-        ? `rgba(63,125,255,${0.30 + near * 0.5})`
+        ? `rgba(${sig},${0.30 + near * 0.5})`
         : `rgba(${ink},${0.14 + near * 0.4})`;
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -182,7 +203,7 @@
       ctx.stroke();
       // core
       ctx.fillStyle = n.accent
-        ? `rgba(63,125,255,${0.55 + near * 0.4})`
+        ? `rgba(${sig},${0.55 + near * 0.4})`
         : `rgba(${ink},${0.30 + near * 0.5})`;
       ctx.beginPath();
       ctx.arc(x, y, n.r * 0.6, 0, Math.PI * 2);
@@ -209,14 +230,14 @@
       const x2 = a.x + (b.x - a.x) * t2 + px;
       const y2 = a.y + (b.y - a.y) * t2 + py;
       const grad = ctx.createLinearGradient(x2, y2, x, y);
-      grad.addColorStop(0, 'rgba(63,125,255,0)');
-      grad.addColorStop(1, 'rgba(63,125,255,0.7)');
+      grad.addColorStop(0, `rgba(${sig},0)`);
+      grad.addColorStop(1, `rgba(${sig},0.7)`);
       ctx.strokeStyle = grad; ctx.lineWidth = 1.4;
       ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x, y); ctx.stroke();
-      // head
-      ctx.fillStyle = 'rgba(196,215,255,0.95)';
+      // head — bright leading dot
+      ctx.fillStyle = 'rgba(245,246,248,0.95)';
       ctx.beginPath(); ctx.arc(x, y, 1.7, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = 'rgba(63,125,255,0.25)';
+      ctx.fillStyle = `rgba(${sig},0.25)`;
       ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill();
     }
 

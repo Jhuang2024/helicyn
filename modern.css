@@ -33,13 +33,15 @@
   --text-faint: rgba(245, 246, 248, 0.42);
   --text-ghost: rgba(245, 246, 248, 0.22);
 
-  /* signal accent — electric blue. one voice, used with intent */
-  --signal:      oklch(0.67 0.2 258);
-  --signal-soft: oklch(0.67 0.2 258 / 0.16);
-  --signal-line: oklch(0.67 0.2 258 / 0.5);
-  --signal-glow: oklch(0.67 0.2 258 / 0.35);
+  /* signal accent — Helicyn teal. a cool, energy-grid instrument
+     colour that ties to the "cyn" in the name; calmer and more
+     considered than an electric blue, used with intent */
+  --signal:      oklch(0.78 0.115 194);
+  --signal-soft: oklch(0.78 0.115 194 / 0.15);
+  --signal-line: oklch(0.78 0.115 194 / 0.5);
+  --signal-glow: oklch(0.78 0.115 194 / 0.38);
   /* ink for text set on top of the accent */
-  --on-signal:   #f4f7ff;
+  --on-signal:   #042321;
 
   /* typography */
   --font-sans:    "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
