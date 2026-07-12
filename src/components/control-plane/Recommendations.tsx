@@ -17,6 +17,7 @@ function RecCard({ card }: { card: RecommendationCard }) {
   const rejectRec = useControlPlane((s) => s.rejectRec);
   const simulateRec = useControlPlane((s) => s.simulateRec);
   const regenerateRec = useControlPlane((s) => s.regenerateRec);
+  const setPreviewPath = useControlPlane((s) => s.setPreviewPath);
   const t = card.template;
   const badge = STATE_BADGE[card.state];
   const isApproved = card.state === 'approved';
@@ -35,7 +36,13 @@ function RecCard({ card }: { card: RecommendationCard }) {
   };
 
   return (
-    <article className={'cp-rec ' + badge.cls}>
+    <article
+      className={'cp-rec ' + badge.cls}
+      onPointerEnter={() => setPreviewPath(t.topo)}
+      onPointerLeave={() => setPreviewPath(null)}
+      onFocus={() => setPreviewPath(t.topo)}
+      onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPreviewPath(null); }}
+    >
       <div className="cp-rec__head">
         <span className="cp-rec__id mono">{card.id}</span>
         <span className="cp-rec__type">{t.type}</span>
