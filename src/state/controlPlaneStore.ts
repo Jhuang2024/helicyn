@@ -14,6 +14,7 @@ import type {
   ScenarioKey,
   SimulationState,
   TopoNodeId,
+  TopoPath,
   WorkloadFilter,
 } from '@/simulation';
 import {
@@ -39,6 +40,7 @@ import {
 
 export interface ControlPlaneStore {
   sim: SimulationState;
+  previewPath: TopoPath | null;
 
   // scenario + controls
   setScenario: (key: ScenarioKey) => void;
@@ -56,6 +58,7 @@ export interface ControlPlaneStore {
 
   // linked selection
   selectRegion: (id: TopoNodeId | null) => void;
+  setPreviewPath: (path: TopoPath | null) => void;
 
   // clock
   tick: (dtSeconds: number) => void;
@@ -79,6 +82,7 @@ export const useControlPlane = create<ControlPlaneStore>()(
   persist(
     (set, get) => ({
       sim: createInitialSimulationState(),
+      previewPath: null,
 
       setScenario: (key) => set((s) => ({ sim: loadScenario(s.sim, key) })),
       setControl: (patch) => set((s) => ({ sim: updateOperatorConstraints(s.sim, patch) })),
@@ -92,6 +96,7 @@ export const useControlPlane = create<ControlPlaneStore>()(
       setFilter: (filter) => set((s) => ({ sim: setWorkloadFilter(s.sim, filter) })),
 
       selectRegion: (id) => set((s) => ({ sim: selectRegionEngine(s.sim, id) })),
+      setPreviewPath: (path) => set({ previewPath: path }),
 
       tick: (dt) => set((s) => ({ sim: advanceSimulation(s.sim, dt) })),
       setRunning: (running) => set((s) => ({ sim: setClockRunning(s.sim, running) })),
