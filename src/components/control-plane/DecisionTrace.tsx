@@ -17,8 +17,9 @@ const HIERARCHY: [string, string, string][] = [
  * factors, not hidden chain-of-thought.
  */
 export function DecisionTrace() {
-  const scenario = useControlPlane((s) => s.sim.scenario);
-  const events = useControlPlane((s) => s.sim.events);
+  const sim = useControlPlane((s) => s.sim);
+  const scenario = sim.scenario;
+  const events = sim.events;
   const trace = SCN[scenario].trace;
 
   return (
@@ -86,13 +87,16 @@ export function DecisionTrace() {
         <div className="cp-hier">
           <span className="cp-hier__axis mono">System level</span>
           <ol className="cp-hier__steps">
-            {HIERARCHY.map(([n, name, desc], i) => (
-              <li key={n} className={'cp-hier__step' + (i === HIERARCHY.length - 1 ? ' cp-hier__step--verify' : '')}>
+            {HIERARCHY.map(([n, name, desc], i) => {
+              const active = Math.floor(sim.clock.seconds / 4) % HIERARCHY.length === i;
+              return (
+              <li key={n} className={'cp-hier__step' + (i === HIERARCHY.length - 1 ? ' cp-hier__step--verify' : '') + (active ? ' is-active' : '')}>
                 <span className="cp-hier__n mono">{n}</span>
                 <span className="cp-hier__name">{name}</span>
                 <span className="cp-hier__desc">{desc}</span>
               </li>
-            ))}
+              );
+            })}
           </ol>
           <span className="cp-hier__axis mono">Local level</span>
         </div>
