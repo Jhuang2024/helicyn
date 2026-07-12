@@ -18,6 +18,7 @@ import type {
 } from '@/simulation';
 import {
   advanceSimulation,
+  appendAmbientEvent,
   approveRecommendation,
   createInitialSimulationState,
   loadScenario,
@@ -61,6 +62,7 @@ export interface ControlPlaneStore {
   setRunning: (running: boolean) => void;
   setSpeed: (speed: number) => void;
   stepForward: () => void;
+  ambientEvent: () => void;
 
   // lifecycle
   reset: () => void;
@@ -95,6 +97,7 @@ export const useControlPlane = create<ControlPlaneStore>()(
       setRunning: (running) => set((s) => ({ sim: setClockRunning(s.sim, running) })),
       setSpeed: (speed) => set((s) => ({ sim: setClockSpeed(s.sim, speed) })),
       stepForward: () => set((s) => ({ sim: stepForward(s.sim) })),
+      ambientEvent: () => set((s) => ({ sim: appendAmbientEvent(s.sim) })),
 
       reset: () => set((s) => ({ sim: resetSimulation(s.sim) })),
       rerun: () => set((s) => ({ sim: resetSimulation(s.sim) })),
