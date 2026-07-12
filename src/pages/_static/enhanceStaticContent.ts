@@ -62,6 +62,81 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
   const $$ = <T extends Element = HTMLElement>(sel: string) =>
     Array.from(root.querySelectorAll<T>(sel));
 
+  // ---- reactive hero field -------------------------------------------------
+  // The canvas markup survived the migration, but hero.js did not. Keep the
+  // original visual idea (a responsive signal field) while owning every
+  // listener and animation frame from this route's lifecycle.
+  const canvas = root.querySelector<HTMLCanvasElement>('#field');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      let width = 0;
+      let height = 0;
+      let raf = 0;
+      let pointerX = -10_000;
+      let pointerY = -10_000;
+      let active = false;
+      let points: Array<{ x: number; y: number; phase: number }> = [];
+
+      const resize = () => {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = rect.width;
+        height = rect.height;
+        canvas.width = Math.max(1, Math.round(width * dpr));
+        canvas.height = Math.max(1, Math.round(height * dpr));
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        points = [];
+        for (let y = 25; y < height + 25; y += 50) {
+          for (let x = 25; x < width + 25; x += 50) points.push({ x, y, phase: x * 0.011 + y * 0.017 });
+        }
+      };
+      const color = () => getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#e8eef6';
+      const signal = () => getComputedStyle(document.documentElement).getPropertyValue('--signal').trim() || '#46cecd';
+      const draw = (now: number) => {
+        ctx.clearRect(0, 0, width, height);
+        const t = now / 1000;
+        for (const p of points) {
+          const dx = p.x - pointerX;
+          const dy = p.y - pointerY;
+          const dist = Math.hypot(dx, dy);
+          const influence = active ? Math.max(0, 1 - dist / 155) : 0;
+          const push = influence * influence * 14;
+          const inv = dist || 1;
+          const x = p.x + (dx / inv) * push;
+          const y = p.y + (dy / inv) * push + (reduce ? 0 : Math.sin(t * 0.55 + p.phase) * 1.1);
+          ctx.globalAlpha = 0.13 + influence * 0.55;
+          ctx.fillStyle = influence > 0.72 ? signal() : color();
+          ctx.beginPath();
+          ctx.arc(x, y, 0.9 + influence * 1.3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        if (!reduce || active) raf = requestAnimationFrame(draw);
+      };
+      const move = (event: PointerEvent) => {
+        const rect = canvas.getBoundingClientRect();
+        pointerX = event.clientX - rect.left;
+        pointerY = event.clientY - rect.top;
+        active = true;
+        if (reduce && !raf) raf = requestAnimationFrame(draw);
+      };
+      const leave = () => { active = false; };
+      resize();
+      raf = requestAnimationFrame(draw);
+      const observer = new ResizeObserver(resize);
+      observer.observe(canvas);
+      canvas.addEventListener('pointermove', move);
+      canvas.addEventListener('pointerleave', leave);
+      cleanups.push(() => {
+        cancelAnimationFrame(raf);
+        observer.disconnect();
+        canvas.removeEventListener('pointermove', move);
+        canvas.removeEventListener('pointerleave', leave);
+      });
+    }
+  }
+
   // ---- scroll reveals -------------------------------------------------------
   // Uses getBoundingClientRect on scroll (the approach the original site used)
   // rather than IntersectionObserver, which proved unreliable for the
@@ -262,10 +337,148 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
     }
   }
 
-  // ---- typewriter (reveal the label without dropping the text) --------------
+  // ---- sequential diagrams -------------------------------------------------
+  const installWalker = (items: HTMLElement[], interval: number) => {
+    if (items.length < 2) return;
+    let index = 0;
+    let paused = false;
+    const paint = (next: number) => items.forEach((item, i) => item.classList.toggle('is-active', i === next));
+    paint(0);
+    items.forEach((item, i) => {
+      const enter = () => { paused = true; index = i; paint(i); };
+      const leave = () => { paused = false; };
+      item.addEventListener('pointerenter', enter);
+      item.addEventListener('pointerleave', leave);
+      cleanups.push(() => {
+        item.removeEventListener('pointerenter', enter);
+        item.removeEventListener('pointerleave', leave);
+      });
+    });
+    if (reduce) return;
+    const timer = window.setInterval(() => {
+      const bounds = items[0]!.parentElement?.getBoundingClientRect();
+      if (paused || !bounds || bounds.top > innerHeight * 0.9 || bounds.bottom < innerHeight * 0.1) return;
+      index = (index + 1) % items.length;
+      paint(index);
+    }, interval);
+    cleanups.push(() => window.clearInterval(timer));
+  };
+  installWalker($$('.loop__step'), 1300);
+  installWalker($$('.cpflow__step'), 1050);
+  installWalker($$('.cp-hier__step'), 950);
+
+  // ---- paired comparison + causal-chain hover states -----------------------
+  const compareCols = $$('.compare__col');
+  if (compareCols.length === 2) {
+    const left = Array.from(compareCols[0]!.querySelectorAll<HTMLElement>('.compare__list li'));
+    const right = Array.from(compareCols[1]!.querySelectorAll<HTMLElement>('.compare__list li'));
+    for (let i = 0; i < Math.min(left.length, right.length); i++) {
+      for (const row of [left[i]!, right[i]!]) {
+        const enter = () => { left[i]?.classList.add('is-linked'); right[i]?.classList.add('is-linked'); };
+        const leave = () => { left[i]?.classList.remove('is-linked'); right[i]?.classList.remove('is-linked'); };
+        row.addEventListener('pointerenter', enter);
+        row.addEventListener('pointerleave', leave);
+        cleanups.push(() => { row.removeEventListener('pointerenter', enter); row.removeEventListener('pointerleave', leave); });
+      }
+    }
+  }
+  const causal = $$('.cp-demolist li');
+  causal.forEach((item, i) => {
+    const enter = () => causal.forEach((node, k) => node.classList.toggle('is-lit', k <= i));
+    const leave = () => causal.forEach((node) => node.classList.remove('is-lit'));
+    item.addEventListener('pointerenter', enter);
+    item.addEventListener('pointerleave', leave);
+    cleanups.push(() => { item.removeEventListener('pointerenter', enter); item.removeEventListener('pointerleave', leave); });
+  });
+
+  // ---- chapter rail / scrollspy --------------------------------------------
+  const chapters = $$<HTMLElement>('[data-chapter]');
+  if (chapters.length > 1) {
+    const rail = document.createElement('nav');
+    rail.className = 'chapterail';
+    rail.setAttribute('aria-label', 'Page chapters');
+    const buttons = chapters.map((section, i) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'chapterail__item';
+      button.innerHTML = `<span class="chapterail__dot" aria-hidden="true"></span><span class="chapterail__lbl">${String(i + 1).padStart(2, '0')} · ${section.dataset.chapter ?? ''}</span>`;
+      button.addEventListener('click', () => section.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }));
+      rail.appendChild(button);
+      return button;
+    });
+    document.body.appendChild(rail);
+    let queued = false;
+    const update = () => {
+      queued = false;
+      let current = -1;
+      chapters.forEach((section, i) => { if (section.getBoundingClientRect().top < innerHeight * 0.45) current = i; });
+      buttons.forEach((button, i) => button.classList.toggle('is-active', i === current));
+      rail.classList.toggle('is-shown', scrollY > innerHeight * 0.6);
+    };
+    const onViewport = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    update();
+    window.addEventListener('scroll', onViewport, { passive: true });
+    window.addEventListener('resize', onViewport);
+    cleanups.push(() => {
+      window.removeEventListener('scroll', onViewport);
+      window.removeEventListener('resize', onViewport);
+      rail.remove();
+    });
+  }
+
+  // ---- editorial image parallax --------------------------------------------
+  if (!reduce) {
+    const images = $$<HTMLElement>('.physband__img');
+    if (images.length) {
+      let queued = false;
+      const paint = () => {
+        queued = false;
+        images.forEach((img) => {
+          const bounds = img.parentElement?.getBoundingClientRect();
+          if (!bounds || bounds.bottom < 0 || bounds.top > innerHeight) return;
+          const progress = (bounds.top + bounds.height / 2 - innerHeight / 2) / innerHeight;
+          img.style.setProperty('--par', `${(progress * -26).toFixed(1)}px`);
+        });
+      };
+      const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };
+      paint();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      cleanups.push(() => window.removeEventListener('scroll', onScroll));
+    }
+  }
+
+  // ---- card spotlights ------------------------------------------------------
+  if (!reduce && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const surfaces = $$('.demo-metric, .demo-region, .demo-rec, .cp-lifecell, .cp-rnode, .wl-staged__card, .demo-panel, .cp-queue__list li, .cp-assume, .archstack__panel, .compare__col, .cpcta__panel, .cap, .rolecard, .stagecard, .portalcard, .benefitcard, .signalboard__tile, .enginediagram__step, .patchcard');
+    surfaces.forEach((surface) => {
+      const move = (event: PointerEvent) => {
+        const bounds = surface.getBoundingClientRect();
+        surface.style.setProperty('--cx', `${(((event.clientX - bounds.left) / bounds.width) * 100).toFixed(1)}%`);
+        surface.style.setProperty('--cy', `${(((event.clientY - bounds.top) / bounds.height) * 100).toFixed(1)}%`);
+      };
+      surface.addEventListener('pointermove', move);
+      cleanups.push(() => surface.removeEventListener('pointermove', move));
+    });
+  }
+
+  // ---- typewriter + decrypt -------------------------------------------------
   $$('[data-typewriter]').forEach((el) => {
     // Content is already present in markup; add a class the CSS can animate.
     if (!reduce) el.classList.add('is-typed');
+  });
+  $$<HTMLElement>('[data-decrypt]').forEach((el) => {
+    if (reduce || el.dataset.enhancedDecrypt === 'true') return;
+    el.dataset.enhancedDecrypt = 'true';
+    const finalText = el.textContent ?? '';
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789·/';
+    let frame = 0;
+    const timer = window.setInterval(() => {
+      const revealed = Math.floor(frame / 2);
+      el.textContent = Array.from(finalText).map((ch, i) => (ch === ' ' || i < revealed ? ch : chars[(i + frame * 7) % chars.length])).join('');
+      frame++;
+      if (revealed >= finalText.length) { el.textContent = finalText; window.clearInterval(timer); }
+    }, 28);
+    cleanups.push(() => { window.clearInterval(timer); el.textContent = finalText; });
   });
 
   // ---- internal-link SPA routing --------------------------------------------
