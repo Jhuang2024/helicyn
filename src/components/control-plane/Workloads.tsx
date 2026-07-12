@@ -1,4 +1,4 @@
-import { workloadTypes, type WorkloadFilter, type WorkloadRow } from '@/simulation';
+import { workloadTypes, type TopoPath, type WorkloadFilter, type WorkloadRow } from '@/simulation';
 import { useControlPlane } from '@/state/controlPlaneStore';
 import { Tooltip } from './Tooltip';
 
@@ -45,6 +45,7 @@ const STATIC_HOLD = {
 function Row({
   row,
   onStage,
+  onPreview,
 }: {
   row: {
     id: string;
@@ -58,11 +59,18 @@ function Row({
     why: string;
     state: string;
     stageable: boolean;
+    topo?: TopoPath;
   };
   onStage?: () => void;
+  onPreview?: (path: TopoPath | null) => void;
 }) {
   return (
-    <tr>
+    <tr
+      onPointerEnter={() => onPreview?.(row.topo ?? null)}
+      onPointerLeave={() => onPreview?.(null)}
+      onFocus={() => onPreview?.(row.topo ?? null)}
+      onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) onPreview?.(null); }}
+    >
       <td>
         <div className="cp-wl__name">{row.name}</div>
         <div className="cp-wl__sub mono">{row.sub}</div>
@@ -96,6 +104,7 @@ export function Workloads() {
   const filter = useControlPlane((s) => s.sim.workloadFilter);
   const setFilter = useControlPlane((s) => s.setFilter);
   const stageWorkload = useControlPlane((s) => s.stageWorkload);
+  const setPreviewPath = useControlPlane((s) => s.setPreviewPath);
 
   const matches = (w: WorkloadRow) => filter === 'all' || workloadTypes(w.template).has(filter);
   const visible = workloads.filter(matches);
@@ -169,8 +178,10 @@ export function Workloads() {
                   why: w.template.why,
                   state: w.state,
                   stageable: true,
+                  topo: w.template.topo,
                 }}
                 onStage={() => stageWorkload(w.id)}
+                onPreview={setPreviewPath}
               />
             ))}
           </tbody>
