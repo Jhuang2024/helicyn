@@ -177,6 +177,255 @@
   position: relative;
 }
 
+/* ---- Forms (auth, onboarding, careers, profile) ---- */
+.authform,
+.onboarding-form,
+.profile-form,
+.hireform {
+  max-width: 640px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: var(--space-4);
+}
+.field__label {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+.field input,
+.field select,
+.field textarea {
+  background: var(--bg-raise);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 0.6rem 0.7rem;
+  font: inherit;
+  font-size: 0.92rem;
+}
+.field input:disabled {
+  opacity: 0.55;
+}
+.field textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+.field--check {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: var(--space-3);
+  font-size: 0.88rem;
+  color: var(--text-dim);
+}
+.field--check input {
+  margin-top: 0.2rem;
+}
+.formsection {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+.formsection legend {
+  padding: 0 0.5rem;
+}
+.checkgroup {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.formsubmit {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: var(--space-4);
+}
+.form-note {
+  font-size: 0.85rem;
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  margin: var(--space-3) 0;
+}
+.form-note.err {
+  color: var(--warn);
+  background: var(--warn-soft);
+  border: 1px solid var(--warn-line);
+}
+.form-note.ok {
+  color: var(--ok);
+  background: var(--ok-soft);
+  border: 1px solid var(--ok-line);
+}
+.authform__tabs {
+  display: flex;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+}
+.authform__tab {
+  background: transparent;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-pill);
+  color: var(--text-dim);
+  padding: 0.4rem 0.9rem;
+  font: inherit;
+  cursor: pointer;
+}
+.authform__tab.is-active {
+  background: var(--signal-soft);
+  color: var(--signal);
+  border-color: var(--signal-line);
+}
+.authform__link {
+  background: none;
+  border: 0;
+  color: var(--signal);
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-align: left;
+}
+.authform__submit {
+  align-self: flex-start;
+}
+.authnotice {
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  border: 1px solid var(--line-2);
+}
+.authnotice--ok {
+  border-color: var(--ok-line);
+  background: var(--ok-soft);
+}
+.authgate__actions {
+  margin-top: var(--space-4);
+}
+
+/* Profile avatar */
+.profile-avatar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+.profile-avatar__img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--signal-soft);
+  color: var(--signal);
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.profile-avatar__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Careers hire cards */
+.hirecards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+.hirecard {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg-1);
+  padding: var(--space-4) var(--space-5);
+}
+.hirecard__summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  gap: var(--space-4);
+}
+.hirecard__role {
+  font-weight: 500;
+  font-size: 1.05rem;
+}
+.hirecard__desc {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-top: 0.2rem;
+}
+.hirecard__toggle {
+  color: var(--text-faint);
+  font-size: 1.4rem;
+}
+.hirecard__body {
+  padding-top: var(--space-4);
+}
+.hirecard__already {
+  color: var(--text-dim);
+}
+
+/* Partner portal */
+.portal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+.portalcard {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  background: var(--bg-1);
+}
+.portalcard h3 {
+  margin-bottom: var(--space-3);
+}
+.portalcard__list {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: var(--text-dim);
+  font-size: 0.88rem;
+}
+.portalcard__actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+.status-pill {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-2);
+  font-size: 0.78rem;
+  margin-bottom: var(--space-3);
+}
+.status-pill--submitted {
+  color: var(--signal);
+  border-color: var(--signal-line);
+  background: var(--signal-soft);
+}
+.status-pill--not_started {
+  color: var(--text-dim);
+}
+
+/* Static report page: keep figures legible */
+.report-static .report-fig,
+.report-static figure {
+  background: #fff;
+  border-radius: var(--radius-sm);
+}
+
 /* 404 */
 .notfound {
   min-height: 60vh;
