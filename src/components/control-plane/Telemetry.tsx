@@ -15,12 +15,22 @@ const ZONE_IDS: ZoneId[] = ['A', 'B', 'C', 'D', 'E'];
 /** Build the power-demand series from simulation history (falls back to the
  * deterministic daytime ramp when history is still short). */
 function powerSeries(history: { power: number }[], dayFraction: number, peakBias: number): number[] {
-  if (history.length >= 24) return history.slice(-48).map((h) => h.power);
   const N = 48;
-  return Array.from({ length: N }, (_, i) => {
+  const fallback = Array.from({ length: N }, (_, i) => {
     const f = (i / (N - 1)) * dayFraction + 0.02;
     return 10.5 + Math.sin(f * Math.PI * 1.3) * 2.4 + Math.sin(i * 0.7) * 0.4 + peakBias;
   });
+  const live = history.slice(-N).map((h) => h.power);
+  return [...fallback.slice(live.length), ...live];
+}
+
+function liveSeries(
+  fallback: number[],
+  history: Array<Record<string, number>>,
+  key: 'carbonIntensity' | 'gpu' | 'pue',
+): number[] {
+  const live = history.slice(-fallback.length).map((sample) => sample[key]).filter(Number.isFinite) as number[];
+  return [...fallback.slice(live.length), ...live];
 }
 
 export function Telemetry() {
@@ -29,16 +39,19 @@ export function Telemetry() {
   const [openZone, setOpenZone] = useState<ZoneId | null>(null);
 
   const power = powerSeries(sim.history, fleet.dayFraction, sim.effects.peakBias);
-  const powerNow = fleet.compare.peak.after;
+  const latest = sim.history.at(-1);
+  const powerNow = latest?.power ?? power.at(-1) ?? fleet.compare.peak.after;
 
   // Carbon forecast (fully solid rate curve).
-  const carbonNow = fleet.carbonNow;
-  const carbonSeries = Array.from({ length: 40 }, (_, i) => {
+  const carbonNow = Number.isFinite(latest?.carbonIntensity) ? latest!.carbonIntensity : fleet.carbonNow;
+  const carbonProjection = Array.from({ length: 40 }, (_, i) => {
     const t = i / 39;
     return carbonNow + Math.sin(t * Math.PI * 1.6 + 0.5) * (carbonNow * 0.13) - t * carbonNow * 0.1;
   });
-  const gpuSeries = rampSeries(46, fleet.metrics.gpu.projected, 40);
-  const pueSeries = rampSeries(1.31, fleet.metrics.pue.projected, 40);
+  const history = sim.history as unknown as Array<Record<string, number>>;
+  const carbonSeries = liveSeries(carbonProjection, history, 'carbonIntensity');
+  const gpuSeries = liveSeries(rampSeries(46, fleet.metrics.gpu.projected, 40), history, 'gpu');
+  const pueSeries = liveSeries(rampSeries(1.31, fleet.metrics.pue.projected, 40), history, 'pue');
   const now = fleet.dayFraction;
 
   return (
@@ -135,8 +148,8 @@ export function Telemetry() {
             series={gpuSeries}
             nowFraction={now}
             color="var(--signal)"
-            ariaLabel={`GPU utilization trend, currently ${Math.round(fleet.metrics.gpu.today)} percent`}
-            now={`${Math.round(fleet.metrics.gpu.today)}%`}
+            ariaLabel={`GPU utilization trend, currently ${Math.round(latest?.gpu ?? fleet.metrics.gpu.today)} percent`}
+            now={`${Math.round(latest?.gpu ?? fleet.metrics.gpu.today)}%`}
             hi={`${Math.round(Math.max(...gpuSeries))}`}
             lo={`${Math.round(Math.min(...gpuSeries))}`}
             unit="% fleet GPU capacity in use"
@@ -148,8 +161,8 @@ export function Telemetry() {
             series={pueSeries}
             nowFraction={now}
             color="var(--ok)"
-            ariaLabel={`PUE trend, currently ${fleet.metrics.pue.today.toFixed(2)}`}
-            now={fleet.metrics.pue.today.toFixed(2)}
+            ariaLabel={`PUE trend, currently ${(latest?.pue ?? fleet.metrics.pue.today).toFixed(2)}`}
+            now={(latest?.pue ?? fleet.metrics.pue.today).toFixed(2)}
             hi={Math.max(...pueSeries).toFixed(2)}
             lo={Math.min(...pueSeries).toFixed(2)}
             unit="power usage effectiveness"
