@@ -38,6 +38,15 @@ export const SCHEMA_VERSION = 2;
 const HISTORY_LIMIT = 240;
 const MAX_EVENTS = 9;
 
+const AMBIENT_EVENTS: Array<Omit<CoordinationEvent, 'time'>> = [
+  { type: 'analyzed', text: 'Recomputed carbon-aware placement across regions' },
+  { type: 'verified', text: 'Cooling setpoints remain within target band' },
+  { type: 'acted', text: 'Rebalanced <b>3%</b> flexible load toward a lower-carbon grid' },
+  { type: 'analyzed', text: 'Grid carbon forecast refreshed for the next operating window' },
+  { type: 'verified', text: 'All priority SLAs holding' },
+  { type: 'acted', text: 'Deferred <b>2 batch jobs</b> to a cheaper window' },
+];
+
 function freshBump(): KpiBump {
   return { energy: 0, cost: 0, carbon: 0, cooling: 0, gpu: 0, pue: 0 };
 }
@@ -430,6 +439,7 @@ export function advanceSimulation(
     energy: fleet.metrics.energy.today,
     cost: fleet.metrics.cost.today,
     carbon: fleet.metrics.carbon.today,
+    carbonIntensity: fleet.carbonNow,
     cooling: fleet.metrics.cooling.today,
     gpu: fleet.metrics.gpu.today,
     pue: fleet.metrics.pue.today,
@@ -465,6 +475,20 @@ export function setClockRunning(state: SimulationState, running: boolean): Simul
 
 export function setClockSpeed(state: SimulationState, speed: number): SimulationState {
   return { ...state, clock: { ...state.clock, speed: clamp(speed, 1, 3600) } };
+}
+
+/** Append the next deterministic low-frequency coordination event. */
+export function appendAmbientEvent(state: SimulationState): SimulationState {
+  const next = AMBIENT_EVENTS[state.actionCounter % AMBIENT_EVENTS.length]!;
+  const event: CoordinationEvent = {
+    ...next,
+    time: formatClock(state.clock.seconds).slice(0, 5),
+  };
+  return {
+    ...state,
+    actionCounter: state.actionCounter + 1,
+    events: [...state.events, event].slice(-MAX_EVENTS),
+  };
 }
 
 // ---- Cooling zones ----------------------------------------------------------
