@@ -1,0 +1,37 @@
+# Helicyn deployment configuration.
+#
+# The site is a Vite + React + TypeScript app. It MUST be built — the source
+# `index.html` references `/src/main.tsx`, which browsers cannot load directly.
+# Netlify runs the build below and publishes the compiled `dist/` output, whose
+# index.html references the hashed production bundle. SPA history fallback and
+# legacy 301s live in `public/_redirects` (copied into `dist/`).
+
+[build]
+  command = "pnpm build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # pnpm is auto-detected from pnpm-lock.yaml; pin the major line for stability.
+  PNPM_VERSION = "10"
+  # Allow esbuild's install script to run (matches pnpm.onlyBuiltDependencies).
+  NPM_CONFIG_PRODUCTION = "false"
+
+# Security + caching headers. Immutable, content-hashed assets can be cached
+# aggressively; HTML is always revalidated so new deploys show up immediately.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
