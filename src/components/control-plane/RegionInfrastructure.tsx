@@ -10,14 +10,15 @@ import { useControlPlane } from '@/state/controlPlaneStore';
 import { InteractiveSurface } from '@/components/common/InteractiveSurface';
 import { Tooltip } from './Tooltip';
 
-/** Static per-region telemetry values from the original grid. */
-const STATIC: Record<InfraRegionId, { carbon: string; badge: string; badgeCls: string }> = {
-  'us-west': { carbon: '412 g/kWh', badge: 'Optimizing', badgeCls: 'control-badge--opt' },
-  'us-central': { carbon: '280 g/kWh', badge: 'Nominal', badgeCls: 'control-badge--ok' },
-  'us-east': { carbon: '351 g/kWh', badge: 'Nominal', badgeCls: 'control-badge--ok' },
-  'eu-west': { carbon: '190 g/kWh', badge: 'Nominal', badgeCls: 'control-badge--ok' },
-  apac: { carbon: '468 g/kWh', badge: 'Constrained', badgeCls: 'control-badge--crit' },
+const CARBON_OFFSET: Record<InfraRegionId, number> = {
+  'us-west': 72, 'us-central': -60, 'us-east': 11, 'eu-west': -150, apac: 128,
 };
+
+const RISK_BADGE = {
+  low: { badge: 'Nominal', badgeCls: 'control-badge--ok' },
+  med: { badge: 'Optimizing', badgeCls: 'control-badge--opt' },
+  high: { badge: 'Constrained', badgeCls: 'control-badge--crit' },
+} as const;
 
 /** Infrastructure grid ⇄ topology node mapping (for linked selection). */
 const INFRA_TO_TOPO: Record<InfraRegionId, TopoNodeId> = {
@@ -52,12 +53,14 @@ export function RegionInfrastructure() {
       </p>
 
       <div className="cp-regions">
-        {fleet.regions.map((r) => {
+        {fleet.regions.map((r, index) => {
           const label = INFRA_LABEL[r.id];
-          const s = STATIC[r.id];
+          const s = RISK_BADGE[r.risk];
           const detail = REGION_DETAIL[r.id];
           const topo = INFRA_TO_TOPO[r.id];
           const isSelected = sim.selectedRegion === topo;
+          const load = Math.max(0, Math.min(100, Math.round(r.load + Math.sin(sim.clock.seconds / 12 + index) * 1.4)));
+          const carbon = Math.max(80, Math.round(fleet.carbonNow + CARBON_OFFSET[r.id] + Math.sin(sim.clock.seconds / 20 + index * 1.7) * 8));
           return (
             <InteractiveSurface
               key={r.id}
@@ -65,7 +68,7 @@ export function RegionInfrastructure() {
               role="button"
               tabIndex={0}
               ariaExpanded={isSelected}
-              ariaLabel={`${label} region detail`}
+                ariaLabel={`${label} region detail, ${load}% compute load, ${carbon} grams carbon intensity`}
               onClick={() => selectRegion(isSelected ? null : topo)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -80,14 +83,14 @@ export function RegionInfrastructure() {
               </div>
               <div className="cp-region__loadhead">
                 <span>Compute load</span>
-                <span className="mono">{r.load}%</span>
+                <span className="mono">{load}%</span>
               </div>
               <div className="cp-region__bar">
-                <span className="cp-region__fill" style={{ width: `${r.load}%`, background: loadColor(r.load) }} />
+                <span className="cp-region__fill" style={{ width: `${load}%`, background: loadColor(load) }} />
               </div>
               <div className="cp-region__stats">
                 <div>
-                  <span className="cp-region__k">Carbon intensity:</span> {s.carbon}
+                  <span className="cp-region__k">Carbon intensity:</span> {carbon} g/kWh
                 </div>
                 <div>
                   <span className="cp-region__k">Cooling risk:</span> {RISK_TEXT[r.risk]}
