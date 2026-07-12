@@ -145,7 +145,7 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
   const revealEls = $$('[data-reveal]');
   if (revealEls.length) {
     if (reduce) {
-      revealEls.forEach((el) => el.classList.add('is-revealed', 'is-visible'));
+      revealEls.forEach((el) => el.classList.add('is-revealing', 'is-revealed', 'is-visible'));
     } else {
       let ticking = false;
       const check = () => {
@@ -154,7 +154,7 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
         for (const el of revealEls) {
           if (el.classList.contains('is-revealed')) continue;
           const r = el.getBoundingClientRect();
-          if (r.top < vh * 0.92 && r.bottom > -80) el.classList.add('is-revealed', 'is-visible');
+          if (r.top < vh * 0.92 && r.bottom > -80) el.classList.add('is-revealing', 'is-revealed', 'is-visible');
         }
       };
       const onScroll = () => {
@@ -167,7 +167,7 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', onScroll);
       // Safety: reveal everything shortly after load so nothing can stay hidden.
-      const safety = window.setTimeout(() => revealEls.forEach((el) => el.classList.add('is-revealed', 'is-visible')), 2500);
+      const safety = window.setTimeout(() => revealEls.forEach((el) => el.classList.add('is-revealing', 'is-revealed', 'is-visible')), 2500);
       cleanups.push(() => {
         window.removeEventListener('scroll', onScroll);
         window.removeEventListener('resize', onScroll);
@@ -301,11 +301,19 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
   // ---- count-up -------------------------------------------------------------
   const counters = $$('[data-count]');
   if (counters.length) {
+    const animations = new Set<number>();
     const runCount = (el: HTMLElement) => {
-      const target = parseFloat(el.getAttribute('data-count') || '0');
-      const dp = (el.getAttribute('data-count') || '').includes('.') ? 1 : 0;
+      const raw = el.getAttribute('data-count') || '0';
+      const match = raw.match(/^([^\d−-]*)([-−]?)([\d.]+)(.*)$/);
+      if (!match) return;
+      const [, prefix, sign, digits, suffix] = match;
+      const target = Number.parseFloat(digits!);
+      const dp = (digits!.split('.')[1] || '').length;
+      const render = (value: number) => {
+        el.textContent = `${prefix}${sign}${value.toFixed(dp)}${suffix}`;
+      };
       if (reduce) {
-        el.textContent = target.toFixed(dp);
+        render(target);
         return;
       }
       const dur = 900;
@@ -313,10 +321,14 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
       const step = (t: number) => {
         const p = Math.min((t - t0) / dur, 1);
         const k = 1 - Math.pow(1 - p, 3);
-        el.textContent = (target * k).toFixed(dp);
-        if (p < 1) requestAnimationFrame(step);
+        render(target * k);
+        if (p < 1) {
+          const id = requestAnimationFrame(step);
+          animations.add(id);
+        }
       };
-      requestAnimationFrame(step);
+      const id = requestAnimationFrame(step);
+      animations.add(id);
     };
     if (typeof IntersectionObserver === 'undefined') {
       counters.forEach(runCount);
@@ -335,6 +347,21 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
       counters.forEach((el) => io.observe(el));
       cleanups.push(() => io.disconnect());
     }
+    cleanups.push(() => animations.forEach(cancelAnimationFrame));
+  }
+
+  // ---- live clocks in ported page bodies ----------------------------------
+  const clocks = $$<HTMLElement>('[data-clock]');
+  if (clocks.length) {
+    const tick = () => {
+      const date = new Date();
+      const pad = (n: number) => String(n).padStart(2, '0');
+      const value = `${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())} UTC`;
+      clocks.forEach((clock) => { clock.textContent = value; });
+    };
+    tick();
+    const timer = window.setInterval(tick, 1000);
+    cleanups.push(() => window.clearInterval(timer));
   }
 
   // ---- sequential diagrams -------------------------------------------------
@@ -479,6 +506,90 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
       if (revealed >= finalText.length) { el.textContent = finalText; window.clearInterval(timer); }
     }, 28);
     cleanups.push(() => { window.clearInterval(timer); el.textContent = finalText; });
+  });
+
+  // ---- thesis-status modal -------------------------------------------------
+  const modal = root.querySelector<HTMLElement>('#thesis-modal');
+  if (modal) {
+    let lastFocus: HTMLElement | null = null;
+    let closeTimer = 0;
+    const focusable = () => Array.from(modal.querySelectorAll<HTMLElement>('button, [href], [tabindex]:not([tabindex="-1"])'));
+    const close = () => {
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+      window.clearTimeout(closeTimer);
+      closeTimer = window.setTimeout(() => { modal.hidden = true; }, reduce ? 0 : 450);
+      lastFocus?.focus();
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { close(); return; }
+      if (event.key !== 'Tab') return;
+      const items = focusable();
+      const first = items[0];
+      const last = items.at(-1);
+      if (!first || !last) return;
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    const open = () => {
+      lastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      window.clearTimeout(closeTimer);
+      modal.hidden = false;
+      requestAnimationFrame(() => modal.classList.add('is-open'));
+      document.body.style.overflow = 'hidden';
+      focusable()[0]?.focus();
+    };
+    const openers = $$<HTMLElement>('[data-thesis-open]');
+    const closers = Array.from(modal.querySelectorAll<HTMLElement>('[data-modal-close]'));
+    openers.forEach((button) => button.addEventListener('click', open));
+    closers.forEach((button) => button.addEventListener('click', close));
+    document.addEventListener('keydown', onKey);
+    cleanups.push(() => {
+      window.clearTimeout(closeTimer);
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', onKey);
+      openers.forEach((button) => button.removeEventListener('click', open));
+      closers.forEach((button) => button.removeEventListener('click', close));
+    });
+  }
+
+  // ---- button ripple -------------------------------------------------------
+  if (!reduce) {
+    $$<HTMLElement>('.btn, .btn-ghost, .nav__cta').forEach((button) => {
+      const ripple = (event: PointerEvent) => {
+        const bounds = button.getBoundingClientRect();
+        const dot = document.createElement('span');
+        dot.className = 'ripple';
+        const size = Math.max(bounds.width, bounds.height) * 1.35;
+        Object.assign(dot.style, {
+          width: `${size}px`, height: `${size}px`,
+          left: `${event.clientX - bounds.left - size / 2}px`,
+          top: `${event.clientY - bounds.top - size / 2}px`,
+        });
+        button.appendChild(dot);
+        window.setTimeout(() => dot.remove(), 650);
+      };
+      button.addEventListener('pointerdown', ripple);
+      cleanups.push(() => button.removeEventListener('pointerdown', ripple));
+    });
+  }
+
+  // ---- back to top ---------------------------------------------------------
+  const backToTop = document.createElement('button');
+  backToTop.type = 'button';
+  backToTop.className = 'backtotop';
+  backToTop.setAttribute('aria-label', 'Back to top');
+  backToTop.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  document.body.appendChild(backToTop);
+  const updateBackToTop = () => backToTop.classList.toggle('is-visible', window.scrollY > 480);
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+  updateBackToTop();
+  window.addEventListener('scroll', updateBackToTop, { passive: true });
+  backToTop.addEventListener('click', scrollToTop);
+  cleanups.push(() => {
+    window.removeEventListener('scroll', updateBackToTop);
+    backToTop.removeEventListener('click', scrollToTop);
+    backToTop.remove();
   });
 
   // ---- internal-link SPA routing --------------------------------------------
