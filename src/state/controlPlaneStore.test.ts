@@ -4,7 +4,7 @@ import { createInitialSimulationState, computeFleet, SCN } from '@/simulation';
 
 /** Reset the store to a clean scenario before each test. */
 beforeEach(() => {
-  useControlPlane.setState({ sim: createInitialSimulationState() });
+  useControlPlane.setState({ sim: createInitialSimulationState(), previewPath: null });
 });
 
 const get = () => useControlPlane.getState();
@@ -35,6 +35,16 @@ describe('centralized Control Plane store', () => {
     expect(get().sim.selectedRegion).toBe('oregon');
     get().selectRegion(null);
     expect(get().sim.selectedRegion).toBeNull();
+  });
+
+  it('shares recommendation and workload topology previews without mutating simulation state', () => {
+    const before = get().sim;
+    const path = before.recommendations[0]!.template.topo;
+    get().setPreviewPath(path);
+    expect(get().previewPath).toEqual(path);
+    expect(get().sim).toBe(before);
+    get().setPreviewPath(null);
+    expect(get().previewPath).toBeNull();
   });
 
   it('approving an action updates the queue', () => {
