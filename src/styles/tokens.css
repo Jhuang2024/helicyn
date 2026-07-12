@@ -41,6 +41,19 @@
   --pointer-x: 50%;
   --pointer-y: 40%;
   --pointer-active: 0;
+
+  /* approximate height of the fixed site nav, used to offset sticky content */
+  --nav-h: 4.25rem;
+}
+
+/* Keep primary nav links on a single line each (no mid-word wrap). */
+.navlink {
+  white-space: nowrap;
+}
+
+/* Anchor jumps clear the fixed nav. */
+html {
+  scroll-padding-top: var(--nav-h);
 }
 
 /* breakpoints are documented here for reference (used in @media):

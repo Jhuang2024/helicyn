@@ -7,6 +7,8 @@
 
 .cp-root {
   --cp-gap: clamp(1.5rem, 3vw, 2.5rem);
+  /* Clear the fixed site nav so the sticky status strip isn't hidden under it. */
+  padding-top: var(--nav-h);
 }
 .cp-body {
   max-width: var(--maxw);
@@ -23,11 +25,16 @@
   border-top: 1px solid var(--line);
   padding-top: var(--cp-gap);
 }
+/* Section-nav jumps clear the fixed nav AND the sticky status strip. */
+.cp-body [id],
+.control-head[id] {
+  scroll-margin-top: calc(var(--nav-h) + 4.5rem);
+}
 
 /* Sticky top strip + section nav */
 .cp-stickytop {
   position: sticky;
-  top: 0;
+  top: var(--nav-h);
   z-index: 40;
   background: color-mix(in oklch, var(--bg) 88%, transparent);
   backdrop-filter: blur(10px);
