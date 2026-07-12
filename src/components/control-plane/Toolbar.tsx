@@ -30,6 +30,7 @@ export function Toolbar() {
 
   const meta = SCENARIO_META[scenario];
   const alert = SCN[scenario].alert;
+  const activeStep = Math.floor(clock.seconds / 5) % SEQ_STEPS.length;
 
   return (
     <div className="cp-toolbar">
@@ -113,8 +114,12 @@ export function Toolbar() {
       </div>
 
       <ol className="cp-seq" aria-label="Coordination sequence">
-        {SEQ_STEPS.map(([key, label]) => (
-          <li key={key} className="cp-seq__step">
+        {SEQ_STEPS.map(([key, label], index) => (
+          <li
+            key={key}
+            className={'cp-seq__step' + (index === activeStep ? ' is-active' : '') + (index < activeStep ? ' is-done' : '')}
+            aria-current={index === activeStep ? 'step' : undefined}
+          >
             <span className="mono">{label}</span>
           </li>
         ))}
