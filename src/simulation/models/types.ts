@@ -303,6 +303,7 @@ export interface TelemetrySample {
   energy: number;
   cost: number;
   carbon: number;
+  carbonIntensity: number;
   cooling: number;
   gpu: number;
   pue: number;
