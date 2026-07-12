@@ -21,6 +21,30 @@ export function StatusHeader() {
   const sim = useControlPlane((s) => s.sim);
   const constrained = selectConstrainedRegionCount(sim);
   const mode = sim.controls.mode.charAt(0).toUpperCase() + sim.controls.mode.slice(1);
+  const [activeSection, setActiveSection] = useState('top');
+
+  useEffect(() => {
+    let queued = false;
+    const update = () => {
+      queued = false;
+      let active = 'top';
+      for (const [id] of SECTIONS) {
+        const section = document.getElementById(id);
+        if (section && section.getBoundingClientRect().top < window.innerHeight * 0.38) active = id;
+      }
+      setActiveSection(active);
+    };
+    const onViewport = () => {
+      if (!queued) { queued = true; requestAnimationFrame(update); }
+    };
+    update();
+    window.addEventListener('scroll', onViewport, { passive: true });
+    window.addEventListener('resize', onViewport);
+    return () => {
+      window.removeEventListener('scroll', onViewport);
+      window.removeEventListener('resize', onViewport);
+    };
+  }, []);
 
   return (
     <>
@@ -35,7 +59,7 @@ export function StatusHeader() {
         </div>
         <nav className="cp-secnav" aria-label="Section navigation">
           {SECTIONS.map(([id, label]) => (
-            <a key={id} href={`#${id}`}>
+            <a key={id} href={`#${id}`} className={activeSection === id ? 'is-active' : undefined} aria-current={activeSection === id ? 'location' : undefined}>
               {label}
             </a>
           ))}
@@ -71,3 +95,4 @@ export function StatusHeader() {
     </>
   );
 }
+import { useEffect, useState } from 'react';
