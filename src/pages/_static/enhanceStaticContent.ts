@@ -77,6 +77,8 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
       let pointerY = -10_000;
       let active = false;
       let points: Array<{ x: number; y: number; phase: number }> = [];
+      let nodes: Array<{ x: number; y: number; phase: number; accent: boolean }> = [];
+      let edges: Array<[number, number]> = [];
 
       const resize = () => {
         const rect = canvas.getBoundingClientRect();
@@ -90,12 +92,53 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
         for (let y = 25; y < height + 25; y += 50) {
           for (let x = 25; x < width + 25; x += 50) points.push({ x, y, phase: x * 0.011 + y * 0.017 });
         }
+        // Stable sparse coordination network layered over the fine field.
+        let seed = 20260601;
+        const random = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+        const count = Math.max(6, Math.min(14, Math.round((width * height) / 90000)));
+        nodes = Array.from({ length: count }, (_, i) => ({
+          x: width * (0.08 + random() * 0.84),
+          y: height * (0.08 + random() * 0.84),
+          phase: random() * Math.PI * 2,
+          accent: i % 4 === 0,
+        }));
+        edges = nodes.map((node, i) => {
+          let nearest = i === 0 ? 1 : 0;
+          let best = Infinity;
+          nodes.forEach((other, j) => {
+            if (i === j) return;
+            const distance = (other.x - node.x) ** 2 + (other.y - node.y) ** 2;
+            if (distance < best) { best = distance; nearest = j; }
+          });
+          return [i, nearest] as [number, number];
+        }).filter(([a, b], i, all) => !all.slice(0, i).some(([x, y]) => x === b && y === a));
       };
       const color = () => getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#e8eef6';
       const signal = () => getComputedStyle(document.documentElement).getPropertyValue('--signal').trim() || '#46cecd';
       const draw = (now: number) => {
         ctx.clearRect(0, 0, width, height);
         const t = now / 1000;
+        ctx.lineWidth = 1;
+        for (const [aIndex, bIndex] of edges) {
+          const a = nodes[aIndex]!;
+          const b = nodes[bIndex]!;
+          ctx.globalAlpha = 0.08;
+          ctx.strokeStyle = color();
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+          if (!reduce) {
+            const progress = (t * 0.09 + aIndex * 0.17) % 1;
+            const x = a.x + (b.x - a.x) * progress;
+            const y = a.y + (b.y - a.y) * progress;
+            ctx.globalAlpha = 0.8;
+            ctx.fillStyle = signal();
+            ctx.beginPath();
+            ctx.arc(x, y, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
         for (const p of points) {
           const dx = p.x - pointerX;
           const dy = p.y - pointerY;
@@ -109,6 +152,20 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
           ctx.fillStyle = influence > 0.72 ? signal() : color();
           ctx.beginPath();
           ctx.arc(x, y, 0.9 + influence * 1.3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        for (const node of nodes) {
+          const influence = active ? Math.max(0, 1 - Math.hypot(node.x - pointerX, node.y - pointerY) / 220) : 0;
+          const breath = reduce ? 0.5 : 0.5 + Math.sin(t * 0.8 + node.phase) * 0.5;
+          ctx.globalAlpha = 0.25 + influence * 0.55;
+          ctx.strokeStyle = node.accent ? signal() : color();
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, 4 + breath * 1.5, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.globalAlpha = 0.55 + influence * 0.4;
+          ctx.fillStyle = node.accent ? signal() : color();
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, 1.5, 0, Math.PI * 2);
           ctx.fill();
         }
         ctx.globalAlpha = 1;
@@ -135,6 +192,20 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
         canvas.removeEventListener('pointerleave', leave);
       });
     }
+  }
+
+  const heroLogo = root.querySelector<HTMLElement>('.hero__logo');
+  if (heroLogo && !reduce) {
+    const move = (event: PointerEvent) => {
+      const rect = heroLogo.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      heroLogo.style.transform = `perspective(900px) rotateX(${(-y * 2.4).toFixed(2)}deg) rotateY(${(x * 3.2).toFixed(2)}deg)`;
+    };
+    const leave = () => { heroLogo.style.transform = ''; };
+    heroLogo.addEventListener('pointermove', move);
+    heroLogo.addEventListener('pointerleave', leave);
+    cleanups.push(() => { heroLogo.removeEventListener('pointermove', move); heroLogo.removeEventListener('pointerleave', leave); });
   }
 
   // ---- scroll reveals -------------------------------------------------------
@@ -295,6 +366,20 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
         el.removeEventListener('pointerleave', onLeave);
         if (raf) cancelAnimationFrame(raf);
       });
+    });
+
+    // Legacy ambient.js also tilted these card systems without explicit
+    // data-tilt attributes. Preserve that contract after the React port.
+    $$('.cap, .signalboard__tile, .enginediagram__step, .rolecard, .stagecard, .portalcard, .benefitcard, .patchcard').forEach((el) => {
+      const onMove = (event: PointerEvent) => {
+        const rect = el.getBoundingClientRect();
+        el.style.setProperty('--tiltx', String(((event.clientX - rect.left) / rect.width - 0.5) * 2));
+        el.style.setProperty('--tilty', String(((event.clientY - rect.top) / rect.height - 0.5) * 2));
+      };
+      const onLeave = () => { el.style.setProperty('--tiltx', '0'); el.style.setProperty('--tilty', '0'); };
+      el.addEventListener('pointermove', onMove);
+      el.addEventListener('pointerleave', onLeave);
+      cleanups.push(() => { el.removeEventListener('pointermove', onMove); el.removeEventListener('pointerleave', onLeave); });
     });
   }
 
@@ -489,9 +574,33 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
   }
 
   // ---- typewriter + decrypt -------------------------------------------------
-  $$('[data-typewriter]').forEach((el) => {
-    // Content is already present in markup; add a class the CSS can animate.
-    if (!reduce) el.classList.add('is-typed');
+  $$<HTMLElement>('[data-typewriter]').forEach((el) => {
+    const finalText = el.getAttribute('data-typewriter') || el.textContent || '';
+    if (reduce) { el.textContent = finalText; return; }
+    let timer = 0;
+    let started = false;
+    const start = () => {
+      if (started) return;
+      started = true;
+      el.textContent = '';
+      el.classList.add('ptypewriter');
+      let index = 0;
+      const type = () => {
+        el.textContent = finalText.slice(0, index++);
+        if (index <= finalText.length + 1) timer = window.setTimeout(type, 34);
+        else el.classList.remove('ptypewriter');
+      };
+      type();
+    };
+    if (typeof IntersectionObserver === 'undefined') start();
+    else {
+      const observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) { observer.disconnect(); start(); }
+      }, { threshold: 0.5 });
+      observer.observe(el);
+      cleanups.push(() => observer.disconnect());
+    }
+    cleanups.push(() => { window.clearTimeout(timer); el.textContent = finalText; el.classList.remove('ptypewriter'); });
   });
   $$<HTMLElement>('[data-decrypt]').forEach((el) => {
     if (reduce || el.dataset.enhancedDecrypt === 'true') return;
@@ -653,6 +762,7 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
   if (patchTabs) {
     const tabButtons = Array.from(patchTabs.querySelectorAll<HTMLButtonElement>('[data-filter-tag]'));
     const cards = $$('.patchcard');
+    const indicator = patchTabs.querySelector<HTMLElement>('.ptabs__indicator');
     const onTab = (btn: HTMLButtonElement) => {
       const tag = btn.getAttribute('data-filter-tag') ?? 'all';
       tabButtons.forEach((b) => b.classList.toggle('is-active', b === btn));
@@ -660,12 +770,18 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
         const match = tag === 'all' || c.getAttribute('data-tag') === tag;
         (c as HTMLElement).style.display = match ? '' : 'none';
       });
+      if (indicator) {
+        indicator.style.width = `${btn.offsetWidth}px`;
+        indicator.style.transform = `translateX(${btn.offsetLeft}px)`;
+      }
     };
     tabButtons.forEach((btn) => {
       const handler = () => onTab(btn);
       btn.addEventListener('click', handler);
       cleanups.push(() => btn.removeEventListener('click', handler));
     });
+    const active = patchTabs.querySelector<HTMLButtonElement>('[data-filter-tag].is-active') ?? tabButtons[0];
+    if (active) onTab(active);
   }
 
   return () => {
