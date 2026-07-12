@@ -30,6 +30,27 @@ const FLOW_COLOR: Record<FlowArc['kind'], string> = {
   warn: 'var(--warn)',
 };
 
+// Coarse geographic silhouettes from the original Control Plane. The React
+// migration retained the projection and nodes but accidentally dropped the
+// land layer, leaving the "map" as an empty graticule.
+const CONTINENTS: Array<Array<[number, number]>> = [
+  [[-165,60],[-156,71],[-128,71],[-95,72],[-62,68],[-78,62],[-55,51],[-70,41],[-81,25],[-97,26],[-112,30],[-124,48],[-150,59],[-165,60]],
+  [[-78,8],[-60,9],[-49,0],[-35,-8],[-48,-25],[-62,-40],[-69,-52],[-74,-50],[-71,-33],[-70,-18],[-81,-6],[-78,8]],
+  [[-16,15],[-10,30],[0,36],[25,32],[35,24],[51,12],[43,-2],[35,-22],[26,-34],[18,-34],[12,-17],[9,0],[-8,5],[-16,15]],
+  [[-10,36],[-9,43],[-4,48],[-1,58],[12,65],[25,71],[30,66],[28,60],[55,58],[48,50],[30,45],[20,40],[6,43],[-10,36]],
+  [[48,50],[68,55],[85,75],[105,78],[158,72],[170,66],[156,52],[135,38],[122,31],[108,18],[103,4],[91,22],[80,13],[67,24],[52,16],[40,22],[34,30],[48,50]],
+  [[114,-22],[130,-12],[142,-11],[150,-24],[153,-28],[150,-37],[143,-39],[129,-32],[115,-34],[114,-22]],
+  [[-46,60],[-22,70],[-20,76],[-32,80],[-50,78],[-55,70],[-46,60]],
+];
+
+function landPath(points: Array<[number, number]>): string {
+  return points.map(([lon, lat], i) => {
+    const x = ((lon - MAP.lonMin) / (MAP.lonMax - MAP.lonMin)) * MAP.W;
+    const y = ((MAP.latMax - lat) / (MAP.latMax - MAP.latMin)) * MAP.H;
+    return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)} ${y.toFixed(1)}`;
+  }).join(' ') + ' Z';
+}
+
 function arcPath(from: TopoNodeId, to: TopoNodeId): string {
   const a = projectNode(from);
   const b = projectNode(to);
@@ -73,6 +94,10 @@ export function Topology() {
           {[0.2, 0.4, 0.6, 0.8].map((g) => (
             <line key={'v' + g} x1={MAP.W * g} y1={0} x2={MAP.W * g} y2={MAP.H} stroke="var(--line-soft)" />
           ))}
+        </g>
+
+        <g className="cp-topo__land" aria-hidden="true">
+          {CONTINENTS.map((points, i) => <path key={i} d={landPath(points)} />)}
         </g>
 
         {/* flow arcs */}
