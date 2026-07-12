@@ -13,6 +13,7 @@ import { Summary } from '@/components/control-plane/Summary';
 import { useSimulationLoop } from '@/components/control-plane/useSimulationLoop';
 import { ExportImport } from '@/components/control-plane/ExportImport';
 import '@/styles/control-plane.css';
+import { useControlPlane } from '@/state/controlPlaneStore';
 
 const CONTROL_JSONLD = {
   '@context': 'https://schema.org',
@@ -36,9 +37,49 @@ const CONTROL_JSONLD = {
  */
 export default function ControlPlanePage() {
   useSimulationLoop();
+  const scenario = useControlPlane((state) => state.sim.scenario);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const firstScenario = useRef(true);
+  useEffect(() => {
+    if (firstScenario.current) { firstScenario.current = false; return; }
+    const root = rootRef.current;
+    if (!root) return;
+    root.classList.remove('is-recalculating');
+    void root.offsetWidth;
+    root.classList.add('is-recalculating');
+    const timer = window.setTimeout(() => root.classList.remove('is-recalculating'), 900);
+    return () => window.clearTimeout(timer);
+  }, [scenario]);
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce), (hover: none), (pointer: coarse)').matches) return;
+    const root = rootRef.current;
+    if (!root) return;
+    const selector = '.cp-metric, .cp-region, .cp-rec, .cp-deck, .cp-panel, .cp-queue__col, .cp-queue__list li, .cp-verify, .cp-lifecell, .cp-assume, .cp-trace, .cp-feed';
+    let frame = 0;
+    let latest: PointerEvent | null = null;
+    const paint = () => {
+      frame = 0;
+      const event = latest;
+      if (!event || !(event.target instanceof Element)) return;
+      const surface = event.target.closest<HTMLElement>(selector);
+      if (!surface || !root.contains(surface)) return;
+      const rect = surface.getBoundingClientRect();
+      surface.style.setProperty('--cx', `${(((event.clientX - rect.left) / rect.width) * 100).toFixed(1)}%`);
+      surface.style.setProperty('--cy', `${(((event.clientY - rect.top) / rect.height) * 100).toFixed(1)}%`);
+    };
+    const move = (event: PointerEvent) => {
+      latest = event;
+      if (!frame) frame = requestAnimationFrame(paint);
+    };
+    root.addEventListener('pointermove', move, { passive: true });
+    return () => {
+      root.removeEventListener('pointermove', move);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
 
   return (
-    <div className="page page--control cp-root">
+    <div ref={rootRef} className="page page--control cp-root">
       <Seo
         title="Helicyn Control Plane Demo | Data Center Optimization"
         description="Explore Helicyn's interactive control plane demo: simulated GPU workload placement, cooling risk, power demand, and carbon-aware scheduling."
@@ -95,3 +136,4 @@ export default function ControlPlanePage() {
     </div>
   );
 }
+import { useEffect, useRef } from 'react';
