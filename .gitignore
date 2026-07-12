@@ -26,3 +26,6 @@ test-results/
 
 # Internal migration working notes (not shipped)
 migration-notes/
+
+# Generated at build/dev time from legacy/report.html (10MB) — not committed
+public/report-body.html

@@ -1,0 +1,13 @@
+/* Global stylesheet entry — order matters (legacy cascade preserved).
+   The legacy site loaded: styles → partner → premium → redesign → modern.
+   We reproduce that order (partner.css is route-scoped, imported lazily by the
+   Control Plane / partner routes), then layer consolidated tokens + new
+   component styles on top. */
+
+@import './legacy/styles.css';
+@import './legacy/premium.css';
+@import './legacy/redesign.css';
+@import './legacy/modern.css';
+@import './legacy/patch-notes.css';
+@import './tokens.css';
+@import './components.css';

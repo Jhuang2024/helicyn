@@ -1,0 +1,190 @@
+/* ============================================================
+   New component styles introduced by the React migration.
+   These cover controls that did not exist as standalone CSS in the
+   legacy site (command palette, profile menu, scroll progress, route
+   fallback) plus small helpers. They use the shared design tokens.
+   ============================================================ */
+
+/* Scroll progress bar */
+.scrollprogress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  background: var(--signal);
+  z-index: 60;
+  will-change: transform;
+}
+
+/* Route loading fallback */
+.route-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-height: 60vh;
+  color: var(--text-dim);
+}
+.route-fallback__spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--line-2);
+  border-top-color: var(--signal);
+  border-radius: 50%;
+  animation: route-spin 0.8s linear infinite;
+}
+@keyframes route-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-fallback__spinner {
+    animation: none;
+  }
+}
+
+/* Command palette */
+.cmdk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(4, 6, 9, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+}
+.cmdk-panel {
+  width: min(560px, 92vw);
+  background: var(--bg-raise);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-3);
+  overflow: hidden;
+}
+.cmdk-input {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  font-size: 1rem;
+  padding: var(--space-4) var(--space-5);
+  font-family: var(--font-sans);
+}
+.cmdk-input:focus {
+  outline: none;
+}
+.cmdk-list {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-2);
+  max-height: 46vh;
+  overflow-y: auto;
+}
+.cmdk-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  background: transparent;
+  border: 0;
+  color: var(--text);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.95rem;
+}
+.cmdk-item.is-active {
+  background: var(--signal-soft);
+}
+.cmdk-item__hint {
+  color: var(--text-faint);
+  font-size: 0.78rem;
+}
+.cmdk-empty {
+  padding: var(--space-4);
+  color: var(--text-faint);
+}
+
+/* Profile menu in the nav */
+.navprofile {
+  position: relative;
+}
+.navprofile__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: transparent;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  padding: 0.3rem 0.7rem 0.3rem 0.35rem;
+  cursor: pointer;
+  font: inherit;
+}
+.navprofile__avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--signal-soft);
+  color: var(--signal);
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.navprofile__menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 180px;
+  background: var(--bg-raise);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-2);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-2);
+  z-index: 70;
+}
+.navprofile__menu a,
+.navprofile__menu button {
+  text-align: left;
+  background: transparent;
+  border: 0;
+  color: var(--text);
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+}
+.navprofile__menu a:hover,
+.navprofile__menu button:hover {
+  background: var(--signal-soft);
+}
+
+/* Generic page container for ported document/marketing pages */
+.page {
+  position: relative;
+}
+
+/* 404 */
+.notfound {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  text-align: center;
+  padding: var(--space-8) var(--space-5);
+}

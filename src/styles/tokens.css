@@ -1,0 +1,258 @@
+/* ============================================================
+   Consolidated design tokens (React migration).
+
+   The legacy stylesheets (styles.css / redesign.css / modern.css /
+   premium.css) already define the core surface, ink, accent, and font
+   variables. This file layers a consistent SPACING, RADIUS, SHADOW,
+   TRANSITION, and BREAKPOINT scale on top so the new Control Plane
+   components stop hard-coding those values, plus the shared reveal /
+   pointer-glow / heading system used across every route.
+   ============================================================ */
+
+:root {
+  /* spacing scale (8px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* radii */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* elevation */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-3: 0 24px 64px rgba(0, 0, 0, 0.45);
+
+  /* motion */
+  --dur-fast: 140ms;
+  --dur: 260ms;
+  --dur-slow: 520ms;
+
+  /* pointer-glow position, updated by usePointerGlow via CSS custom props */
+  --pointer-x: 50%;
+  --pointer-y: 40%;
+  --pointer-active: 0;
+}
+
+/* breakpoints are documented here for reference (used in @media):
+   --bp-sm: 640px; --bp-md: 860px; --bp-lg: 1100px; --bp-xl: 1400px; */
+
+/* ------------------------------------------------------------
+   Heading descender fix (site-wide, root cause).
+
+   The original reveal wrappers combined `overflow:hidden`, a tight
+   line-height, and a translateY/clip-path transform, which sheared the
+   lower edge off glyphs with descenders (g, j, p, q, y) — e.g. the
+   homepage "Eight signals, one board." and "From signal to verified
+   action." headings. The fix is structural, not per-heading:
+
+   1. Reveal wrappers never clip their own overflow.
+   2. Headings reserve descender space via a min line-height and a small
+      bottom padding tied to the cap/descender ratio, so the glyph box is
+      never cropped before OR after the webfont loads.
+   ------------------------------------------------------------ */
+
+h1, h2, h3, h4, h5, h6 {
+  /* Guarantee the line box is tall enough for descenders at display sizes. */
+  line-height: 1.12;
+  /* Reserve the descender band so transforms/clips can't shear the baseline. */
+  padding-bottom: 0.06em;
+}
+
+/* Display headings run tighter; give them a touch more descender room. */
+.reveal-heading,
+[data-reveal-heading] {
+  padding-bottom: 0.08em;
+  /* A clipped compositor layer is the classic descender culprit; keep the
+     heading's own box visible even while an ancestor animates. */
+  overflow: visible;
+}
+
+/* ------------------------------------------------------------
+   Reveal-on-scroll system (shared component `RevealOnScroll`).
+   Entrance is opacity + translate only — no overflow clipping — so it can
+   never crop a heading. Respects reduced motion.
+   ------------------------------------------------------------ */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity var(--dur-slow) var(--ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform var(--dur-slow) var(--ease, cubic-bezier(0.22, 1, 0.36, 1));
+  transition-delay: calc(var(--i, 0) * 70ms);
+  will-change: opacity, transform;
+  /* Critical: do not clip children — protects descenders during the tween. */
+  overflow: visible;
+}
+
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    transition-delay: 0ms;
+  }
+}
+
+/* Legacy mask reveal used `clip-path: inset(...)`, which shears descenders on
+   display headings even in its final state. Once revealed, drop the clip so the
+   full glyph — including g/j/p/q/y descenders — is visible. This is the root
+   fix for "Eight signals, one board." and "From signal to verified action." */
+[data-reveal='mask'].is-revealed,
+[data-reveal='mask'].is-visible {
+  clip-path: none !important;
+  -webkit-clip-path: none !important;
+  overflow: visible !important;
+}
+
+/* Static-content reveal state used by the enhancer (opacity + translate only). */
+.static-content [data-reveal].is-visible,
+.static-content [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* ------------------------------------------------------------
+   Site pointer glow (shared component `SitePointerGlow`).
+   A single fixed backdrop layer that follows the pointer via CSS custom
+   properties updated inside requestAnimationFrame — no per-move React
+   rerenders. Sits behind content and never captures pointer events.
+   ------------------------------------------------------------ */
+
+.site-pointer-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: calc(0.5 + var(--pointer-active) * 0.5);
+  transition: opacity 600ms ease;
+  background:
+    radial-gradient(
+      520px circle at var(--pointer-x) var(--pointer-y),
+      color-mix(in oklch, var(--signal) 12%, transparent),
+      transparent 60%
+    );
+  /* subtle depth grid under the glow */
+}
+
+.site-pointer-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      1100px circle at var(--pointer-x) var(--pointer-y),
+      rgba(255, 255, 255, 0.025),
+      transparent 55%
+    );
+}
+
+:root[data-theme='light'] .site-pointer-glow {
+  background: radial-gradient(
+    520px circle at var(--pointer-x) var(--pointer-y),
+    color-mix(in oklch, var(--signal) 10%, transparent),
+    transparent 60%
+  );
+}
+
+:root[data-theme='light'] .site-pointer-glow::after {
+  background: radial-gradient(
+    1100px circle at var(--pointer-x) var(--pointer-y),
+    rgba(10, 12, 20, 0.03),
+    transparent 55%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-pointer-glow {
+    transition: none;
+  }
+}
+
+/* Touch / coarse-pointer devices: hold the glow at a calm resting position. */
+@media (pointer: coarse) {
+  .site-pointer-glow {
+    opacity: 0.4;
+  }
+}
+
+/* ------------------------------------------------------------
+   Interactive surface (per-card spotlight) — shared `InteractiveSurface`.
+   ------------------------------------------------------------ */
+.interactive-surface {
+  position: relative;
+}
+.interactive-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur) ease;
+  background: radial-gradient(
+    240px circle at var(--card-x, 50%) var(--card-y, 50%),
+    color-mix(in oklch, var(--signal) 16%, transparent),
+    transparent 65%
+  );
+}
+.interactive-surface:hover::before,
+.interactive-surface:focus-within::before {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .interactive-surface::before {
+    transition: none;
+  }
+}
+
+/* App shell content sits above the glow layer. */
+.app-shell {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.app-main {
+  flex: 1 0 auto;
+}
+
+/* Focus visibility (accessibility). */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* Skip link. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-raise);
+  color: var(--text);
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line-2);
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}

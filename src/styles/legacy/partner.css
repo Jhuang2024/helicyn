@@ -1,0 +1,607 @@
+/* ============================================================
+   HELICYN - partner pages (login, onboarding, partner-portal,
+   partners, research)
+   Extends styles.css's dark instrument-panel system with the extra
+   components those pages need: real form fields (select/textarea/
+   checkbox), auth notices, stage cards, and portal summary cards.
+
+   Phase 5.1: adds an opt-in premium motion layer scoped to these
+   five pages only (orb backdrop, benefit/stage/portal card
+   spotlight+tilt, animated stage rail, progress stepper, trust
+   panel). Nothing here changes homepage/control-plane behavior --
+   see docs/phase_5_1_new_pages_motion_pass.md.
+   ============================================================ */
+
+/* .authnotice / .authcard / .formgrid all set their own `display`,
+   which (per CSS origin rules) silently outranks the UA stylesheet's
+   `[hidden] { display: none }`, so any of these with a bare `hidden`
+   attribute would render anyway. Restoring that here is what makes
+   every hidden/shown auth + form state (and the new pop-in animation
+   on [hidden] removal) actually work as the existing JS intends. */
+.authnotice[hidden], .authcard[hidden], .formgrid[hidden], .profilemenu__panel[hidden] { display: none; }
+
+.pagehead { position: relative; padding-top: clamp(7rem, 14vh, 10rem); padding-bottom: clamp(2rem, 5vh, 3rem); overflow: clip; }
+.pagehead > .wrap { position: relative; z-index: 1; }
+.pagehead .constellation { right: 2%; top: 12%; width: min(26vw, 320px); height: auto; opacity: 0.5; z-index: 0; }
+@media (max-width: 980px) { .pagehead .constellation { display: none; } }
+.pagehead .eyebrow { margin-bottom: 1rem; }
+.pagehead h1 { position: relative; z-index: 1; font-weight: 500; font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.15; letter-spacing: -0.03em; text-wrap: balance; }
+.pagehead p { position: relative; z-index: 1; margin-top: 1.1rem; max-width: 62ch; color: var(--text-dim); font-size: 1.05rem; line-height: 1.6; }
+.pagehead__cta { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 1.8rem; }
+
+/* ============================================================
+   ORB FIELD - decorative ambient glow behind hero sections.
+   Pure CSS, no JS; drifts slowly and stays fixed under
+   reduced-motion. Purely decorative (aria-hidden).
+   ============================================================ */
+.orbfield { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.orbfield .orb {
+  position: absolute; border-radius: 50%; filter: blur(60px);
+  opacity: 0.55; will-change: transform;
+}
+.orbfield .orb--a {
+  width: clamp(16rem, 40vw, 30rem); height: clamp(16rem, 40vw, 30rem);
+  left: -8%; top: -12%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--signal) 30%, transparent) 0%, transparent 70%);
+}
+.orbfield .orb--b {
+  width: clamp(14rem, 32vw, 24rem); height: clamp(14rem, 32vw, 24rem);
+  right: -6%; top: 18%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--signal) 18%, transparent) 0%, transparent 72%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .orbfield .orb--a { animation: orbDriftA 22s var(--ease-io) infinite; }
+  .orbfield .orb--b { animation: orbDriftB 26s var(--ease-io) infinite; }
+}
+@keyframes orbDriftA { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(3%, 4%) scale(1.08); } }
+@keyframes orbDriftB { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-4%, -3%) scale(1.06); } }
+@media (max-width: 640px) { .orbfield .orb { opacity: 0.4; } }
+
+/* ---- generic form controls (select/textarea/checkbox) ------------- */
+
+.formgrid { display: grid; gap: 1.4rem; }
+@media (min-width: 720px) { .formgrid--2col { grid-template-columns: 1fr 1fr; } }
+
+.formfield { display: grid; gap: 0.5rem; }
+.formfield__label {
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-faint);
+}
+.formfield__label .req { color: var(--signal); margin-left: 0.3em; }
+.formfield input[type="text"],
+.formfield input[type="email"],
+.formfield input[type="password"],
+.formfield input[type="url"],
+.formfield select,
+.formfield textarea {
+  width: 100%;
+  background: var(--bg-1);
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.98rem;
+  transition: border-color 0.35s var(--ease), background 0.35s var(--ease);
+}
+.formfield select {
+  appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='rgba(238,242,247,0.45)' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.95rem center; background-size: 11px 8px;
+  padding-right: 2.4rem;
+}
+.formfield select option { background: var(--bg-1); color: var(--text); }
+.formfield textarea { resize: vertical; min-height: 6.5rem; line-height: 1.5; }
+.formfield input::placeholder, .formfield textarea::placeholder { color: var(--text-faint); }
+.formfield input:focus-visible, .formfield select:focus-visible, .formfield textarea:focus-visible {
+  outline: none; border-color: var(--signal-line); background: var(--bg-2);
+}
+.formfield__err { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.06em; color: oklch(0.7 0.13 35); min-height: 1.1em; }
+.formfield--invalid input, .formfield--invalid select, .formfield--invalid textarea { border-color: oklch(0.7 0.13 35 / 0.6); }
+
+.checkfield { display: flex; align-items: flex-start; gap: 0.75rem; }
+.checkfield input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none; position: relative;
+  margin-top: 0.2rem; width: 16px; height: 16px; flex: none; cursor: pointer;
+  border: 1px solid var(--line-2); border-radius: 4px; background: var(--bg-1);
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.checkfield input[type="checkbox"]:hover { border-color: var(--signal-line); }
+.checkfield input[type="checkbox"]:checked { background: var(--signal); border-color: var(--signal); }
+.checkfield input[type="checkbox"]:checked::after {
+  content: ""; position: absolute; left: 4px; top: 0px; width: 5px; height: 9px;
+  border: solid var(--bg); border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+.checkfield input[type="checkbox"]:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+.checkfield label { font-size: 0.88rem; color: var(--text-dim); line-height: 1.5; cursor: pointer; }
+
+.multicheck { display: flex; flex-wrap: wrap; gap: 0.55rem; }
+.multicheck label { position: relative; }
+.multicheck input { position: absolute; opacity: 0; width: 0; height: 0; }
+.multicheck span {
+  display: inline-flex; align-items: center; padding: 0.5rem 0.85rem; cursor: pointer;
+  border: 1px solid var(--line-2); border-radius: 100px;
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em; color: var(--text-dim);
+  transition: border-color 0.35s var(--ease), color 0.35s var(--ease), background 0.35s var(--ease);
+}
+.multicheck input:checked + span { color: var(--text); border-color: var(--signal-line); background: var(--signal-soft); }
+.multicheck input:focus-visible + span { outline: 2px solid var(--signal); outline-offset: 2px; }
+
+.formsubmit { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 0.4rem; }
+
+/* ---- auth notices (config error, form error, success) --------------- */
+
+.authnotice {
+  border: 1px solid var(--line-2); border-radius: 10px; padding: 1rem 1.2rem;
+  background: var(--bg-1); display: grid; gap: 0.4rem;
+}
+.authnotice__title { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); }
+.authnotice p { color: var(--text-dim); font-size: 0.92rem; line-height: 1.55; }
+.authnotice--err { border-color: oklch(0.7 0.13 35 / 0.4); }
+.authnotice--err .authnotice__title { color: oklch(0.75 0.13 35); }
+.authnotice--ok { border-color: var(--signal-line); }
+.authnotice--ok .authnotice__title { color: var(--signal); }
+.authnotice--info { border-color: var(--line-2); }
+
+/* ---- auth card (login) ------------------------------------------------ */
+
+.authcard {
+  border: 1px solid var(--line); border-radius: 14px; background: var(--bg-1);
+  padding: clamp(1.6rem, 4vw, 2.4rem); max-width: 480px; margin-inline: auto; display: grid; gap: 1.4rem;
+}
+.authcard__tabs { display: flex; gap: 0.5rem; }
+.authcard__tab {
+  font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.5rem 0.9rem; border-radius: 100px; border: 1px solid var(--line-2); color: var(--text-dim);
+  background: transparent; cursor: pointer; transition: all 0.3s var(--ease);
+}
+.authcard__tab.is-active { color: var(--text); border-color: var(--signal-line); background: var(--signal-soft); }
+.authcard__foot { display: grid; gap: 0.5rem; padding-top: 0.6rem; border-top: 1px solid var(--line); }
+.authcard__foot a { font-size: 0.86rem; color: var(--text-dim); transition: color 0.3s var(--ease); }
+.authcard__foot a:hover { color: var(--text); }
+
+/* ---- stage cards (Stage 1/2/3, product stages) ------------------------ */
+
+.stagegrid { display: grid; gap: 1.1rem; }
+@media (min-width: 860px) { .stagegrid { grid-template-columns: repeat(3, 1fr); } }
+.stagecard {
+  border: 1px solid var(--line); border-radius: 14px; padding: 1.6rem; background: var(--bg-1);
+  display: grid; gap: 0.8rem; align-content: start;
+}
+.stagecard.is-now { border-color: var(--signal-line); background: linear-gradient(180deg, var(--signal-soft), transparent 60%); }
+.stagecard__tag {
+  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint);
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.stagecard.is-now .stagecard__tag { color: var(--signal); }
+.stagecard h3 { font-weight: 500; font-size: 1.2rem; letter-spacing: -0.01em; }
+.stagecard p { color: var(--text-dim); font-size: 0.92rem; line-height: 1.55; }
+.stagecard ul { display: grid; gap: 0.4rem; margin-top: 0.2rem; padding-left: 1.1rem; }
+.stagecard li { color: var(--text-dim); font-size: 0.88rem; line-height: 1.5; }
+.stagecard__example {
+  font-family: var(--font-mono); font-size: 0.76rem; color: var(--text-faint); background: var(--bg-2);
+  border: 1px solid var(--line); border-radius: 8px; padding: 0.7rem 0.85rem; margin-top: 0.2rem;
+}
+
+/* ---- who-this-is-for / role cards --------------------------------- */
+
+.rolegrid { display: grid; gap: 0.9rem; }
+@media (min-width: 640px) { .rolegrid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 980px) { .rolegrid { grid-template-columns: repeat(3, 1fr); } }
+.rolecard {
+  border: 1px solid var(--line); border-radius: 12px; padding: 1.3rem; background: var(--bg-1);
+  overflow: hidden;
+  transition: border-color 0.35s var(--ease), transform 0.35s var(--ease);
+}
+.rolecard:hover { border-color: var(--signal-line); transform: translateY(-2px); }
+.rolecard__title { font-weight: 500; font-size: 1rem; margin-bottom: 0.4rem; }
+.rolecard p { color: var(--text-dim); font-size: 0.88rem; line-height: 1.5; }
+
+/* optional cover photo (same grayscale + signal-blue duotone
+   treatment as styles.css's .photoband, so real photos read as
+   part of the same system wherever they appear on the site) */
+.rolecard__imgwrap { position: relative; margin: -1.3rem -1.3rem 1rem; aspect-ratio: 16 / 9; overflow: hidden; }
+.rolecard__img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block;
+  filter: grayscale(0.82) brightness(0.6) contrast(1.18);
+  transition: transform 1.2s var(--ease), filter 0.6s var(--ease);
+}
+.rolecard__imgwrap::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: color-mix(in srgb, var(--signal) 55%, transparent); mix-blend-mode: color; opacity: 0.55;
+}
+.rolecard__imgwrap::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, transparent 55%, color-mix(in srgb, var(--bg-1) 92%, transparent) 100%);
+}
+@media (hover: hover) and (pointer: fine) {
+  .rolecard:hover .rolecard__img { transform: scale(1.06); filter: grayscale(0.6) brightness(0.68) contrast(1.15); }
+}
+@media (prefers-reduced-motion: reduce) { .rolecard__img { transition: none; } }
+
+/* ---- portal cards --------------------------------------------------- */
+
+.portalgrid { display: grid; gap: 1.1rem; }
+@media (min-width: 860px) { .portalgrid { grid-template-columns: 1fr 1fr; } }
+.portalcard {
+  border: 1px solid var(--line); border-radius: 14px; padding: 1.6rem; background: var(--bg-1);
+  display: grid; gap: 0.9rem; align-content: start;
+}
+.portalcard--wide { grid-column: 1 / -1; }
+.portalcard h3 { font-weight: 500; font-size: 1.05rem; }
+.portalcard__row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-block: 0.5rem; border-bottom: 1px solid var(--line-soft); }
+.portalcard__row:last-child { border-bottom: 0; }
+.portalcard__row .k { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); }
+.portalcard__row .v { color: var(--text); font-size: 0.92rem; text-align: right; }
+.portalcard__linklist { display: grid; gap: 0.5rem; }
+.portalcard__linklist a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--text-dim); font-size: 0.92rem; transition: color 0.3s var(--ease); }
+.portalcard__actions { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 0.3rem; }
+.portalcard__linklist a:hover { color: var(--text); }
+
+.statuspill {
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.8rem; border-radius: 100px;
+  border: 1px solid var(--line-2); font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-dim); width: fit-content;
+}
+.statuspill .d { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); flex: none; }
+.statuspill--submitted, .statuspill--reviewing { border-color: var(--signal-line); color: var(--text); }
+.statuspill--submitted .d, .statuspill--reviewing .d { background: var(--signal); box-shadow: 0 0 8px var(--signal-glow); }
+.statuspill--accepted { border-color: var(--signal-line); color: var(--signal); }
+.statuspill--accepted .d { background: var(--signal); }
+.statuspill--declined, .statuspill--waitlisted { border-color: var(--warn-line); color: var(--warn); }
+.statuspill--declined .d, .statuspill--waitlisted .d { background: var(--warn); }
+
+/* ---- research page "coming soon" panels -------------------------------
+   Replaces the old bracket-tag placeholder style ("[ABSTRACT] ...",
+   dashed border + monospace) which read like an unfilled CMS template.
+   Same honest meaning (nothing here is final/published), presented as
+   an intentional coming-soon panel instead. --soon = genuinely nothing
+   published yet (pulsing dot); default = preliminary content that
+   already exists but will be superseded by the paper (static dot). */
+.comingsoon {
+  position: relative; overflow: hidden;
+  border: 1px solid var(--line); border-radius: 12px; padding: clamp(1.3rem, 3vw, 1.8rem);
+  background: var(--bg-1); display: grid; gap: 0.8rem; align-content: start;
+}
+.comingsoon::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.6;
+  background: radial-gradient(420px 220px at 100% 0%, var(--signal-soft), transparent 70%);
+}
+.comingsoon__badge {
+  position: relative; z-index: 1; width: fit-content;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.4rem 0.8rem; border-radius: 100px; border: 1px solid var(--line-2);
+  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.comingsoon__badge .d { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); flex: none; }
+.comingsoon--soon .comingsoon__badge { border-color: var(--signal-line); color: var(--text); }
+.comingsoon--soon .comingsoon__badge .d { background: var(--signal); box-shadow: 0 0 8px var(--signal-glow); }
+@media (prefers-reduced-motion: no-preference) { .comingsoon--soon .comingsoon__badge .d { animation: ping 3.4s var(--ease-io) infinite; } }
+.comingsoon__title { position: relative; z-index: 1; font-weight: 500; font-size: 1.05rem; letter-spacing: -0.005em; }
+.comingsoon p { position: relative; z-index: 1; color: var(--text-dim); font-size: 0.92rem; line-height: 1.6; max-width: 68ch; }
+.comingsoon p code { font-family: var(--font-mono); font-size: 0.85em; color: var(--text-dim); }
+
+.loadingdots::after { content: "..."; display: inline-block; }
+@media (prefers-reduced-motion: no-preference) {
+  .loadingdots::after { animation: loadingDots 1.2s steps(1, end) infinite; }
+  @keyframes loadingDots { 0% { opacity: 0.25; } 50% { opacity: 1; } 100% { opacity: 0.25; } }
+}
+
+/* ============================================================
+   CARD SPOTLIGHT + TILT (opt-in)
+   Reuses the same cursor-tracked --cx/--cy (spotlight) and
+   --tiltx/--tilty (lean) custom properties ambient.js already
+   writes for the homepage/control-plane cards (see styles.css
+   "PREMIUM INTERACTION LAYER"). ambient.js's CARD_SEL/TILT_SEL
+   were extended to include these four selectors; no new JS.
+   Fine-pointer only; no-ops under reduced-motion or touch.
+   ============================================================ */
+.rolecard, .stagecard, .portalcard, .benefitcard { position: relative; }
+.rolecard::after, .stagecard::after, .portalcard::after, .benefitcard::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  pointer-events: none; opacity: 0; z-index: 2;
+  background: radial-gradient(240px 240px at var(--cx, 50%) var(--cy, 50%),
+    color-mix(in srgb, var(--signal) 24%, transparent) 0%, transparent 62%);
+  mix-blend-mode: screen;
+  transition: opacity 0.45s var(--ease);
+}
+.rolecard:hover::after, .stagecard:hover::after, .portalcard:hover::after, .benefitcard:hover::after { opacity: 1; }
+.rolecard, .stagecard, .portalcard, .benefitcard {
+  transition: transform 0.4s var(--ease), border-color 0.35s var(--ease), box-shadow 0.4s var(--ease), background 0.4s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .rolecard:hover, .stagecard:hover, .portalcard:hover, .benefitcard:hover {
+    transform: perspective(800px) rotateX(calc(var(--tilty, 0) * -3deg)) rotateY(calc(var(--tiltx, 0) * 4deg)) translateY(-3px);
+    box-shadow: 0 24px 60px -36px rgba(0,0,0,0.8);
+  }
+}
+@media (hover: none), (pointer: coarse) {
+  /* touch: no hover-only interaction required, keep a static lift-free card */
+  .rolecard:active, .stagecard:active, .portalcard:active, .benefitcard:active { border-color: var(--signal-line); }
+}
+.stagecard:hover, .benefitcard:hover { border-color: var(--signal-line); }
+@media (prefers-reduced-motion: reduce) {
+  .rolecard::after, .stagecard::after, .portalcard::after, .benefitcard::after { display: none; }
+  .rolecard:hover, .stagecard:hover, .portalcard:hover, .benefitcard:hover { transform: none; }
+}
+
+/* ============================================================
+   ANIMATED BORDER GLOW - the current/active stage card
+   (Stage 1 · Now) reads as the "live" one, subtly. A slow
+   breathing box-shadow ring, not a conic-gradient mask (that
+   trick renders as a broken diagonal artifact in some engines).
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  .stagecard.is-now { animation: stageGlowPulse 4.5s var(--ease-io) infinite; }
+}
+@keyframes stageGlowPulse {
+  0%, 100% { box-shadow: 0 0 0 1px var(--signal-line), 0 0 26px -14px var(--signal-glow); }
+  50% { box-shadow: 0 0 0 1px var(--signal), 0 0 34px -10px var(--signal-glow); }
+}
+
+/* ============================================================
+   BENEFIT CARDS (founding-partner benefits, /partners)
+   ============================================================ */
+.benefitgrid { display: grid; gap: 0.9rem; }
+@media (min-width: 640px) { .benefitgrid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 980px) { .benefitgrid { grid-template-columns: repeat(3, 1fr); } }
+.benefitcard {
+  border: 1px solid var(--line); border-radius: 12px; padding: 1.3rem; background: var(--bg-1);
+  display: grid; gap: 0.6rem; align-content: start;
+}
+.benefitcard__glyph {
+  width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--signal-line);
+  background: var(--signal-soft); box-shadow: 0 0 10px -2px var(--signal-glow);
+}
+.benefitcard__title { font-weight: 500; font-size: 1rem; letter-spacing: -0.005em; }
+.benefitcard p { color: var(--text-dim); font-size: 0.88rem; line-height: 1.5; }
+
+/* ============================================================
+   STAGE RAIL - decorative connecting line above the Stage
+   1/2/3 grid. Static fill (Stage 1 is the real current stage;
+   the fill never scroll-links to avoid implying 2/3 are live).
+   Desktop only; on a stacked mobile layout the "Stage N" tags
+   inside each card already carry the sequence.
+   ============================================================ */
+.stagerail { display: none; }
+@media (min-width: 860px) {
+  .stagerail {
+    position: relative; display: grid; grid-template-columns: repeat(3, 1fr); align-items: center;
+    height: 20px; margin-bottom: 0.6rem; padding-inline: 0.2rem;
+  }
+  /* absolutely positioned + vertically centered against the same box
+     the nodes are grid-aligned in, so the line always runs through the
+     dots' centers rather than sitting in a separate row above them */
+  .stagerail__track {
+    position: absolute; left: 0.2rem; right: 0.2rem; top: 50%; transform: translateY(-50%);
+    height: 2px; background: var(--line-2); border-radius: 2px; overflow: hidden;
+  }
+  .stagerail__fill { position: absolute; inset: 0; width: 16.6%; background: linear-gradient(90deg, var(--signal), var(--signal-line)); box-shadow: 0 0 10px -1px var(--signal-glow); }
+  .stagerail__node { position: relative; z-index: 1; display: flex; align-items: center; gap: 0.5rem; justify-self: center; }
+  .stagerail__node:first-child { justify-self: start; }
+  .stagerail__node:last-child { justify-self: end; }
+  .stagerail__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line-2); flex: none; }
+  .stagerail__node.is-now .stagerail__dot { border-color: var(--signal); background: var(--signal); box-shadow: 0 0 10px var(--signal-glow); }
+  @media (prefers-reduced-motion: no-preference) { .stagerail__node.is-now .stagerail__dot { animation: ping 3.4s var(--ease-io) infinite; } }
+}
+
+/* ============================================================
+   PRICING EXAMPLE STRIP (Stage 3 illustrative math)
+   ============================================================ */
+.pricingstrip {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem 1rem;
+  margin-top: 0.4rem; padding: 0.9rem 1rem;
+  border: 1px dashed var(--line-2); border-radius: 8px; background: var(--bg-2);
+  font-family: var(--font-mono);
+}
+.pricingstrip__tag {
+  font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint);
+  width: 100%;
+}
+.pricingstrip__num { font-size: 1.05rem; color: var(--text); font-weight: 500; }
+.pricingstrip__op { color: var(--text-faint); font-size: 0.9rem; }
+.pricingstrip__result { color: var(--signal); font-size: 1.05rem; font-weight: 500; }
+
+/* ============================================================
+   TRUST PANEL (onboarding aside)
+   ============================================================ */
+.onboardgrid { display: grid; gap: clamp(2rem, 4vw, 3rem); }
+@media (min-width: 980px) { .onboardgrid { grid-template-columns: 1fr 320px; align-items: start; } }
+.trustpanel {
+  border: 1px solid var(--line); border-radius: 12px; background: var(--bg-1);
+  padding: 1.4rem; display: grid; gap: 1.1rem; align-content: start;
+  position: sticky; top: 6.5rem;
+}
+.trustpanel h3 { font-weight: 500; font-size: 0.92rem; }
+.trustpanel ul { list-style: none; display: grid; gap: 0.65rem; }
+.trustpanel li { position: relative; padding-left: 1.2rem; color: var(--text-dim); font-size: 0.84rem; line-height: 1.5; }
+.trustpanel li::before { content: ""; position: absolute; left: 0; top: 0.5em; width: 6px; height: 6px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 8px var(--signal-glow); }
+.trustpanel__foot { padding-top: 0.9rem; border-top: 1px solid var(--line); display: grid; gap: 0.45rem; }
+.trustpanel__foot a { font-size: 0.84rem; color: var(--text-dim); transition: color 0.3s var(--ease); }
+.trustpanel__foot a:hover { color: var(--text); }
+@media (max-width: 979.98px) { .trustpanel { position: static; } }
+
+/* ============================================================
+   PROGRESS STEPPER (onboarding form sections)
+   Active section is tracked purely visually via IntersectionObserver
+   in main.js (adds/removes .is-active / .is-done); if JS never
+   runs (no-JS), every step just renders in its neutral state and
+   the form remains fully usable top-to-bottom.
+   ============================================================ */
+.stepper { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 0; margin-bottom: clamp(1.6rem, 3vh, 2.2rem); }
+.stepper__step {
+  display: flex; align-items: center; gap: 0.55rem;
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text-faint); white-space: nowrap;
+  cursor: pointer; border-radius: 4px;
+  transition: color 0.3s var(--ease);
+}
+.stepper__step:hover { color: var(--text); }
+.stepper__step:hover .n { border-color: var(--signal-line); }
+.stepper__step:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+.stepper__step .n {
+  width: 20px; height: 20px; border-radius: 50%; flex: none;
+  border: 1px solid var(--line-2); display: grid; place-items: center;
+  font-family: var(--font-mono); font-size: 0.62rem; color: var(--text-faint);
+  transition: border-color 0.4s var(--ease), color 0.4s var(--ease), background 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+.stepper__step.is-active { color: var(--text); }
+.stepper__step.is-active .n { border-color: var(--signal); color: var(--text); background: var(--signal-soft); box-shadow: 0 0 12px -3px var(--signal-glow); }
+.stepper__step.is-done .n { border-color: var(--signal-line); color: var(--signal); }
+.stepper__connector { width: clamp(1rem, 3vw, 2.2rem); height: 1px; background: var(--line-2); margin-inline: 0.3rem; transition: background 0.4s var(--ease); }
+.stepper__step.is-done + .stepper__connector { background: var(--signal-line); }
+@media (max-width: 640px) {
+  .stepper { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 0.3rem; -webkit-overflow-scrolling: touch; }
+  .stepper__step .lbl { display: none; }
+}
+
+.formsection { scroll-margin-top: 6rem; }
+.formsection + .formsection { margin-top: clamp(1.8rem, 4vh, 2.6rem); padding-top: clamp(1.8rem, 4vh, 2.6rem); border-top: 1px solid var(--line-soft); }
+
+/* ============================================================
+   FORM VALIDATION MOTION
+   ============================================================ */
+.formfield--invalid input, .formfield--invalid select, .formfield--invalid textarea {
+  animation: fieldShake 0.4s var(--ease-io);
+}
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes fieldShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+}
+.formfield__err:not(:empty) { animation: errFadeIn 0.3s var(--ease); }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes errFadeIn { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+}
+
+/* auth / submit notices pop in the moment they're unhidden */
+.authnotice:not([hidden]) { animation: noticePop 0.45s var(--ease) both; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes noticePop { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+}
+
+/* status pill pops in on every (re)render */
+.statuspill { animation: pillPop 0.4s var(--ease) both; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes pillPop { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: none; } }
+}
+
+/* signed-in / auth card entrance */
+.authcard { animation: cardRise 0.6s var(--ease) both; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes cardRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+}
+
+/* button loading state - subtle pulse instead of a static disabled look */
+.btn:disabled, .btn[disabled] { cursor: progress; opacity: 0.82; }
+@media (prefers-reduced-motion: no-preference) {
+  .btn:disabled, .btn[disabled] { animation: btnPulse 1.6s var(--ease-io) infinite; }
+}
+@keyframes btnPulse { 0%, 100% { opacity: 0.82; } 50% { opacity: 1; } }
+
+/* ============================================================
+   RESEARCH PIPELINE (reuses styles.css .enginediagram__pipeline
+   - the same traveling-beam component already built for the
+   homepage's Coordination Engine diagram - just a 5-column
+   variant sized for the research page's 5 pipeline stages).
+   ============================================================ */
+.pipeline--5 { grid-template-columns: repeat(5, 1fr); }
+@media (max-width: 900px) { .pipeline--5 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .pipeline--5 { grid-template-columns: 1fr; } }
+
+/* research placeholder cards: gentle hover, still visually a
+   dashed "not final" placeholder (never disguised as a real
+   finding/figure) */
+.researchplaceholder { transition: border-color 0.35s var(--ease), background 0.35s var(--ease); }
+.researchplaceholder:hover { border-color: var(--line-2); background: var(--bg-2); }
+
+.centerwrap { max-width: 640px; margin: 0 auto; }
+
+/* ============================================================
+   PROFILE MENU (nav avatar + dropdown, built by nav-auth.js
+   whenever a real session exists -- replaces the plain "Login"
+   navlink rather than living in every page's static markup)
+   ============================================================ */
+.profilemenu { position: relative; display: inline-flex; align-items: center; }
+.profilemenu__trigger {
+  width: 32px; height: 32px; border-radius: 50%; flex: none;
+  border: 1px solid var(--line-2); background: var(--bg-1); cursor: pointer;
+  display: grid; place-items: center; padding: 0;
+  transition: border-color 0.3s var(--ease);
+}
+.profilemenu__trigger:hover, .profilemenu__trigger[aria-expanded="true"] { border-color: var(--signal-line); }
+.profilemenu__avatar {
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.02em;
+  color: var(--text); background: var(--signal-soft); width: 100%; height: 100%; border-radius: 50%;
+  display: grid; place-items: center;
+}
+.profilemenu__panel {
+  position: absolute; top: calc(100% + 0.6rem); right: 0; z-index: 20; width: 240px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--bg-raise);
+  padding: 0.9rem; display: grid; gap: 0.2rem;
+  box-shadow: 0 24px 48px -20px rgba(0,0,0,0.6);
+  animation: profilePanelPop 0.2s var(--ease) both;
+}
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes profilePanelPop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+}
+.profilemenu__who { display: grid; gap: 0.15rem; padding-bottom: 0.7rem; margin-bottom: 0.4rem; border-bottom: 1px solid var(--line-soft); }
+.profilemenu__name { font-size: 0.9rem; color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profilemenu__email { font-size: 0.76rem; color: var(--text-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profilemenu__link {
+  display: block; width: 100%; text-align: left; padding: 0.5rem 0.5rem; border-radius: 6px;
+  font-size: 0.86rem; color: var(--text-dim); background: none; border: 0; cursor: pointer; font-family: inherit;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.profilemenu__link:hover { background: var(--bg-2); color: var(--text); }
+@media (max-width: 720px) {
+  .profilemenu__panel { position: static; width: 100%; margin-top: 0.6rem; box-shadow: none; }
+}
+.profilemenu__avatar img, .profilemenu__trigger img {
+  width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;
+}
+
+/* accessible hide: keeps the real file input focusable/clickable via
+   its <label for="..."> instead of display:none removing it from the
+   accessibility tree and tab order entirely */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* ============================================================
+   PROFILE AVATAR (upload preview, /profile page)
+   ============================================================ */
+.profileavatar { display: flex; align-items: center; gap: 1.1rem; margin-bottom: 0.4rem; }
+.profileavatar__preview {
+  width: 64px; height: 64px; border-radius: 50%; flex: none; overflow: hidden;
+  background: var(--signal-soft); border: 1px solid var(--line-2);
+  display: grid; place-items: center;
+  font-family: var(--font-mono); font-size: 1.15rem; color: var(--text);
+}
+.profileavatar__preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.profileavatar__controls { display: grid; gap: 0.3rem; }
+
+/* ============================================================
+   HIRING (careers page role application accordions)
+   ============================================================ */
+.hirelist { display: grid; gap: 0.9rem; }
+.hirecard {
+  border: 1px solid var(--line); border-radius: 12px; background: var(--bg-1);
+  overflow: hidden; transition: border-color 0.35s var(--ease);
+}
+.hirecard[open], .hirecard:hover { border-color: var(--signal-line); }
+.hirecard__summary {
+  list-style: none; cursor: pointer; padding: 1.1rem 1.3rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.hirecard__summary::-webkit-details-marker { display: none; }
+.hirecard__role { font-weight: 500; font-size: 1.05rem; letter-spacing: -0.005em; }
+.hirecard__desc { color: var(--text-dim); font-size: 0.88rem; line-height: 1.5; margin-top: 0.3rem; }
+.hirecard__toggle {
+  flex: none; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line-2);
+  display: grid; place-items: center; font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-dim);
+  transition: transform 0.3s var(--ease);
+}
+.hirecard[open] .hirecard__toggle { transform: rotate(45deg); }
+.hirecard__body { padding: 0 1.3rem 1.3rem; border-top: 1px solid var(--line); padding-top: 1.2rem; }
+.hirecard__already { padding: 1rem 1.3rem 1.3rem; }
