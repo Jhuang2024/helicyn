@@ -10,6 +10,44 @@
   /* Clear the fixed site nav so the sticky status strip isn't hidden under it. */
   padding-top: var(--nav-h);
 }
+.cp-root.is-recalculating .cp-body > section,
+.cp-root.is-recalculating .cp-metrics,
+.cp-root.is-recalculating .cp-regions {
+  animation: cp-recalculate 0.75s var(--ease) both;
+}
+
+/* Shared cursor-reactive instrument surfaces (legacy ambient parity). */
+.cp-metric, .cp-region, .cp-rec, .cp-deck, .cp-panel, .cp-queue__col,
+.cp-queue__list li, .cp-verify, .cp-lifecell, .cp-assume, .cp-trace, .cp-feed {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.cp-metric::after, .cp-region::after, .cp-rec::after, .cp-deck::after,
+.cp-panel::after, .cp-queue__col::after, .cp-queue__list li::after,
+.cp-verify::after, .cp-lifecell::after, .cp-assume::after,
+.cp-trace::after, .cp-feed::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(260px circle at var(--cx, 50%) var(--cy, 50%), var(--signal-soft), transparent 68%);
+  transition: opacity 0.35s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .cp-metric:hover::after, .cp-region:hover::after, .cp-rec:hover::after,
+  .cp-deck:hover::after, .cp-panel:hover::after, .cp-queue__col:hover::after,
+  .cp-queue__list li:hover::after, .cp-verify:hover::after,
+  .cp-lifecell:hover::after, .cp-assume:hover::after,
+  .cp-trace:hover::after, .cp-feed:hover::after { opacity: 0.72; }
+}
+@keyframes cp-recalculate {
+  0% { opacity: 0.62; filter: saturate(0.7); }
+  45% { box-shadow: inset 0 1px 0 var(--signal-line); }
+  100% { opacity: 1; filter: none; box-shadow: none; }
+}
 .cp-body {
   max-width: var(--maxw);
   margin-inline: auto;
@@ -548,6 +586,21 @@
 .cp-topo__flowdash {
   animation: cp-flow 1.4s linear infinite;
 }
+.cp-topo__flows.is-previewing { opacity: 0.18; transition: opacity var(--dur); }
+.cp-topo__previewbase,
+.cp-topo__previewdash { fill: none; vector-effect: non-scaling-stroke; }
+.cp-topo__previewbase { stroke: var(--signal-line); stroke-width: 3; }
+.cp-topo__previewdash {
+  stroke: var(--signal);
+  stroke-width: 2;
+  stroke-dasharray: 4 9;
+  animation: cp-flow 1.1s linear infinite;
+  filter: drop-shadow(0 0 5px var(--signal-glow));
+}
+.cp-topo__node.is-preview-source circle,
+.cp-topo__node.is-preview-target circle { filter: drop-shadow(0 0 7px var(--signal-glow)); }
+.cp-topo__node.is-preview-source .cp-topo__nodelabel,
+.cp-topo__node.is-preview-target .cp-topo__nodelabel { fill: var(--text); }
 @keyframes cp-flow {
   to {
     stroke-dashoffset: -14;
