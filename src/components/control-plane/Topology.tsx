@@ -72,6 +72,7 @@ export function Topology() {
   const scenario = sim.scenario;
   const selected = sim.selectedRegion;
   const selectRegion = useControlPlane((s) => s.selectRegion);
+  const previewPath = useControlPlane((s) => s.previewPath);
   const [hover, setHover] = useState<TopoNodeId | null>(null);
 
   const content = SCN[scenario];
@@ -118,7 +119,7 @@ export function Topology() {
         </g>
 
         {/* flow arcs */}
-        <g className="cp-topo__flows">
+        <g className={'cp-topo__flows' + (previewPath ? ' is-previewing' : '')}>
           {content.flows.map((flow, i) => (
             <g key={i}>
               <path
@@ -144,6 +145,13 @@ export function Topology() {
           ))}
         </g>
 
+        {previewPath && previewPath.to && (
+          <g className="cp-topo__preview" aria-hidden="true">
+            <path d={arcPath(previewPath.from, previewPath.to)} className="cp-topo__previewbase" />
+            <path d={arcPath(previewPath.from, previewPath.to)} className="cp-topo__previewdash" />
+          </g>
+        )}
+
         {/* nodes */}
         <g className="cp-topo__nodes">
           {liveRegions.map((r) => {
@@ -152,7 +160,7 @@ export function Topology() {
             return (
               <g
                 key={r.id}
-                className={'cp-topo__node' + (isActive ? ' is-active' : '')}
+                className={'cp-topo__node' + (isActive ? ' is-active' : '') + (previewPath?.from === r.id ? ' is-preview-source' : '') + (previewPath?.to === r.id ? ' is-preview-target' : '')}
                 transform={`translate(${p.x} ${p.y})`}
                 role="button"
                 tabIndex={0}
