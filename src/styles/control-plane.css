@@ -357,6 +357,14 @@
   padding: 0.3rem 0.6rem;
   font-size: 0.72rem;
   color: var(--text-dim);
+  transition: color var(--dur), border-color var(--dur), background var(--dur), box-shadow var(--dur);
+}
+.cp-seq__step.is-done { color: var(--ok); border-color: var(--ok-line); }
+.cp-seq__step.is-active {
+  color: var(--text);
+  border-color: var(--signal-line);
+  background: var(--signal-soft);
+  box-shadow: 0 0 18px -8px var(--signal-glow);
 }
 
 /* Shareable session */
@@ -1067,6 +1075,13 @@
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  transition: border-color var(--dur), background var(--dur), transform var(--dur), box-shadow var(--dur);
+}
+.cp-hier__step.is-active {
+  border-color: var(--signal-line);
+  background: var(--signal-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -22px var(--signal-glow);
 }
 .cp-hier__step--verify { border-color: var(--ok-line); }
 .cp-hier__n { color: var(--signal); font-size: 0.72rem; }
