@@ -11,15 +11,22 @@ import { useControlPlane } from '@/state/controlPlaneStore';
  */
 export function useSimulationLoop(): void {
   const tick = useControlPlane((s) => s.tick);
+  const ambientEvent = useControlPlane((s) => s.ambientEvent);
 
   useEffect(() => {
     let id = 0;
+    let wallTicks = 0;
+    let last = performance.now();
     const start = () => {
       if (id) return;
+      last = performance.now();
       id = window.setInterval(() => {
-        // Advance by 1s of wall time; the engine multiplies by clock.speed and
-        // ignores the tick when paused.
-        tick(1);
+        const now = performance.now();
+        const elapsed = Math.max(0.25, Math.min(5, (now - last) / 1000));
+        last = now;
+        tick(elapsed);
+        wallTicks += 1;
+        if (wallTicks % 7 === 0) ambientEvent();
       }, 1000);
     };
     const stop = () => {
@@ -39,5 +46,5 @@ export function useSimulationLoop(): void {
       stop();
       document.removeEventListener('visibilitychange', onVisibility);
     };
-  }, [tick]);
+  }, [ambientEvent, tick]);
 }
