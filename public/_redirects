@@ -1,0 +1,30 @@
+# Helicyn — SPA redirects (Netlify-style).
+#
+# 1) Canonicalize legacy/space-encoded URLs to clean paths (301).
+# 2) Everything else falls through to the SPA shell (200), so direct loads and
+#    browser refreshes work on every client route. Prerendered static pages
+#    (dist/<route>/index.html) are served before this fallback.
+
+# Old space-encoded Control Plane URLs → clean path
+/control%20plane        /control-plane   301
+/control plane          /control-plane   301
+/Control%20Plane.html   /control-plane   301
+/Control Plane.html     /control-plane   301
+
+# Canonicalize any lingering .html links/bookmarks to clean paths
+/control-plane.html     /control-plane   301
+/index.html             /                301
+/login.html             /login           301
+/onboarding.html        /onboarding      301
+/partner-portal.html    /partner-portal  301
+/partners.html          /partners        301
+/research.html          /research        301
+/patch-notes.html       /patch-notes     301
+/auth-callback.html     /auth-callback   301
+/terms.html             /terms           301
+/profile.html           /profile         301
+/report.html            /report          301
+/careers.html           /careers         301
+
+# SPA history fallback (static prerendered files take precedence)
+/*                      /index.html      200

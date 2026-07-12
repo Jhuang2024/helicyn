@@ -63,24 +63,41 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
     Array.from(root.querySelectorAll<T>(sel));
 
   // ---- scroll reveals -------------------------------------------------------
+  // Uses getBoundingClientRect on scroll (the approach the original site used)
+  // rather than IntersectionObserver, which proved unreliable for the
+  // clip-path/will-change reveal elements. Content is therefore never left
+  // hidden: anything in or above the viewport reveals immediately.
   const revealEls = $$('[data-reveal]');
   if (revealEls.length) {
-    if (reduce || typeof IntersectionObserver === 'undefined') {
+    if (reduce) {
       revealEls.forEach((el) => el.classList.add('is-revealed', 'is-visible'));
     } else {
-      const io = new IntersectionObserver(
-        (entries) => {
-          for (const e of entries) {
-            if (e.isIntersecting) {
-              e.target.classList.add('is-revealed', 'is-visible');
-              io.unobserve(e.target);
-            }
-          }
-        },
-        { threshold: 0.1, rootMargin: '0px 0px -6% 0px' },
-      );
-      revealEls.forEach((el) => io.observe(el));
-      cleanups.push(() => io.disconnect());
+      let ticking = false;
+      const check = () => {
+        ticking = false;
+        const vh = window.innerHeight || document.documentElement.clientHeight;
+        for (const el of revealEls) {
+          if (el.classList.contains('is-revealed')) continue;
+          const r = el.getBoundingClientRect();
+          if (r.top < vh * 0.92 && r.bottom > -80) el.classList.add('is-revealed', 'is-visible');
+        }
+      };
+      const onScroll = () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(check);
+        }
+      };
+      check();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      // Safety: reveal everything shortly after load so nothing can stay hidden.
+      const safety = window.setTimeout(() => revealEls.forEach((el) => el.classList.add('is-revealed', 'is-visible')), 2500);
+      cleanups.push(() => {
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onScroll);
+        window.clearTimeout(safety);
+      });
     }
   }
 

@@ -1,41 +1,54 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * Scroll-reveal hook backed by IntersectionObserver.
- *
- * Adds `is-revealed` to the element when it scrolls into view. The CSS handles
- * the (clip-free) transition, so this only toggles a class. Reduced-motion is
- * handled in CSS. The observer is disconnected on unmount.
+ * Scroll-reveal hook. Adds `is-revealed` when the element scrolls into view,
+ * using getBoundingClientRect on scroll (robust across layouts where
+ * IntersectionObserver proved unreliable). A safety timeout guarantees content
+ * is never left hidden, and reduced-motion reveals immediately. The scroll
+ * listener and timer are cleaned up on unmount.
  */
-export function useReveal<T extends HTMLElement = HTMLDivElement>(once = true) {
+export function useReveal<T extends HTMLElement = HTMLDivElement>() {
   const ref = useRef<T | null>(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    if (typeof IntersectionObserver === 'undefined') {
-      el.classList.add('is-revealed');
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      el.classList.add('is-revealed', 'is-visible');
       return;
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-revealed');
-            if (once) observer.unobserve(entry.target);
-          } else if (!once) {
-            entry.target.classList.remove('is-revealed');
-          }
-        }
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
-    );
+    let ticking = false;
+    const reveal = () => {
+      el.classList.add('is-revealed', 'is-visible');
+      cleanup();
+    };
+    const check = () => {
+      ticking = false;
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const r = el.getBoundingClientRect();
+      if (r.top < vh * 0.92 && r.bottom > -80) reveal();
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(check);
+      }
+    };
+    const safety = window.setTimeout(reveal, 2500);
+    const cleanup = () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      window.clearTimeout(safety);
+    };
 
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [once]);
+    check();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return cleanup;
+  }, []);
 
   return ref;
 }

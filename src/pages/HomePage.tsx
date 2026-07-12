@@ -1,9 +1,10 @@
 import { Seo } from '@/components/common/Seo';
 import { StaticContent, extractMain } from './_static/StaticContent';
 import { HOME_JSONLD } from './seo-data';
+import { syncVersionStrings } from '@/app/version';
 import rawHome from '../../legacy/index.html?raw';
 
-const HOME_MAIN = extractMain(rawHome);
+const HOME_MAIN = syncVersionStrings(extractMain(rawHome));
 
 export function HomePage() {
   return (
