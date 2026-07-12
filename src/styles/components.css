@@ -177,6 +177,24 @@
   position: relative;
 }
 
+/* ---- Nav fit ----
+   The horizontal nav shows above the 1180px drawer breakpoint. On tighter
+   desktop widths (laptops at 1280–1400) the full item set plus the large page
+   gutter left the "Apply as partner" CTA clipping off the right edge. Between
+   the drawer breakpoint and roomy desktop, drop the decorative UTC clock and
+   tighten spacing so every item — including the CTA — stays on screen. */
+@media (min-width: 1181px) and (max-width: 1440px) {
+  .nav__meta {
+    display: none;
+  }
+  .nav__right {
+    gap: clamp(0.6rem, 1.4vw, 1.2rem);
+  }
+  .navlink {
+    letter-spacing: 0;
+  }
+}
+
 /* ---- Forms (auth, onboarding, careers, profile) ---- */
 .authform,
 .onboarding-form,
