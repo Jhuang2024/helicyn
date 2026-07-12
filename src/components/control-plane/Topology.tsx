@@ -3,6 +3,7 @@ import {
   MAP,
   NODE_POS,
   SCN,
+  computeFleet,
   projectNode,
   type FlowArc,
   type RegionNode,
@@ -67,13 +68,29 @@ function arcPath(from: TopoNodeId, to: TopoNodeId): string {
  * flow animation. Tooltips carry load, spare capacity, carbon, thermal, and role.
  */
 export function Topology() {
-  const scenario = useControlPlane((s) => s.sim.scenario);
-  const selected = useControlPlane((s) => s.sim.selectedRegion);
+  const sim = useControlPlane((s) => s.sim);
+  const scenario = sim.scenario;
+  const selected = sim.selectedRegion;
   const selectRegion = useControlPlane((s) => s.selectRegion);
   const [hover, setHover] = useState<TopoNodeId | null>(null);
 
   const content = SCN[scenario];
-  const regionById = new Map(content.regions.map((r) => [r.id, r]));
+  const fleet = computeFleet(sim);
+  const fleetByTopo = new Map<TopoNodeId, (typeof fleet.regions)[number]>([
+    ['oregon', fleet.regions.find((r) => r.id === 'us-west')!],
+    ['virginia', fleet.regions.find((r) => r.id === 'us-central')!],
+    ['tokyo', fleet.regions.find((r) => r.id === 'us-east')!],
+    ['frankfurt', fleet.regions.find((r) => r.id === 'eu-west')!],
+    ['singapore', fleet.regions.find((r) => r.id === 'apac')!],
+  ]);
+  const liveRegions = content.regions.map((region) => {
+    const live = fleetByTopo.get(region.id);
+    if (!live) return region;
+    const jitter = Math.sin(sim.clock.seconds / 12 + region.id.length) * 1.4;
+    const status: RegionNode['status'] = live.risk === 'high' ? 'crit' : live.risk === 'med' ? 'warn' : region.status === 'opt' ? 'opt' : 'ok';
+    return { ...region, util: Math.max(0, Math.min(100, Math.round(live.load + jitter))), status };
+  });
+  const regionById = new Map(liveRegions.map((r) => [r.id, r]));
   const tipId = hover ?? selected;
   const tip = tipId ? regionById.get(tipId) : null;
   const tipPos = tipId ? projectNode(tipId) : null;
@@ -129,7 +146,7 @@ export function Topology() {
 
         {/* nodes */}
         <g className="cp-topo__nodes">
-          {content.regions.map((r) => {
+          {liveRegions.map((r) => {
             const p = projectNode(r.id);
             const isActive = tipId === r.id;
             return (
