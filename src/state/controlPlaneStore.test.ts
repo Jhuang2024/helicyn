@@ -93,6 +93,15 @@ describe('centralized Control Plane store', () => {
     get().tick(60);
     get().tick(60);
     expect(get().sim.history.length).toBeGreaterThan(before);
+    expect(get().sim.history.at(-1)?.carbonIntensity).toBeTypeOf('number');
+  });
+
+  it('keeps the coordination event feed live', () => {
+    const before = get().sim.events;
+    get().ambientEvent();
+    expect(get().sim.events).toHaveLength(Math.min(9, before.length + 1));
+    expect(get().sim.events.at(-1)?.text).not.toBe(before.at(-1)?.text);
+    expect(get().sim.actionCounter).toBeGreaterThan(createInitialSimulationState().actionCounter);
   });
 
   it('never lets an action be both approved and rejected', () => {
