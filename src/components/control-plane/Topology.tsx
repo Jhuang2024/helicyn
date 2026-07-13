@@ -3,8 +3,8 @@ import {
   MAP,
   NODE_POS,
   SCN,
-  computeFleet,
   projectNode,
+  selectRegionTelemetry,
   type FlowArc,
   type RegionNode,
   type TopoNodeId,
@@ -31,9 +31,7 @@ const FLOW_COLOR: Record<FlowArc['kind'], string> = {
   warn: 'var(--warn)',
 };
 
-// Coarse geographic silhouettes from the original Control Plane. The React
-// migration retained the projection and nodes but accidentally dropped the
-// land layer, leaving the "map" as an empty graticule.
+// Coarse geographic silhouettes from the original Control Plane.
 const CONTINENTS: Array<Array<[number, number]>> = [
   [[-165,60],[-156,71],[-128,71],[-95,72],[-62,68],[-78,62],[-55,51],[-70,41],[-81,25],[-97,26],[-112,30],[-124,48],[-150,59],[-165,60]],
   [[-78,8],[-60,9],[-49,0],[-35,-8],[-48,-25],[-62,-40],[-69,-52],[-74,-50],[-71,-33],[-70,-18],[-81,-6],[-78,8]],
@@ -61,43 +59,64 @@ function arcPath(from: TopoNodeId, to: TopoNodeId): string {
 }
 
 /**
- * Regional coordination topology. Represents every active region, colour-codes
- * nominal/optimizing/constrained/critical states, animates workload flows
- * between regions, and links selection with every other module: clicking a node
- * selects the region across the whole Control Plane. Reduced-motion disables the
- * flow animation. Tooltips carry load, spare capacity, carbon, thermal, and role.
+ * Regional coordination topology — the main canvas visualization. Every node
+ * derives from the unified region-telemetry selector (the same numbers the
+ * region cards show), and clicking a node sets the global selected entity so
+ * the inspector, event stream, and other views stay in sync. When a
+ * recommendation is selected, its touched regions glow; hovering a rec or
+ * workload previews its movement path. Reduced motion disables flow animation.
  */
-export function Topology() {
+export function Topology({ compact = false }: { compact?: boolean }) {
   const sim = useControlPlane((s) => s.sim);
   const scenario = sim.scenario;
-  const selected = sim.selectedRegion;
+  const selectedEntity = sim.selectedEntity;
+  const selected = selectedEntity?.type === 'region' ? selectedEntity.id : null;
   const selectRegion = useControlPlane((s) => s.selectRegion);
   const previewPath = useControlPlane((s) => s.previewPath);
   const [hover, setHover] = useState<TopoNodeId | null>(null);
 
   const content = SCN[scenario];
-  const fleet = computeFleet(sim);
-  const fleetByTopo = new Map<TopoNodeId, (typeof fleet.regions)[number]>([
-    ['oregon', fleet.regions.find((r) => r.id === 'us-west')!],
-    ['virginia', fleet.regions.find((r) => r.id === 'us-central')!],
-    ['tokyo', fleet.regions.find((r) => r.id === 'us-east')!],
-    ['frankfurt', fleet.regions.find((r) => r.id === 'eu-west')!],
-    ['singapore', fleet.regions.find((r) => r.id === 'apac')!],
-  ]);
-  const liveRegions = content.regions.map((region) => {
-    const live = fleetByTopo.get(region.id);
-    if (!live) return region;
-    const jitter = Math.sin(sim.clock.seconds / 12 + region.id.length) * 1.4;
-    const status: RegionNode['status'] = live.risk === 'high' ? 'crit' : live.risk === 'med' ? 'warn' : region.status === 'opt' ? 'opt' : 'ok';
-    return { ...region, util: Math.max(0, Math.min(100, Math.round(live.load + jitter))), status };
-  });
+  const telemetry = selectRegionTelemetry(sim);
+  const liveRegions = telemetry.map((t) => ({
+    id: t.topoId,
+    util: t.load,
+    carbon: t.carbonLabel,
+    thermal: t.thermal,
+    role: t.role,
+    status: t.status,
+    spare: t.spare,
+  }));
+
+  // Regions touched by the currently selected recommendation glow on the map.
+  const relatedNodes = new Set<TopoNodeId>();
+  if (selectedEntity?.type === 'recommendation') {
+    const card = sim.recommendations.find((r) => r.id === selectedEntity.id);
+    if (card) {
+      relatedNodes.add(card.template.topo.from);
+      if (card.template.topo.to) relatedNodes.add(card.template.topo.to);
+    }
+  }
+  if (selectedEntity?.type === 'workload') {
+    const w = sim.workloads.find((r) => r.id === selectedEntity.id);
+    if (w) {
+      relatedNodes.add(w.template.topo.from);
+      if (w.template.topo.to) relatedNodes.add(w.template.topo.to);
+    }
+  }
+  if (selectedEntity?.type === 'event') {
+    const event = sim.events.find((e) => e.id === selectedEntity.id);
+    for (const ref of event?.entities ?? []) {
+      if (ref.type === 'region') relatedNodes.add(ref.id as TopoNodeId);
+    }
+  }
+
   const regionById = new Map(liveRegions.map((r) => [r.id, r]));
   const tipId = hover ?? selected;
   const tip = tipId ? regionById.get(tipId) : null;
   const tipPos = tipId ? projectNode(tipId) : null;
 
   return (
-    <div className="cp-topo">
+    <div className={'cp-topo' + (compact ? ' cp-topo--compact' : '')}>
       <svg
         className="cp-topo__map"
         viewBox={`0 0 ${MAP.W} ${MAP.H}`}
@@ -157,13 +176,21 @@ export function Topology() {
           {liveRegions.map((r) => {
             const p = projectNode(r.id);
             const isActive = tipId === r.id;
+            const isRelated = relatedNodes.has(r.id);
             return (
               <g
                 key={r.id}
-                className={'cp-topo__node' + (isActive ? ' is-active' : '') + (previewPath?.from === r.id ? ' is-preview-source' : '') + (previewPath?.to === r.id ? ' is-preview-target' : '')}
+                className={
+                  'cp-topo__node' +
+                  (isActive ? ' is-active' : '') +
+                  (isRelated ? ' is-related' : '') +
+                  (previewPath?.from === r.id ? ' is-preview-source' : '') +
+                  (previewPath?.to === r.id ? ' is-preview-target' : '')
+                }
                 transform={`translate(${p.x} ${p.y})`}
                 role="button"
                 tabIndex={0}
+                aria-pressed={selected === r.id}
                 aria-label={`${NODE_POS[r.id].label}: ${STATUS_LABEL[r.status]}, ${r.util}% utilization`}
                 onMouseEnter={() => setHover(r.id)}
                 onMouseLeave={() => setHover(null)}
@@ -177,6 +204,7 @@ export function Topology() {
                   }
                 }}
               >
+                {isRelated && <circle r={17} fill="none" stroke="var(--signal)" strokeDasharray="3 4" opacity="0.8" />}
                 <circle r={isActive ? 13 : 10} fill={STATUS_COLOR[r.status]} opacity="0.18" />
                 <circle r={isActive ? 7 : 5} fill={STATUS_COLOR[r.status]} />
                 <text className="cp-topo__nodelabel mono" y={-16} textAnchor="middle">
@@ -188,7 +216,7 @@ export function Topology() {
         </g>
       </svg>
 
-      {tip && tipPos && (
+      {tip && tipPos && !compact && (
         <div
           className="cp-topo__tip"
           style={{ left: `${(tipPos.x / MAP.W) * 100}%`, top: `${(tipPos.y / MAP.H) * 100}%` }}
@@ -198,7 +226,7 @@ export function Topology() {
           <span className={'cp-topo__tipbadge cp-topo__tipbadge--' + tip.status}>{STATUS_LABEL[tip.status]}</span>
           <dl>
             <div><dt>Load</dt><dd>{tip.util}%</dd></div>
-            <div><dt>Spare capacity</dt><dd>{Math.max(0, 100 - tip.util)}%</dd></div>
+            <div><dt>Spare capacity</dt><dd>{tip.spare}%</dd></div>
             <div><dt>Carbon</dt><dd>{tip.carbon}</dd></div>
             <div><dt>Thermal</dt><dd>{tip.thermal}</dd></div>
             <div><dt>Role</dt><dd>{tip.role}</dd></div>

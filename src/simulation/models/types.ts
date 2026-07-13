@@ -257,10 +257,92 @@ export interface DecisionTrace {
 
 export type EventType = 'detected' | 'analyzed' | 'acted' | 'verified' | 'saved' | 'rejected';
 
+/** Legacy scenario-authored event (still the authoring format in scenarios.ts). */
 export interface CoordinationEvent {
   time: string;
   type: EventType;
   text: string;
+}
+
+/** Event-stream category. Detection, recommendation, action, and verification
+ * phases are distinct so the stream can differentiate them visually. */
+export type EventCategory =
+  | 'telemetry'
+  | 'constraint'
+  | 'analysis'
+  | 'recommendation'
+  | 'approval'
+  | 'rejection'
+  | 'migration'
+  | 'action'
+  | 'verification'
+  | 'savings'
+  | 'system';
+
+export type EventSeverity = 'info' | 'ok' | 'warn' | 'crit';
+
+/** A reference from an event to a domain entity it affects. */
+export interface EntityRef {
+  type: 'region' | 'workload' | 'recommendation';
+  id: string;
+}
+
+/**
+ * A structured simulation event. Events are appended exactly once by the
+ * engine (never by render code), carry a unique id, and link back to the
+ * entities and recommendation/action that produced them.
+ */
+export interface SimEvent {
+  id: string;
+  /** Simulation-time seconds at which the event occurred. */
+  tick: number;
+  /** Display time (HH:MM), derived from tick at creation. */
+  time: string;
+  category: EventCategory;
+  severity: EventSeverity;
+  title: string;
+  /** Rich text body (may contain <b>/<strong> markup from scenario copy). */
+  text: string;
+  entities: EntityRef[];
+  /** Related recommendation id, when the event belongs to a rec lifecycle. */
+  recId?: string;
+  /** Related staged-action id, when the event belongs to a workload action. */
+  actionId?: string;
+}
+
+// ---- Global selection ---------------------------------------------------------
+
+/** The globally selected entity (drives inspector, canvas highlight, stream). */
+export type SelectedEntity =
+  | { type: 'region'; id: TopoNodeId }
+  | { type: 'workload'; id: string }
+  | { type: 'recommendation'; id: string }
+  | { type: 'event'; id: string }
+  | null;
+
+// ---- Operator action log ------------------------------------------------------
+
+/**
+ * A recorded operator input. The log is append-only and, together with the
+ * scenario seed, is sufficient to deterministically replay a session —
+ * backward timeline seeking can be layered on later without a schema change.
+ */
+export interface OperatorActionRecord {
+  seq: number;
+  /** Simulation-time seconds at which the operator acted. */
+  tick: number;
+  kind:
+    | 'loadScenario'
+    | 'setControl'
+    | 'approve'
+    | 'reject'
+    | 'simulate'
+    | 'regenerate'
+    | 'stage'
+    | 'setFilter'
+    | 'seek'
+    | 'reset';
+  payload: string;
 }
 
 // ---- Topology ---------------------------------------------------------------
@@ -332,12 +414,16 @@ export interface SimulationState {
   staged: StagedAction[];
   stagedSeq: number;
   verification: VerificationResult | null;
-  events: CoordinationEvent[];
+  events: SimEvent[];
+  /** Monotonic counter guaranteeing unique event ids (never reset mid-scenario). */
+  eventSeq: number;
   actionCounter: number;
   history: TelemetrySample[];
   lifetime: LifetimeCounters;
   /** Serialized PRNG state for reproducible telemetry noise. */
   prngState: number;
-  /** Currently selected topology / infra region (linked selection). */
-  selectedRegion: TopoNodeId | null;
+  /** Currently selected entity (linked selection across canvas/inspector/stream). */
+  selectedEntity: SelectedEntity;
+  /** Append-only operator input log (deterministic-replay structure). */
+  actionLog: OperatorActionRecord[];
 }

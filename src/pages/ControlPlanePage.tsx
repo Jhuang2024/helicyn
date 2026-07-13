@@ -1,19 +1,9 @@
+import { useEffect, useRef } from 'react';
 import { Seo } from '@/components/common/Seo';
-import { StatusHeader } from '@/components/control-plane/StatusHeader';
-import { Toolbar } from '@/components/control-plane/Toolbar';
-import { MetricCards } from '@/components/control-plane/MetricCards';
-import { Topology } from '@/components/control-plane/Topology';
-import { RegionInfrastructure } from '@/components/control-plane/RegionInfrastructure';
-import { Recommendations, SimulationControls } from '@/components/control-plane/Recommendations';
-import { OperatorQueue, Verification } from '@/components/control-plane/OperatorQueue';
-import { Workloads } from '@/components/control-plane/Workloads';
-import { DecisionTrace } from '@/components/control-plane/DecisionTrace';
-import { Telemetry } from '@/components/control-plane/Telemetry';
-import { Summary } from '@/components/control-plane/Summary';
+import { ControlPlaneShell } from '@/components/control-plane/shell/ControlPlaneShell';
 import { useSimulationLoop } from '@/components/control-plane/useSimulationLoop';
-import { ExportImport } from '@/components/control-plane/ExportImport';
-import '@/styles/control-plane.css';
 import { useControlPlane } from '@/state/controlPlaneStore';
+import '@/styles/control-plane.css';
 
 const CONTROL_JSONLD = {
   '@context': 'https://schema.org',
@@ -30,16 +20,18 @@ const CONTROL_JSONLD = {
 } as const;
 
 /**
- * The Control Plane operator environment. Every module reads from and writes to
- * one authoritative store, so the scenario selector, region selection, control
- * changes, and approvals stay synchronized across the whole page. A single
- * simulation loop advances the shared clock while this page is mounted.
+ * The Control Plane operator environment. One canonical store owns the entire
+ * simulation; the app shell (control bar, view navigation, canvas, inspector,
+ * event stream) renders from it, and a single simulation loop advances the
+ * shared clock while this page is mounted.
  */
 export default function ControlPlanePage() {
   useSimulationLoop();
   const scenario = useControlPlane((state) => state.sim.scenario);
   const rootRef = useRef<HTMLDivElement>(null);
   const firstScenario = useRef(true);
+
+  // Brief "recalculating" flash across instrument surfaces on scenario change.
   useEffect(() => {
     if (firstScenario.current) { firstScenario.current = false; return; }
     const root = rootRef.current;
@@ -50,11 +42,13 @@ export default function ControlPlanePage() {
     const timer = window.setTimeout(() => root.classList.remove('is-recalculating'), 900);
     return () => window.clearTimeout(timer);
   }, [scenario]);
+
+  // Cursor-reactive instrument surfaces (disabled for touch / reduced motion).
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce), (hover: none), (pointer: coarse)').matches) return;
     const root = rootRef.current;
     if (!root) return;
-    const selector = '.cp-metric, .cp-region, .cp-rec, .cp-deck, .cp-panel, .cp-queue__col, .cp-queue__list li, .cp-verify, .cp-lifecell, .cp-assume, .cp-trace, .cp-feed';
+    const selector = '.cp-metric, .cp-region, .cp-rec, .cp-deck, .cp-panel, .cp-queue__col, .cp-queue__list li, .cp-verify, .cp-lifecell, .cp-assume, .cp-trace, .cps-inspector, .cps-attention__rec';
     let frame = 0;
     let latest: PointerEvent | null = null;
     const paint = () => {
@@ -88,52 +82,7 @@ export default function ControlPlanePage() {
         twitterCard
         jsonLd={CONTROL_JSONLD}
       />
-
-      <StatusHeader />
-
-      <div className="cp-body">
-        <section className="demo-section" aria-label="Scenario and optimization">
-          <Toolbar />
-          <ExportImport />
-        </section>
-
-        <MetricCards />
-
-        <section className="demo-section demo-section--line" id="topology" aria-label="Regional coordination">
-          <div className="cp-modhead">
-            <span className="cp-modhead__tick mono">02</span>
-            <h2>Regional coordination</h2>
-            <span className="cp-modhead__note mono">5 regions · carbon-aware routing</span>
-          </div>
-          <p className="cp-caption">
-            Workload routing across constrained and underutilized regions. Each data center is a node
-            in a larger system, not an island.
-          </p>
-          <Topology />
-        </section>
-
-        <RegionInfrastructure />
-
-        <section className="demo-section demo-section--line" id="recommendations" aria-label="Optimization">
-          <div className="cp-split">
-            <Recommendations />
-            <SimulationControls />
-          </div>
-        </section>
-
-        <section className="demo-section demo-section--line" aria-label="Operator queue and verification">
-          <div className="cp-split">
-            <OperatorQueue />
-            <Verification />
-          </div>
-        </section>
-
-        <Workloads />
-        <DecisionTrace />
-        <Telemetry />
-        <Summary />
-      </div>
+      <ControlPlaneShell />
     </div>
   );
 }
-import { useEffect, useRef } from 'react';

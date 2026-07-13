@@ -11,96 +11,60 @@ const HIERARCHY: [string, string, string][] = [
 ];
 
 /**
- * Coordination events, the inspectable decision trace, and the decision
- * hierarchy. The trace is an auditable event chain (detected → reasoning →
+ * The inspectable decision trace: an auditable chain (detected → reasoning →
  * response → verified) driven by the active scenario — concise operational
- * factors, not hidden chain-of-thought.
+ * factors, not hidden chain-of-thought. Shown in the inspector so the "why"
+ * always travels with the entity being inspected.
  */
-export function DecisionTrace() {
-  const sim = useControlPlane((s) => s.sim);
-  const scenario = sim.scenario;
-  const events = sim.events;
+export function TracePanel() {
+  const scenario = useControlPlane((s) => s.sim.scenario);
   const trace = SCN[scenario].trace;
 
   return (
-    <>
-      <section className="demo-section demo-section--line" aria-label="Coordination reasoning">
-        <div className="cp-modhead">
-          <span className="cp-modhead__tick mono">07</span>
-          <h2>How it was coordinated</h2>
-          <span className="cp-modhead__note mono">Detect → reason → act → verify → save</span>
-        </div>
-        <p className="cp-caption">Reasoning and decision traces behind each coordinated action.</p>
+    <div className="cp-trace" id="cp-trace">
+      <div className="cp-trace__head">
+        <span className="cp-trace__action mono">{trace.action}</span>
+        <span className="cp-trace__tag mono">Decision trace</span>
+      </div>
+      <div className="cp-trace__block">
+        <span className="cp-trace__k mono">Detected</span>
+        <p dangerouslySetInnerHTML={{ __html: trace.detected }} />
+      </div>
+      <div className="cp-trace__block">
+        <span className="cp-trace__k mono">Reasoning</span>
+        <p dangerouslySetInnerHTML={{ __html: trace.reasoning }} />
+      </div>
+      <div className="cp-trace__block">
+        <span className="cp-trace__k mono">Response</span>
+        <p dangerouslySetInnerHTML={{ __html: trace.response }} />
+      </div>
+      <div className="cp-trace__block">
+        <span className="cp-trace__k mono">Verified result</span>
+        <p dangerouslySetInnerHTML={{ __html: trace.verified }} />
+      </div>
+    </div>
+  );
+}
 
-        <div className="cp-reason">
-          <div className="cp-feed">
-            <div className="cp-feed__head">
-              <h3>Coordination events</h3>
-              <span className="cp-feed__tag mono">Simulated</span>
-            </div>
-            <ul className="cp-feed__list">
-              {events.map((e, i) => (
-                <li key={i} className={'cp-feed__item cp-feed__item--' + e.type}>
-                  {e.time && <span className="cp-feed__time mono">{e.time}</span>}
-                  <span className="cp-feed__type mono">{e.type.toUpperCase()}</span>
-                  <span className="cp-feed__text" dangerouslySetInnerHTML={{ __html: e.text }} />
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="cp-trace" id="cp-trace">
-            <div className="cp-trace__head">
-              <span className="cp-trace__action mono">{trace.action}</span>
-              <span className="cp-trace__tag mono">Decision trace</span>
-            </div>
-            <div className="cp-trace__block">
-              <span className="cp-trace__k mono">Detected</span>
-              <p dangerouslySetInnerHTML={{ __html: trace.detected }} />
-            </div>
-            <div className="cp-trace__block">
-              <span className="cp-trace__k mono">Reasoning</span>
-              <p dangerouslySetInnerHTML={{ __html: trace.reasoning }} />
-            </div>
-            <div className="cp-trace__block">
-              <span className="cp-trace__k mono">Response</span>
-              <p dangerouslySetInnerHTML={{ __html: trace.response }} />
-            </div>
-            <div className="cp-trace__block">
-              <span className="cp-trace__k mono">Verified result</span>
-              <p dangerouslySetInnerHTML={{ __html: trace.verified }} />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="demo-section demo-section--line" aria-label="Decision hierarchy">
-        <div className="cp-modhead">
-          <span className="cp-modhead__tick mono">·</span>
-          <h2>From system to local: the decision hierarchy</h2>
-          <span className="cp-modhead__note mono">System level → local level</span>
-        </div>
-        <p className="cp-caption">
-          Each coordinated action descends through the same layers, starting from the work itself and
-          ending at a verified local result.
-        </p>
-        <div className="cp-hier">
-          <span className="cp-hier__axis mono">System level</span>
-          <ol className="cp-hier__steps">
-            {HIERARCHY.map(([n, name, desc], i) => {
-              const active = Math.floor(sim.clock.seconds / 4) % HIERARCHY.length === i;
-              return (
-              <li key={n} className={'cp-hier__step' + (i === HIERARCHY.length - 1 ? ' cp-hier__step--verify' : '') + (active ? ' is-active' : '')}>
-                <span className="cp-hier__n mono">{n}</span>
-                <span className="cp-hier__name">{name}</span>
-                <span className="cp-hier__desc">{desc}</span>
-              </li>
-              );
-            })}
-          </ol>
-          <span className="cp-hier__axis mono">Local level</span>
-        </div>
-      </section>
-    </>
+/** From system to local: the decision hierarchy (animated by the shared clock). */
+export function HierarchyPanel() {
+  const seconds = useControlPlane((s) => s.sim.clock.seconds);
+  return (
+    <div className="cp-hier">
+      <span className="cp-hier__axis mono">System level</span>
+      <ol className="cp-hier__steps">
+        {HIERARCHY.map(([n, name, desc], i) => {
+          const active = Math.floor(seconds / 4) % HIERARCHY.length === i;
+          return (
+            <li key={n} className={'cp-hier__step' + (i === HIERARCHY.length - 1 ? ' cp-hier__step--verify' : '') + (active ? ' is-active' : '')}>
+              <span className="cp-hier__n mono">{n}</span>
+              <span className="cp-hier__name">{name}</span>
+              <span className="cp-hier__desc">{desc}</span>
+            </li>
+          );
+        })}
+      </ol>
+      <span className="cp-hier__axis mono">Local level</span>
+    </div>
   );
 }

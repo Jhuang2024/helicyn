@@ -12,10 +12,13 @@
 import type {
   ActionEffect,
   AccumulatedEffects,
-  CoordinationEvent,
+  EntityRef,
+  InfraRegionId,
   KpiBump,
+  OperatorActionRecord,
   RecommendationCard,
   ScenarioKey,
+  SelectedEntity,
   SimulationState,
   StagedAction,
   TelemetrySample,
@@ -25,30 +28,54 @@ import type {
   WorkloadState,
   ZoneId,
 } from '../models/types';
-import { BUMP_SCALE, LIFETIME_SEED, ZONE_BASE, clamp } from './constants';
+import { BUMP_SCALE, INFRA_TO_TOPO, LIFETIME_SEED, ZONE_BASE, clamp } from './constants';
 import { SCN, SCENARIO_META } from '../scenarios/scenarios';
 import { RECOMMENDATION_POOL } from '../scenarios/recommendations';
 import { WORKLOAD_POOL } from '../scenarios/workloads';
 import { computeFleet } from './compute';
 import { createPrng } from './prng';
-import { dayFractionFromSeconds, formatClock } from './accumulation';
+import { dayFractionFromSeconds } from './accumulation';
+import { AMBIENT_EVENTS, MAX_EVENTS, makeEvent, seedEvents, type EventInput } from './events';
 
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 const HISTORY_LIMIT = 240;
-const MAX_EVENTS = 9;
-
-const AMBIENT_EVENTS: Array<Omit<CoordinationEvent, 'time'>> = [
-  { type: 'analyzed', text: 'Recomputed carbon-aware placement across regions' },
-  { type: 'verified', text: 'Cooling setpoints remain within target band' },
-  { type: 'acted', text: 'Rebalanced <b>3%</b> flexible load toward a lower-carbon grid' },
-  { type: 'analyzed', text: 'Grid carbon forecast refreshed for the next operating window' },
-  { type: 'verified', text: 'All priority SLAs holding' },
-  { type: 'acted', text: 'Deferred <b>2 batch jobs</b> to a cheaper window' },
-];
 
 function freshBump(): KpiBump {
   return { energy: 0, cost: 0, carbon: 0, cooling: 0, gpu: 0, pue: 0 };
+}
+
+// ---- Event / log helpers ------------------------------------------------------
+
+/** Append a structured event exactly once, advancing the unique-id counter. */
+function withEvent(state: SimulationState, input: EventInput): SimulationState {
+  const eventSeq = state.eventSeq + 1;
+  const event = makeEvent(eventSeq, state.clock.seconds, input);
+  return { ...state, eventSeq, events: [...state.events, event].slice(-MAX_EVENTS) };
+}
+
+/** Record an operator input in the append-only replay log. */
+function withLog(
+  state: SimulationState,
+  kind: OperatorActionRecord['kind'],
+  payload: string,
+): SimulationState {
+  const record: OperatorActionRecord = {
+    seq: state.actionLog.length + 1,
+    tick: state.clock.seconds,
+    kind,
+    payload,
+  };
+  return { ...state, actionLog: [...state.actionLog, record] };
+}
+
+/** Region entity refs for the infra regions an effect touches. */
+function effectRegionRefs(fx: ActionEffect): EntityRef[] {
+  if (!fx.regionDelta) return [];
+  return (Object.keys(fx.regionDelta) as InfraRegionId[]).map((k) => ({
+    type: 'region',
+    id: INFRA_TO_TOPO[k],
+  }));
 }
 
 function freshEffects(): AccumulatedEffects {
@@ -110,6 +137,7 @@ export function createInitialSimulationState(options: CreateOptions = {}): Simul
 
   const recommendations = [0, 1, 2].map((i, idx) => makeRec(i, idx + 1, clockSeconds));
   const workloads = [0, 1, 2, 3].map((i, idx) => makeWorkload(i, idx + 1));
+  const { events, nextSeq } = seedEvents(SCN[scenario].events, 0);
 
   return {
     schemaVersion: SCHEMA_VERSION,
@@ -130,12 +158,14 @@ export function createInitialSimulationState(options: CreateOptions = {}): Simul
     staged: [],
     stagedSeq: 0,
     verification: null,
-    events: SCN[scenario].events.slice(-MAX_EVENTS),
+    events,
+    eventSeq: nextSeq,
     actionCounter: traceActionNumber(scenario),
     history: [],
     lifetime: { ...LIFETIME_SEED },
     prngState: prng.getState(),
-    selectedRegion: null,
+    selectedEntity: null,
+    actionLog: [],
   };
 }
 
@@ -144,7 +174,9 @@ export function loadScenario(state: SimulationState, scenario: ScenarioKey): Sim
   const clockSeconds = state.clock.seconds;
   const seed = SCENARIO_META[scenario].seed;
   const prng = createPrng(seed);
-  return {
+  // The unique-id counter carries forward so an id can never repeat in-session.
+  const { events, nextSeq } = seedEvents(SCN[scenario].events, state.eventSeq);
+  const next: SimulationState = {
     ...state,
     scenario,
     seed,
@@ -161,13 +193,25 @@ export function loadScenario(state: SimulationState, scenario: ScenarioKey): Sim
     staged: [],
     stagedSeq: 0,
     verification: null,
-    events: SCN[scenario].events.slice(-MAX_EVENTS),
+    events,
+    eventSeq: nextSeq,
     actionCounter: traceActionNumber(scenario),
     history: [],
     lifetime: { ...state.lifetime },
     prngState: prng.getState(),
-    selectedRegion: null,
+    selectedEntity: null,
+    actionLog: [...state.actionLog],
   };
+  return withLog(
+    withEvent(next, {
+      category: 'system',
+      severity: 'info',
+      title: 'Scenario loaded',
+      text: `Scenario switched to <b>${SCENARIO_META[scenario].name}</b>`,
+    }),
+    'loadScenario',
+    scenario,
+  );
 }
 
 /** Reset (rerun) the current scenario from its initial conditions. */
@@ -255,7 +299,18 @@ export function approveRecommendation(state: SimulationState, id: string): Simul
       timestamp: state.clock.seconds,
     },
   ];
-  return { ...state, recommendations, queue, queueSeq };
+  const next = withEvent(
+    { ...state, recommendations, queue, queueSeq },
+    {
+      category: 'approval',
+      severity: 'ok',
+      title: 'Operator approved',
+      text: `Recommendation <b>${id}</b> approved — staged for simulation`,
+      entities: [{ type: 'recommendation', id }, ...effectRegionRefs(card.template.fx)],
+      recId: id,
+    },
+  );
+  return withLog(next, 'approve', id);
 }
 
 /** Reject a recommendation → removed from the queue, has no fleet effect. */
@@ -268,13 +323,18 @@ export function rejectRecommendation(state: SimulationState, id: string): Simula
     r.id === id ? { ...r, state: 'rejected' as const } : r,
   );
   const queue = state.queue.filter((q) => q.recId !== id);
-  const event: CoordinationEvent = {
-    time: formatClock(state.clock.seconds).slice(0, 5),
-    type: 'rejected',
-    text: 'Recommendation ' + id + ' rejected — no change applied',
-  };
-  const events = [...state.events, event].slice(-MAX_EVENTS);
-  return { ...state, recommendations, queue, events };
+  const next = withEvent(
+    { ...state, recommendations, queue },
+    {
+      category: 'rejection',
+      severity: 'warn',
+      title: 'Operator rejected',
+      text: `Recommendation <b>${id}</b> rejected — no change applied`,
+      entities: [{ type: 'recommendation', id }],
+      recId: id,
+    },
+  );
+  return withLog(next, 'reject', id);
 }
 
 /**
@@ -292,8 +352,32 @@ export function simulateAction(state: SimulationState, id: string): SimulationSt
   );
   const queue = state.queue.map((q) => (q.recId === id ? { ...q, lane: 'verified' as const, timestamp: state.clock.seconds } : q));
 
-  const nextState: SimulationState = { ...state, effects, recommendations, queue };
-  return verifyAction(nextState, id);
+  let next: SimulationState = { ...state, effects, recommendations, queue };
+  next = withEvent(next, {
+    category: 'action',
+    severity: 'info',
+    title: 'Action applied',
+    text: `Applied <b>${card.template.type}</b> from ${id} to the fleet`,
+    entities: [{ type: 'recommendation', id }, ...effectRegionRefs(card.template.fx)],
+    recId: id,
+  });
+  // Routing actions move load between topology nodes → record the migration.
+  if (card.template.topo.to) {
+    next = withEvent(next, {
+      category: 'migration',
+      severity: 'info',
+      title: 'Workload migration',
+      text: `Workload movement <b>${card.template.topo.from} → ${card.template.topo.to}</b> under ${id}`,
+      entities: [
+        { type: 'region', id: card.template.topo.from },
+        { type: 'region', id: card.template.topo.to },
+        { type: 'recommendation', id },
+      ],
+      recId: id,
+    });
+  }
+  next = withLog(next, 'simulate', id);
+  return verifyAction(next, id);
 }
 
 /** Produce the verification comparison for a simulated recommendation. */
@@ -329,7 +413,17 @@ export function verifyAction(state: SimulationState, id: string): SimulationStat
       },
     },
   };
-  return { ...state, recommendations, verification };
+  return withEvent(
+    { ...state, recommendations, verification },
+    {
+      category: 'verification',
+      severity: 'ok',
+      title: 'Verification complete',
+      text: `Verified ${id}: peak <b>${card.template.verify.peak}</b>, PUE <b>${card.template.verify.pue}</b>, emissions <b>${card.template.verify.emissions}</b>`,
+      entities: [{ type: 'recommendation', id }],
+      recId: id,
+    },
+  );
 }
 
 /** Replace a terminal (simulated/verified/rejected) card with the next pool item. */
@@ -342,7 +436,18 @@ export function regenerateRecommendation(state: SimulationState, id: string): Si
   const next = makeRec(state.recPointer, seq, state.clock.seconds);
   const recommendations = [...state.recommendations];
   recommendations[idx] = next;
-  return { ...state, recommendations, recPointer: state.recPointer + 1, recSeq: seq };
+  const replaced = withEvent(
+    { ...state, recommendations, recPointer: state.recPointer + 1, recSeq: seq },
+    {
+      category: 'recommendation',
+      severity: 'info',
+      title: 'Recommendation generated',
+      text: `New recommendation <b>${next.id}</b>: ${next.template.type}`,
+      entities: [{ type: 'recommendation', id: next.id }, ...effectRegionRefs(next.template.fx)],
+      recId: next.id,
+    },
+  );
+  return withLog(replaced, 'regenerate', id);
 }
 
 // ---- Workload staging -------------------------------------------------------
@@ -383,7 +488,7 @@ export function stageAction(state: SimulationState, workloadId: string): Simulat
   const workloads = [...state.workloads];
   workloads[idx] = replacement;
 
-  return {
+  let next: SimulationState = {
     ...state,
     effects,
     workloads,
@@ -392,6 +497,23 @@ export function stageAction(state: SimulationState, workloadId: string): Simulat
     staged: [...state.staged, staged],
     stagedSeq,
   };
+  next = withEvent(next, {
+    category: 'migration',
+    severity: 'info',
+    title: 'Workload action staged',
+    text: `<b>${w.template.name}</b>: ${w.template.action} (${w.template.region})`,
+    entities: [
+      { type: 'workload', id: workloadId },
+      ...(w.template.topo.to
+        ? ([
+            { type: 'region', id: w.template.topo.from },
+            { type: 'region', id: w.template.topo.to },
+          ] as EntityRef[])
+        : effectRegionRefs(w.template.fx)),
+    ],
+    actionId: staged.id,
+  });
+  return withLog(next, 'stage', workloadId);
 }
 
 /** Set the active workload filter. */
@@ -399,10 +521,16 @@ export function setWorkloadFilter(state: SimulationState, filter: WorkloadFilter
   return { ...state, workloadFilter: filter };
 }
 
-// ---- Region selection -------------------------------------------------------
+// ---- Linked selection ---------------------------------------------------------
 
+/** Select any entity (region, workload, recommendation, event) or clear. */
+export function selectEntity(state: SimulationState, entity: SelectedEntity): SimulationState {
+  return { ...state, selectedEntity: entity };
+}
+
+/** Convenience wrapper preserving the original region-selection call sites. */
 export function selectRegion(state: SimulationState, region: TopoNodeId | null): SimulationState {
-  return { ...state, selectedRegion: region };
+  return selectEntity(state, region ? { type: 'region', id: region } : null);
 }
 
 // ---- Time advance -----------------------------------------------------------
@@ -469,6 +597,25 @@ export function stepForward(state: SimulationState, seconds = 900): SimulationSt
   return advanceSimulation(state, seconds, true);
 }
 
+/**
+ * Seek the timeline forward to an absolute simulation time (seconds of the
+ * virtual day). Forward-only: the engine advances deterministically in bounded
+ * chunks so telemetry sampling cadence is preserved. Backward seeking is not
+ * faked — replaying from the initial state via {@link SimulationState.actionLog}
+ * is the structured path for adding it later.
+ */
+export function seekToTime(state: SimulationState, targetSeconds: number): SimulationState {
+  const delta = targetSeconds - state.clock.seconds;
+  if (delta <= 0) return state;
+  // Sample at most every 15 simulated minutes, with a hard chunk bound.
+  const CHUNK = 900;
+  const chunks = Math.min(200, Math.ceil(delta / CHUNK));
+  const per = delta / chunks;
+  let next = state;
+  for (let i = 0; i < chunks; i++) next = advanceSimulation(next, per, true);
+  return withLog(next, 'seek', String(Math.round(targetSeconds)));
+}
+
 export function setClockRunning(state: SimulationState, running: boolean): SimulationState {
   return { ...state, clock: { ...state.clock, running } };
 }
@@ -479,16 +626,8 @@ export function setClockSpeed(state: SimulationState, speed: number): Simulation
 
 /** Append the next deterministic low-frequency coordination event. */
 export function appendAmbientEvent(state: SimulationState): SimulationState {
-  const next = AMBIENT_EVENTS[state.actionCounter % AMBIENT_EVENTS.length]!;
-  const event: CoordinationEvent = {
-    ...next,
-    time: formatClock(state.clock.seconds).slice(0, 5),
-  };
-  return {
-    ...state,
-    actionCounter: state.actionCounter + 1,
-    events: [...state.events, event].slice(-MAX_EVENTS),
-  };
+  const template = AMBIENT_EVENTS[state.actionCounter % AMBIENT_EVENTS.length]!;
+  return withEvent({ ...state, actionCounter: state.actionCounter + 1 }, template);
 }
 
 // ---- Cooling zones ----------------------------------------------------------
@@ -532,5 +671,21 @@ export function restoreSimulation(payload: string | unknown): SimulationState | 
     effects: { ...freshEffects(), ...(candidate.effects ?? {}) },
     lifetime: { ...base.lifetime, ...(candidate.lifetime ?? {}) },
   };
+
+  // Schema migration: v2 payloads carried unstructured events and a
+  // region-only selection. Re-seed events and map the selection forward.
+  const eventsValid =
+    Array.isArray(merged.events) && merged.events.every((e) => e && typeof e === 'object' && 'id' in e);
+  if (!eventsValid) {
+    merged.events = base.events;
+    merged.eventSeq = base.eventSeq;
+  }
+  if (typeof merged.eventSeq !== 'number') merged.eventSeq = base.eventSeq;
+  if (!Array.isArray(merged.actionLog)) merged.actionLog = [];
+  const legacyRegion = (candidate as { selectedRegion?: TopoNodeId | null }).selectedRegion;
+  if (merged.selectedEntity === undefined || merged.selectedEntity === null) {
+    merged.selectedEntity = legacyRegion ? { type: 'region', id: legacyRegion } : null;
+  }
+  delete (merged as { selectedRegion?: unknown }).selectedRegion;
   return merged;
 }

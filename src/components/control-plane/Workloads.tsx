@@ -1,6 +1,7 @@
 import { workloadTypes, type TopoPath, type WorkloadFilter, type WorkloadRow } from '@/simulation';
 import { useControlPlane } from '@/state/controlPlaneStore';
 import { Tooltip } from './Tooltip';
+import { STATIC_HOLD, WORKLOAD_PRIO_CLASS, WORKLOAD_STATE_LABEL } from './labels';
 
 const FILTERS: [WorkloadFilter, string][] = [
   ['all', 'All'],
@@ -10,40 +11,12 @@ const FILTERS: [WorkloadFilter, string][] = [
   ['constrained', 'Constrained'],
 ];
 
-const PRIO_CLASS: Record<string, string> = {
-  Flexible: 'demo-prio--flexible',
-  Critical: 'demo-prio--critical',
-  Standard: 'demo-prio--standard',
-};
-
 const RISK_LABEL: Record<string, string> = { low: 'Low', med: 'Medium', high: 'High' };
-
-const STATE_LABEL: Record<string, string> = {
-  queued: 'Queued',
-  running: 'Running',
-  moving: 'Moving',
-  deferred: 'Deferred',
-  held: 'Held',
-  throttled: 'Throttled',
-  completed: 'Completed',
-  constrained: 'Constrained',
-};
-
-/** A permanent SLA-protected critical inference row that never moves (held). */
-const STATIC_HOLD = {
-  name: 'Inference Cluster 04',
-  sub: 'Inference Pool · realtime',
-  prio: 'Critical' as const,
-  region: 'US-EAST',
-  power: '1.1 MW',
-  risk: 'low' as const,
-  action: 'Hold',
-  why: 'Critical real-time inference, SLA protected',
-  state: 'held' as const,
-};
 
 function Row({
   row,
+  selected,
+  onSelect,
   onStage,
   onPreview,
 }: {
@@ -61,28 +34,46 @@ function Row({
     stageable: boolean;
     topo?: TopoPath;
   };
+  selected?: boolean;
+  onSelect?: () => void;
   onStage?: () => void;
   onPreview?: (path: TopoPath | null) => void;
 }) {
   return (
     <tr
+      className={selected ? 'is-selected' : undefined}
       onPointerEnter={() => onPreview?.(row.topo ?? null)}
       onPointerLeave={() => onPreview?.(null)}
       onFocus={() => onPreview?.(row.topo ?? null)}
       onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) onPreview?.(null); }}
     >
       <td>
-        <div className="cp-wl__name">{row.name}</div>
-        <div className="cp-wl__sub mono">{row.sub}</div>
+        {onSelect ? (
+          <button
+            type="button"
+            className="cp-wl__namebtn"
+            aria-pressed={selected}
+            onClick={onSelect}
+            title="Inspect this workload"
+          >
+            <span className="cp-wl__name">{row.name}</span>
+            <span className="cp-wl__sub mono">{row.sub}</span>
+          </button>
+        ) : (
+          <>
+            <div className="cp-wl__name">{row.name}</div>
+            <div className="cp-wl__sub mono">{row.sub}</div>
+          </>
+        )}
       </td>
       <td>
-        <span className={'cp-prio ' + (PRIO_CLASS[row.prio] ?? '')}>{row.prio}</span>
+        <span className={'cp-prio ' + (WORKLOAD_PRIO_CLASS[row.prio] ?? '')}>{row.prio}</span>
       </td>
       <td>{row.region}</td>
       <td className="mono">{row.power}</td>
       <td>{RISK_LABEL[row.risk] ?? row.risk}</td>
       <td>
-        <span className={'cp-wl__state cp-wl__state--' + row.state}>{STATE_LABEL[row.state] ?? row.state}</span>
+        <span className={'cp-wl__state cp-wl__state--' + row.state}>{WORKLOAD_STATE_LABEL[row.state] ?? row.state}</span>
       </td>
       <td>
         {row.stageable && onStage ? (
@@ -98,31 +89,29 @@ function Row({
   );
 }
 
+/**
+ * Workload orchestration: queue, placement, SLA locks, flexibility, and
+ * migration eligibility. Staging an action applies its fleet effects through
+ * the canonical store; selecting a row opens the workload inspector.
+ */
 export function Workloads() {
   const workloads = useControlPlane((s) => s.sim.workloads);
   const staged = useControlPlane((s) => s.sim.staged);
   const filter = useControlPlane((s) => s.sim.workloadFilter);
+  const selectedEntity = useControlPlane((s) => s.sim.selectedEntity);
   const setFilter = useControlPlane((s) => s.setFilter);
   const stageWorkload = useControlPlane((s) => s.stageWorkload);
+  const selectEntity = useControlPlane((s) => s.selectEntity);
   const setPreviewPath = useControlPlane((s) => s.setPreviewPath);
 
   const matches = (w: WorkloadRow) => filter === 'all' || workloadTypes(w.template).has(filter);
   const visible = workloads.filter(matches);
   // The permanent SLA-protected inference row is shown on the unfiltered view.
   const showHold = filter === 'all';
+  const selectedId = selectedEntity?.type === 'workload' ? selectedEntity.id : null;
 
   return (
-    <section className="demo-section" id="workloads" aria-label="Workload orchestration">
-      <div className="cp-modhead">
-        <span className="cp-modhead__tick mono">06</span>
-        <h2>Workload orchestration</h2>
-        <span className="cp-modhead__note mono">Scheduler · {workloads.length + 1} active</span>
-      </div>
-      <p className="cp-caption">
-        Helicyn treats work as the first control surface. Flexible jobs can move, critical inference
-        can hold, and batch workloads can defer when energy or thermal conditions change.
-      </p>
-
+    <div className="cp-workloads">
       <div className="wl-filters" role="group" aria-label="Filter workloads">
         {FILTERS.map(([f, l]) => (
           <button
@@ -180,6 +169,10 @@ export function Workloads() {
                   stageable: true,
                   topo: w.template.topo,
                 }}
+                selected={selectedId === w.id}
+                onSelect={() =>
+                  selectEntity(selectedId === w.id ? null : { type: 'workload', id: w.id })
+                }
                 onStage={() => stageWorkload(w.id)}
                 onPreview={setPreviewPath}
               />
@@ -205,6 +198,6 @@ export function Workloads() {
           </ul>
         </div>
       )}
-    </section>
+    </div>
   );
 }

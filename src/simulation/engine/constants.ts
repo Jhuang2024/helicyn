@@ -13,6 +13,7 @@ import type {
   RegionStatus,
   RiskLevel,
   ScenarioKey,
+  TopoNodeId,
   ZoneId,
 } from '../models/types';
 
@@ -26,6 +27,36 @@ export const SCENARIO_KEYS: ScenarioKey[] = [
 ];
 
 export const INFRA_ORDER: InfraRegionId[] = ['us-west', 'us-central', 'us-east', 'eu-west', 'apac'];
+
+/**
+ * Canonical mapping between the infrastructure-grid vocabulary (US-* regions)
+ * and the topology-node vocabulary (geographic sites). Previously duplicated
+ * inside two components; a single mapping keeps linked selection consistent.
+ */
+export const INFRA_TO_TOPO: Record<InfraRegionId, TopoNodeId> = {
+  'us-west': 'oregon',
+  'us-central': 'virginia',
+  'us-east': 'tokyo',
+  'eu-west': 'frankfurt',
+  apac: 'singapore',
+};
+
+export const TOPO_TO_INFRA: Record<TopoNodeId, InfraRegionId> = {
+  oregon: 'us-west',
+  virginia: 'us-central',
+  tokyo: 'us-east',
+  frankfurt: 'eu-west',
+  singapore: 'apac',
+};
+
+/** Per-region carbon-intensity offset from the fleet average (g/kWh). */
+export const CARBON_OFFSET: Record<InfraRegionId, number> = {
+  'us-west': 72,
+  'us-central': -60,
+  'us-east': 11,
+  'eu-west': -150,
+  apac: 128,
+};
 
 /** Human labels for the infrastructure grid. */
 export const INFRA_LABEL: Record<InfraRegionId, string> = {

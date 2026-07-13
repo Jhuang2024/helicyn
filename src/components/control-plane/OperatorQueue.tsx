@@ -9,16 +9,33 @@ import { useControlPlane } from '@/state/controlPlaneStore';
  */
 export function OperatorQueue() {
   const queue = useControlPlane((s) => s.sim.queue);
+  const selectEntity = useControlPlane((s) => s.selectEntity);
   const pending = queue.filter((q) => q.lane === 'approved');
   const approved = queue.filter((q) => q.lane === 'verified');
 
+  const lane = (items: typeof queue, empty: string) =>
+    items.length === 0 ? (
+      <p className="cp-queue__empty">{empty}</p>
+    ) : (
+      <ul className="cp-queue__list">
+        {items.map((q) => (
+          <li key={q.id}>
+            <button
+              type="button"
+              className="cp-queue__link"
+              onClick={() => selectEntity({ type: 'recommendation', id: q.recId })}
+              title={`Inspect ${q.recId}`}
+            >
+              {q.lane === 'verified' ? '✓ ' : ''}{q.cat}
+            </button>
+            <span className="mono">{formatClock(q.timestamp).slice(0, 5)}</span>
+          </li>
+        ))}
+      </ul>
+    );
+
   return (
     <div className="cp-queue">
-      <div className="cp-modhead">
-        <span className="cp-modhead__tick mono">·</span>
-        <h2>Operator queue</h2>
-        <span className="cp-modhead__note mono">Recommendations only</span>
-      </div>
       <p className="cp-caption">
         Nothing executes automatically. Approving a recommendation moves it into a simulated
         verification queue for operator confirmation.
@@ -28,35 +45,13 @@ export function OperatorQueue() {
           <h3 className="cp-queue__title">
             Pending review <span className="cp-queue__count mono">{pending.length}</span>
           </h3>
-          {pending.length === 0 ? (
-            <p className="cp-queue__empty">No actions awaiting simulation.</p>
-          ) : (
-            <ul className="cp-queue__list">
-              {pending.map((q) => (
-                <li key={q.id}>
-                  <span>{q.cat}</span>
-                  <span className="mono">{formatClock(q.timestamp).slice(0, 5)}</span>
-                </li>
-              ))}
-            </ul>
-          )}
+          {lane(pending, 'No actions awaiting simulation.')}
         </div>
         <div className="cp-queue__col">
           <h3 className="cp-queue__title">
             Approved in simulation <span className="cp-queue__count mono">{approved.length}</span>
           </h3>
-          {approved.length === 0 ? (
-            <p className="cp-queue__empty">No actions approved yet.</p>
-          ) : (
-            <ul className="cp-queue__list">
-              {approved.map((q) => (
-                <li key={q.id}>
-                  <span>✓ {q.cat}</span>
-                  <span className="mono">{formatClock(q.timestamp).slice(0, 5)}</span>
-                </li>
-              ))}
-            </ul>
-          )}
+          {lane(approved, 'No actions approved yet.')}
         </div>
       </div>
     </div>
@@ -72,10 +67,6 @@ export function Verification() {
   const verification = useControlPlane((s) => s.sim.verification);
   return (
     <div className="cp-verify">
-      <div className="cp-modhead">
-        <span className="cp-modhead__tick mono">·</span>
-        <h2>Verification window</h2>
-      </div>
       <p className="cp-caption">
         Projected impact of approved actions, measured against the baseline simulation.
       </p>
@@ -83,7 +74,9 @@ export function Verification() {
         <p className="cp-verify__empty">Projected impact pending simulation.</p>
       ) : (
         <div className="cp-verify__body">
-          <h3 className="cp-verify__title">Projected impact</h3>
+          <h3 className="cp-verify__title">
+            Projected impact <span className="mono cp-verify__rec">{verification.recId}</span>
+          </h3>
           <dl className="cp-verify__rows">
             <div><dt>Peak power</dt><dd>{verification.strings.peak}</dd></div>
             <div><dt>PUE</dt><dd>{verification.strings.pue}</dd></div>

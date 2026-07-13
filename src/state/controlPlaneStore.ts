@@ -12,6 +12,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type {
   ScenarioKey,
+  SelectedEntity,
   SimulationState,
   TopoNodeId,
   TopoPath,
@@ -27,6 +28,8 @@ import {
   rejectRecommendation,
   resetSimulation,
   restoreSimulation,
+  seekToTime,
+  selectEntity as selectEntityEngine,
   selectRegion as selectRegionEngine,
   serializeSimulation,
   setClockRunning,
@@ -58,6 +61,7 @@ export interface ControlPlaneStore {
 
   // linked selection
   selectRegion: (id: TopoNodeId | null) => void;
+  selectEntity: (entity: SelectedEntity) => void;
   setPreviewPath: (path: TopoPath | null) => void;
 
   // clock
@@ -65,6 +69,7 @@ export interface ControlPlaneStore {
   setRunning: (running: boolean) => void;
   setSpeed: (speed: number) => void;
   stepForward: () => void;
+  seekTo: (seconds: number) => void;
   ambientEvent: () => void;
 
   // lifecycle
@@ -76,7 +81,7 @@ export interface ControlPlaneStore {
   importSnapshot: (payload: string) => boolean;
 }
 
-const PERSIST_VERSION = 2;
+const PERSIST_VERSION = 3;
 
 export const useControlPlane = create<ControlPlaneStore>()(
   persist(
@@ -96,12 +101,14 @@ export const useControlPlane = create<ControlPlaneStore>()(
       setFilter: (filter) => set((s) => ({ sim: setWorkloadFilter(s.sim, filter) })),
 
       selectRegion: (id) => set((s) => ({ sim: selectRegionEngine(s.sim, id) })),
+      selectEntity: (entity) => set((s) => ({ sim: selectEntityEngine(s.sim, entity) })),
       setPreviewPath: (path) => set({ previewPath: path }),
 
       tick: (dt) => set((s) => ({ sim: advanceSimulation(s.sim, dt) })),
       setRunning: (running) => set((s) => ({ sim: setClockRunning(s.sim, running) })),
       setSpeed: (speed) => set((s) => ({ sim: setClockSpeed(s.sim, speed) })),
       stepForward: () => set((s) => ({ sim: stepForward(s.sim) })),
+      seekTo: (seconds) => set((s) => ({ sim: seekToTime(s.sim, seconds) })),
       ambientEvent: () => set((s) => ({ sim: appendAmbientEvent(s.sim) })),
 
       reset: () => set((s) => ({ sim: resetSimulation(s.sim) })),

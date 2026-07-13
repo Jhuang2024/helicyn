@@ -1,16 +1,7 @@
 import { useControlPlane } from '@/state/controlPlaneStore';
-import { PRIO_CLASS, type RecommendationCard } from '@/simulation';
+import { CARBON_EXPLAIN, MODE_EXPLAIN, PRIO_CLASS, type RecommendationCard } from '@/simulation';
 import { Tooltip } from './Tooltip';
-
-const STATE_BADGE: Record<RecommendationCard['state'], { txt: string; cls: string }> = {
-  proposed: { txt: 'Proposed', cls: 'is-proposed' },
-  approved: { txt: 'Approved · ready to simulate', cls: 'is-approved' },
-  simulating: { txt: 'Simulating…', cls: 'is-approved' },
-  simulated: { txt: 'Approved in simulation', cls: 'is-simulated' },
-  verifying: { txt: 'Verifying…', cls: 'is-simulated' },
-  verified: { txt: 'Approved in simulation', cls: 'is-simulated' },
-  rejected: { txt: 'Rejected', cls: 'is-rejected' },
-};
+import { STATE_BADGE } from './labels';
 
 function RecCard({ card }: { card: RecommendationCard }) {
   const approveRec = useControlPlane((s) => s.approveRec);
@@ -18,6 +9,9 @@ function RecCard({ card }: { card: RecommendationCard }) {
   const simulateRec = useControlPlane((s) => s.simulateRec);
   const regenerateRec = useControlPlane((s) => s.regenerateRec);
   const setPreviewPath = useControlPlane((s) => s.setPreviewPath);
+  const selectEntity = useControlPlane((s) => s.selectEntity);
+  const selectedEntity = useControlPlane((s) => s.sim.selectedEntity);
+  const isSelected = selectedEntity?.type === 'recommendation' && selectedEntity.id === card.id;
   const t = card.template;
   const badge = STATE_BADGE[card.state];
   const isApproved = card.state === 'approved';
@@ -31,20 +25,27 @@ function RecCard({ card }: { card: RecommendationCard }) {
     rejectRec(card.id);
     window.setTimeout(() => regenerateRec(card.id), 900);
   };
-  const onExplain = () => {
-    document.getElementById('cp-trace')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
+  // "Explain" opens the recommendation inspector (reasoning + decision trace).
+  const onExplain = () => selectEntity({ type: 'recommendation', id: card.id });
 
   return (
     <article
-      className={'cp-rec ' + badge.cls}
+      className={'cp-rec ' + badge.cls + (isSelected ? ' is-selected' : '')}
       onPointerEnter={() => setPreviewPath(t.topo)}
       onPointerLeave={() => setPreviewPath(null)}
       onFocus={() => setPreviewPath(t.topo)}
       onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPreviewPath(null); }}
     >
       <div className="cp-rec__head">
-        <span className="cp-rec__id mono">{card.id}</span>
+        <button
+          type="button"
+          className="cp-rec__id mono cp-rec__idbtn"
+          aria-pressed={isSelected}
+          title="Inspect this recommendation"
+          onClick={() => selectEntity(isSelected ? null : { type: 'recommendation', id: card.id })}
+        >
+          {card.id}
+        </button>
         <span className="cp-rec__type">{t.type}</span>
         <span className={'cp-rec__state ' + badge.cls}>{badge.txt}</span>
       </div>
@@ -90,7 +91,7 @@ function RecCard({ card }: { card: RecommendationCard }) {
         >
           Simulate
         </button>
-        <button type="button" className="cp-btn" onClick={onExplain} title="Jump to the decision trace behind this recommendation">
+        <button type="button" className="cp-btn" onClick={onExplain} title="Open the reasoning and decision trace in the inspector">
           Explain
         </button>
         <button type="button" className="cp-btn cp-btn--danger" disabled={isTerminal} onClick={onReject} title="Reject recommendation">
@@ -105,15 +106,6 @@ export function Recommendations() {
   const recs = useControlPlane((s) => s.sim.recommendations);
   return (
     <div className="cp-recs">
-      <div className="cp-modhead">
-        <span className="cp-modhead__tick mono">04</span>
-        <h2>Recommendations</h2>
-        <span className="cp-modhead__note mono">Operator approval required</span>
-      </div>
-      <p className="cp-caption">
-        Approve to stage an action, simulate to file it, or reject to dismiss it. Every approval
-        generates the next recommendation.
-      </p>
       <div className="cp-recs__list">
         {recs.map((card) => (
           <RecCard key={card.id} card={card} />
@@ -122,14 +114,6 @@ export function Recommendations() {
     </div>
   );
 }
-
-const MODE_EXPLAIN: Record<string, string> = {
-  conservative:
-    'Conservative mode favors SLA confidence and thermal headroom over savings; fewer workloads are eligible to move.',
-  balanced:
-    'Balanced mode prioritizes energy savings while preserving thermal headroom and SLA-locked workloads.',
-  aggressive: 'Aggressive mode unlocks the most savings and surfaces more warnings, with lower confidence.',
-};
 
 function Segmented<T extends string>({
   label,
@@ -167,24 +151,14 @@ function Segmented<T extends string>({
   );
 }
 
+/** Operator constraint deck: mode, carbon priority, SLA lock, flexibility, cooling. */
 export function SimulationControls() {
   const controls = useControlPlane((s) => s.sim.controls);
   const setControl = useControlPlane((s) => s.setControl);
-  const carbonText =
-    controls.carbon === 'high'
-      ? ' High carbon priority moves flexible workloads toward lower-carbon regions even when cost savings are smaller.'
-      : controls.carbon === 'low'
-        ? ' Low carbon priority weights cost and energy efficiency over emissions.'
-        : '';
+  const carbonText = CARBON_EXPLAIN[controls.carbon] ?? '';
 
   return (
     <div className="cp-controls" id="controls">
-      <div className="cp-modhead">
-        <span className="cp-modhead__tick mono">05</span>
-        <h2>Simulation controls</h2>
-      </div>
-      <p className="cp-caption">Operators define the boundaries. Helicyn proposes actions inside them.</p>
-
       <div className="cp-deck">
         <Segmented
           label="Optimization mode"

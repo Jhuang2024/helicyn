@@ -32,9 +32,18 @@ describe('centralized Control Plane store', () => {
 
   it('selecting a region updates the shared selection', () => {
     get().selectRegion('oregon');
-    expect(get().sim.selectedRegion).toBe('oregon');
+    expect(get().sim.selectedEntity).toEqual({ type: 'region', id: 'oregon' });
     get().selectRegion(null);
-    expect(get().sim.selectedRegion).toBeNull();
+    expect(get().sim.selectedEntity).toBeNull();
+  });
+
+  it('selects workloads, recommendations, and events globally', () => {
+    const recId = get().sim.recommendations[0]!.id;
+    get().selectEntity({ type: 'recommendation', id: recId });
+    expect(get().sim.selectedEntity).toEqual({ type: 'recommendation', id: recId });
+    const eventId = get().sim.events[0]!.id;
+    get().selectEntity({ type: 'event', id: eventId });
+    expect(get().sim.selectedEntity).toEqual({ type: 'event', id: eventId });
   });
 
   it('shares recommendation and workload topology previews without mutating simulation state', () => {
@@ -109,7 +118,7 @@ describe('centralized Control Plane store', () => {
   it('keeps the coordination event feed live', () => {
     const before = get().sim.events;
     get().ambientEvent();
-    expect(get().sim.events).toHaveLength(Math.min(9, before.length + 1));
+    expect(get().sim.events).toHaveLength(before.length + 1);
     expect(get().sim.events.at(-1)?.text).not.toBe(before.at(-1)?.text);
     expect(get().sim.actionCounter).toBeGreaterThan(createInitialSimulationState().actionCounter);
   });
