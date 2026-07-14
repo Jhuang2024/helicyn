@@ -26,6 +26,8 @@ export function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
+  const avatarUrl = (user?.user_metadata as Record<string, string | undefined> | undefined)
+    ?.avatar_url;
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -144,7 +146,11 @@ export function Nav() {
               onClick={() => setMenuOpen((v) => !v)}
             >
               <span className="navprofile__avatar" aria-hidden="true">
-                {(user.email ?? '?').slice(0, 1).toUpperCase()}
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="" />
+                ) : (
+                  (user.email ?? '?').slice(0, 1).toUpperCase()
+                )}
               </span>
               <span className="navprofile__label">Account</span>
             </button>

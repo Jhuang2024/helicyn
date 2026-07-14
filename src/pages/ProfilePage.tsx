@@ -14,6 +14,7 @@ function ProfileForm() {
   const [linkedin, setLinkedin] = useState((meta.linkedin_url as string) ?? '');
   const [newsletter, setNewsletter] = useState(Boolean(meta.newsletter_opt_in));
   const [avatar, setAvatar] = useState((meta.avatar_url as string) ?? '');
+  const [fileName, setFileName] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -49,6 +50,7 @@ function ProfileForm() {
   const onAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setFileName(file.name);
     if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
       setError('Avatar must be a PNG, JPEG, or WebP image.');
       return;
@@ -86,10 +88,19 @@ function ProfileForm() {
         <span className="profile-avatar__img" aria-hidden="true">
           {avatar ? <img src={avatar} alt="" /> : (user?.email ?? '?').slice(0, 1).toUpperCase()}
         </span>
-        <label className="field">
+        <div className="field">
           <span className="field__label">Profile picture (PNG, JPEG, WebP · max 5MB)</span>
-          <input type="file" accept="image/png,image/jpeg,image/webp" onChange={onAvatar} />
-        </label>
+          <label className="fileupload">
+            <span className="fileupload__btn">{avatar ? 'Change photo' : 'Upload photo'}</span>
+            <span className="fileupload__name">{fileName ?? 'No file chosen'}</span>
+            <input
+              className="fileupload__input"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={onAvatar}
+            />
+          </label>
+        </div>
       </div>
 
       <label className="field">
