@@ -1,42 +1,43 @@
 import { useEffect, useState } from 'react';
 import { Seo } from '@/components/common/Seo';
 import { AuthGate } from '@/components/common/AuthGate';
+import { CustomSelect } from '@/components/common/CustomSelect';
 import {
   getMyFoundingPartnerApplication,
   submitFoundingPartnerApplication,
 } from '@/services/auth';
 
 const RELATIONSHIP_OPTIONS = [
-  ['', 'Select one'],
-  ['operator', 'Operator'],
-  ['cloud_platform_team', 'Cloud / platform team'],
-  ['ai_infrastructure_team', 'AI infrastructure team'],
-  ['energy_cooling_vendor', 'Energy / cooling vendor'],
-  ['investor_advisor', 'Investor / advisor'],
-  ['researcher', 'Researcher'],
-  ['other', 'Other'],
+  { value: '', label: 'Select one' },
+  { value: 'operator', label: 'Operator' },
+  { value: 'cloud_platform_team', label: 'Cloud / platform team' },
+  { value: 'ai_infrastructure_team', label: 'AI infrastructure team' },
+  { value: 'energy_cooling_vendor', label: 'Energy / cooling vendor' },
+  { value: 'investor_advisor', label: 'Investor / advisor' },
+  { value: 'researcher', label: 'Researcher' },
+  { value: 'other', label: 'Other' },
 ] as const;
 
 const SCALE_OPTIONS = [
-  ['', 'Select one'],
-  ['exploratory_research', 'Exploratory / research'],
-  ['single_site', 'Single site'],
-  ['multi_site', 'Multi-site'],
-  ['cloud_hybrid', 'Cloud / hybrid'],
-  ['large_fleet', 'Large fleet'],
-  ['prefer_not_to_say', 'Prefer not to say'],
+  { value: '', label: 'Select one' },
+  { value: 'exploratory_research', label: 'Exploratory / research' },
+  { value: 'single_site', label: 'Single site' },
+  { value: 'multi_site', label: 'Multi-site' },
+  { value: 'cloud_hybrid', label: 'Cloud / hybrid' },
+  { value: 'large_fleet', label: 'Large fleet' },
+  { value: 'prefer_not_to_say', label: 'Prefer not to say' },
 ] as const;
 
 const CONCERN_OPTIONS = [
-  ['', 'Select one'],
-  ['energy_cost', 'Energy cost'],
-  ['carbon_intensity', 'Carbon intensity'],
-  ['cooling_thermal_constraints', 'Cooling / thermal constraints'],
-  ['gpu_utilization', 'GPU utilization'],
-  ['workload_placement', 'Workload placement'],
-  ['peak_power', 'Peak power'],
-  ['research_collaboration', 'Research collaboration'],
-  ['other', 'Other'],
+  { value: '', label: 'Select one' },
+  { value: 'energy_cost', label: 'Energy cost' },
+  { value: 'carbon_intensity', label: 'Carbon intensity' },
+  { value: 'cooling_thermal_constraints', label: 'Cooling / thermal constraints' },
+  { value: 'gpu_utilization', label: 'GPU utilization' },
+  { value: 'workload_placement', label: 'Workload placement' },
+  { value: 'peak_power', label: 'Peak power' },
+  { value: 'research_collaboration', label: 'Research collaboration' },
+  { value: 'other', label: 'Other' },
 ] as const;
 
 const INTERESTS = [
@@ -166,36 +167,30 @@ function OnboardingForm() {
 
         <fieldset className="formsection">
           <legend className="eyebrow">Infrastructure</legend>
-          <label className="field">
-            <span className="field__label">Relationship to data centers</span>
-            <select name="relationship_to_data_centers">
-              {RELATIONSHIP_OPTIONS.map(([v, l]) => (
-                <option key={v} value={v}>
-                  {l}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="field">
-            <span className="field__label">Infrastructure scale</span>
-            <select name="infrastructure_scale">
-              {SCALE_OPTIONS.map(([v, l]) => (
-                <option key={v} value={v}>
-                  {l}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="field">
-            <span className="field__label">Primary concern</span>
-            <select name="primary_concern">
-              {CONCERN_OPTIONS.map(([v, l]) => (
-                <option key={v} value={v}>
-                  {l}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div className="field">
+            <span className="field__label" id="relationship-label">Relationship to data centers</span>
+            <CustomSelect
+              name="relationship_to_data_centers"
+              options={RELATIONSHIP_OPTIONS}
+              ariaLabelledBy="relationship-label"
+            />
+          </div>
+          <div className="field">
+            <span className="field__label" id="scale-label">Infrastructure scale</span>
+            <CustomSelect
+              name="infrastructure_scale"
+              options={SCALE_OPTIONS}
+              ariaLabelledBy="scale-label"
+            />
+          </div>
+          <div className="field">
+            <span className="field__label" id="concern-label">Primary concern</span>
+            <CustomSelect
+              name="primary_concern"
+              options={CONCERN_OPTIONS}
+              ariaLabelledBy="concern-label"
+            />
+          </div>
         </fieldset>
 
         <fieldset className="formsection">

@@ -211,16 +211,6 @@
   font-size: 0.75rem;
   color: var(--text-dim);
 }
-.cp-speed select,
-.cp-transport select {
-  background: var(--bg-raise);
-  border: 1px solid var(--line-2);
-  color: var(--text);
-  border-radius: var(--radius-xs);
-  padding: 0.3rem 0.4rem;
-  font: inherit;
-  font-size: 0.78rem;
-}
 .cp-alert {
   border-radius: var(--radius-sm);
   padding: var(--space-3) var(--space-4);
@@ -1296,13 +1286,6 @@
   color: var(--text-dim);
   font-size: 0.8rem;
 }
-.cps-simcontrols select {
-  background: var(--bg-1);
-  border: 1px solid var(--line-2);
-  border-radius: var(--radius-xs);
-  color: var(--text);
-  padding: 0.35rem 0.5rem;
-}
 
 /* --- Workspace navigation ----------------------------------- */
 .cps-workspacebar {
@@ -1687,13 +1670,7 @@
   margin-left: auto;
 }
 .cps-stream__sev {
-  background: var(--bg-raise);
-  border: 1px solid var(--line-2);
-  color: var(--text-dim);
-  border-radius: var(--radius-xs);
-  padding: 0.28rem 0.4rem;
-  font: inherit;
-  font-size: 0.72rem;
+  min-width: 9rem;
 }
 .cps-stream .cp-btn--sm.is-active {
   border-color: var(--signal-line);

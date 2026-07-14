@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { CustomSelect } from '@/components/common/CustomSelect';
 import { formatClock, type EventSeverity, type SimEvent } from '@/simulation';
 import { useControlPlane } from '@/state/controlPlaneStore';
 import { EVENT_GROUPS, eventGroupOf } from '../labels';
@@ -10,6 +11,7 @@ const SEVERITIES: { key: EventSeverity | 'all'; label: string }[] = [
   { key: 'warn', label: 'Warning' },
   { key: 'crit', label: 'Critical' },
 ];
+const SEVERITY_OPTIONS = SEVERITIES.map(({ key, label }) => ({ value: key, label }));
 
 /** Forward-only timeline scrubber over the 24h simulated day. */
 function TimelineScrubber() {
@@ -134,16 +136,15 @@ export function EventStream({ collapsed, onToggle }: { collapsed: boolean; onTog
                 </button>
               ))}
             </div>
-            <select
+            <CustomSelect
+              compact
+              align="end"
               className="cps-stream__sev"
               value={severity}
-              aria-label="Filter events by severity"
-              onChange={(e) => setSeverity(e.target.value as EventSeverity | 'all')}
-            >
-              {SEVERITIES.map((s) => (
-                <option key={s.key} value={s.key}>{s.label}</option>
-              ))}
-            </select>
+              ariaLabel="Filter events by severity"
+              options={SEVERITY_OPTIONS}
+              onChange={setSeverity}
+            />
             <button
               type="button"
               className={'cp-btn cp-btn--sm' + (autoScroll ? ' is-active' : '')}

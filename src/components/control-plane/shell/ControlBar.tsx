@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { CustomSelect } from '@/components/common/CustomSelect';
 import {
   SCENARIO_KEYS,
   SCENARIO_META,
@@ -10,6 +11,7 @@ import { useControlPlane } from '@/state/controlPlaneStore';
 import { ExportImport } from '../ExportImport';
 
 const SPEEDS = [1, 60, 300, 900];
+const SPEED_OPTIONS = SPEEDS.map((speed) => ({ value: String(speed), label: `${speed}×` }));
 
 /** Scenario selector (listbox popup preserving the original descriptions). */
 function ScenarioSelect() {
@@ -137,12 +139,17 @@ function SimulationMenu() {
       </button>
       {open && (
         <div className="cps-session__pop cps-simcontrols" role="group" aria-label="More simulation controls">
-          <label className="cps-simcontrols__row">
+          <div className="cps-simcontrols__row">
             <span>Playback speed</span>
-            <select value={clock.speed} onChange={(e) => setSpeed(Number(e.target.value))}>
-              {SPEEDS.map((sp) => <option key={sp} value={sp}>{sp}×</option>)}
-            </select>
-          </label>
+            <CustomSelect
+              compact
+              align="end"
+              ariaLabel="Playback speed"
+              options={SPEED_OPTIONS}
+              value={String(clock.speed)}
+              onChange={(nextSpeed) => setSpeed(Number(nextSpeed))}
+            />
+          </div>
           <button type="button" className="cp-btn" onClick={() => stepForward()} disabled={clock.running}>
             Advance 15 minutes
           </button>
