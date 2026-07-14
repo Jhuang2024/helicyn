@@ -106,6 +106,55 @@ function SessionMenu() {
   );
 }
 
+/** Less frequently used playback controls, kept out of the primary toolbar. */
+function SimulationMenu() {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const clock = useControlPlane((s) => s.sim.clock);
+  const setSpeed = useControlPlane((s) => s.setSpeed);
+  const stepForward = useControlPlane((s) => s.stepForward);
+  const reset = useControlPlane((s) => s.reset);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (e: PointerEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointer);
+    return () => document.removeEventListener('pointerdown', onPointer);
+  }, [open]);
+
+  return (
+    <div className="cps-session" ref={rootRef}>
+      <button
+        type="button"
+        className="cp-btn"
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
+        More controls
+      </button>
+      {open && (
+        <div className="cps-session__pop cps-simcontrols" role="group" aria-label="More simulation controls">
+          <label className="cps-simcontrols__row">
+            <span>Playback speed</span>
+            <select value={clock.speed} onChange={(e) => setSpeed(Number(e.target.value))}>
+              {SPEEDS.map((sp) => <option key={sp} value={sp}>{sp}×</option>)}
+            </select>
+          </label>
+          <button type="button" className="cp-btn" onClick={() => stepForward()} disabled={clock.running}>
+            Advance 15 minutes
+          </button>
+          <button type="button" className="cp-btn cp-btn--danger" onClick={reset}>
+            Restart scenario
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /**
  * Global control bar. All globally relevant simulation controls live here —
  * scenario, system status, simulation time, transport (pause/resume/step),
@@ -115,14 +164,10 @@ function SessionMenu() {
 export function ControlBar() {
   const sim = useControlPlane((s) => s.sim);
   const setRunning = useControlPlane((s) => s.setRunning);
-  const setSpeed = useControlPlane((s) => s.setSpeed);
-  const stepForward = useControlPlane((s) => s.stepForward);
-  const reset = useControlPlane((s) => s.reset);
   const setControl = useControlPlane((s) => s.setControl);
   const status = selectSystemStatus(sim);
   const isBaseline = sim.controls.view === 'baseline';
   const clock = sim.clock;
-  const mode = sim.controls.mode.charAt(0).toUpperCase() + sim.controls.mode.slice(1);
 
   return (
     <header className="cps-bar" data-screen-label="control-bar">
@@ -148,28 +193,9 @@ export function ControlBar() {
           onClick={() => setRunning(!clock.running)}
           aria-pressed={clock.running}
         >
-          {clock.running ? 'Pause' : 'Resume'}
+          {clock.running ? 'Pause live demo' : 'Resume live demo'}
         </button>
-        <button type="button" className="cp-btn" onClick={() => stepForward()} disabled={clock.running}>
-          Step +15m
-        </button>
-        <label className="cp-speed">
-          <span className="cp-speed__k mono">Speed</span>
-          <select
-            value={clock.speed}
-            onChange={(e) => setSpeed(Number(e.target.value))}
-            aria-label="Simulation speed"
-          >
-            {SPEEDS.map((sp) => (
-              <option key={sp} value={sp}>
-                {sp}×
-              </option>
-            ))}
-          </select>
-        </label>
-        <button type="button" className="cp-btn" onClick={reset}>
-          Rerun scenario
-        </button>
+        <SimulationMenu />
       </div>
 
       <div className="cps-bar__right">
@@ -180,7 +206,7 @@ export function ControlBar() {
             aria-pressed={isBaseline}
             onClick={() => setControl({ view: 'baseline' })}
           >
-            Baseline
+            Original plan
           </button>
           <button
             type="button"
@@ -188,12 +214,9 @@ export function ControlBar() {
             aria-pressed={!isBaseline}
             onClick={() => setControl({ view: 'after' })}
           >
-            Coordinated
+            Helicyn plan
           </button>
         </div>
-        <span className="cps-bar__mode mono" title="Current optimization mode">
-          Mode <b>{mode}</b>
-        </span>
         <SessionMenu />
       </div>
     </header>

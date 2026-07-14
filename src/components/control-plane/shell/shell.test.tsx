@@ -82,7 +82,7 @@ describe('Control Plane app shell', () => {
     await user.click(screen.getAllByRole('button', { name: 'Approve in simulation' })[0]!);
     const before = get().sim;
     const nav = screen.getByRole('navigation', { name: 'Control Plane views' });
-    await user.click(within(nav).getByRole('button', { name: /Verification/ }));
+    await user.click(within(nav).getByRole('button', { name: 'Results' }));
     expect(get().sim).toBe(before);
     // The queue rendered in the Verification view shows the approved item.
     expect(screen.getByText(/Pending review/)).toBeInTheDocument();
@@ -128,7 +128,8 @@ describe('Control Plane app shell', () => {
     const user = userEvent.setup();
     renderShell(['/control-plane?view=recommendations']);
     await user.click(screen.getAllByRole('button', { name: 'Approve in simulation' })[0]!);
-    await user.click(screen.getByRole('button', { name: 'Rerun scenario' }));
+    await user.click(screen.getByRole('button', { name: 'More controls' }));
+    await user.click(screen.getByRole('button', { name: 'Restart scenario' }));
     const sim = get().sim;
     expect(sim.queue).toHaveLength(0);
     expect(sim.recommendations.every((r) => r.state === 'proposed')).toBe(true);
@@ -140,9 +141,9 @@ describe('Control Plane app shell', () => {
   it('baseline toggle in the control bar drives all metric values', async () => {
     const user = userEvent.setup();
     renderShell();
-    await user.click(screen.getByRole('button', { name: 'Baseline' }));
+    await user.click(screen.getByRole('button', { name: 'Original plan' }));
     expect(get().sim.controls.view).toBe('baseline');
-    await user.click(screen.getByRole('button', { name: 'Coordinated' }));
+    await user.click(screen.getByRole('button', { name: 'Helicyn plan' }));
     expect(get().sim.controls.view).toBe('after');
   });
 });

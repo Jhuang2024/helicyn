@@ -102,11 +102,19 @@ function AttentionPanel() {
 export function OverviewView() {
   return (
     <div className="cps-view cps-view--overview">
+      <header className="cps-viewintro">
+        <div>
+          <span className="mono cps-viewintro__eyebrow">Live fleet summary</span>
+          <h2>What is happening right now</h2>
+        </div>
+        <p>
+          Start here for the health of the fleet, the regions that need attention, and Helicyn's
+          recommended next action. Open the other views only when you need more detail.
+        </p>
+      </header>
       <ScenarioPulse />
       <p className="cp-caption">
-        Today, coordinated: totals accumulate from 00:00 UTC and tick live. Solid sparkline is
-        accumulated, dashed is projected. Use the Baseline / Coordinated toggle in the control bar
-        to switch basis.
+        Results update live. Solid lines show progress so far; dashed lines project the rest of the day.
       </p>
       <MetricCards />
       <div className="cps-view__cols">

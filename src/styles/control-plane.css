@@ -302,13 +302,13 @@
 /* Metric cards */
 .cp-metrics {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
 }
 .cp-metric {
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  padding: var(--space-3);
+  padding: var(--space-4);
   background: var(--bg-1);
   display: flex;
   flex-direction: column;
@@ -1283,6 +1283,26 @@
   min-width: 280px;
 }
 .cps-session__pop .cp-shareable { margin-top: 0; }
+.cps-simcontrols {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 250px;
+}
+.cps-simcontrols__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  color: var(--text-dim);
+  font-size: 0.8rem;
+}
+.cps-simcontrols select {
+  background: var(--bg-1);
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-xs);
+  color: var(--text);
+  padding: 0.35rem 0.5rem;
+}
 
 /* --- Workspace navigation ----------------------------------- */
 .cps-workspacebar {
@@ -1364,14 +1384,16 @@
 .cps-canvas {
   overflow-y: auto;
   overflow-x: hidden;
-  padding: clamp(var(--space-3), 1.8vw, var(--space-5));
+  padding: clamp(var(--space-4), 2.4vw, var(--space-6));
   min-width: 0;
   scrollbar-gutter: stable;
 }
 .cps-view {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-5);
+  max-width: 1600px;
+  margin-inline: auto;
   animation: cps-viewin 0.28s var(--ease) both;
 }
 @keyframes cps-viewin {
@@ -1382,6 +1404,26 @@
   .cps-view { animation: none; }
 }
 .cps-view .cp-caption { margin-bottom: 0; }
+.cps-viewintro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 520px);
+  align-items: end;
+  gap: var(--space-5);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--line-soft);
+}
+.cps-viewintro h2 {
+  margin-top: var(--space-2);
+  padding-bottom: 0;
+  font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+}
+.cps-viewintro p { color: var(--text-dim); font-size: 0.9rem; line-height: 1.65; }
+.cps-viewintro__eyebrow {
+  color: var(--signal);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
 .cps-view__cols {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
@@ -1839,6 +1881,7 @@
   .cps-event__cat { display: none; }
   .cps-event__text { white-space: normal; }
   .cps-event__title { white-space: normal; }
+  .cps-viewintro { grid-template-columns: 1fr; gap: var(--space-3); align-items: start; }
 }
 
 @media (max-width: 640px) {

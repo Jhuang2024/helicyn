@@ -11,12 +11,12 @@ export type ControlView =
 
 export const CONTROL_VIEWS: { key: ControlView; label: string }[] = [
   { key: 'overview', label: 'Overview' },
-  { key: 'fleet', label: 'Fleet' },
+  { key: 'fleet', label: 'Fleet health' },
   { key: 'regions', label: 'Regions' },
   { key: 'workloads', label: 'Workloads' },
-  { key: 'recommendations', label: 'Recommendations' },
-  { key: 'verification', label: 'Verification' },
-  { key: 'assumptions', label: 'Assumptions' },
+  { key: 'recommendations', label: 'Actions' },
+  { key: 'verification', label: 'Results' },
+  { key: 'assumptions', label: 'Model notes' },
 ];
 
 export function isControlView(value: string | null): value is ControlView {

@@ -100,7 +100,7 @@ test('control plane: approve → simulate flows through queue and verification',
   await firstRec.getByRole('button', { name: 'Simulate' }).click();
 
   // Same state, different view — switching views never resets the simulation.
-  await page.getByRole('navigation', { name: 'Control Plane views' }).getByRole('button', { name: 'Verification' }).click();
+  await page.getByRole('navigation', { name: 'Control Plane views' }).getByRole('button', { name: 'Results' }).click();
   await expect(page.locator('.cp-verify__body')).toBeVisible();
   await expect(page.locator('.cp-verify__status').first()).toContainText('Verified in simulation');
   await expect(page.locator('.cp-queue__col').nth(1)).not.toContainText('No actions approved yet');
@@ -119,7 +119,7 @@ test('control plane: changing a control recomputes metrics', async ({ page }) =>
   const energy = page.locator('.cp-metric').first().locator('.cp-metric__value');
   const before = await energy.textContent();
   const nav = page.getByRole('navigation', { name: 'Control Plane views' });
-  await nav.getByRole('button', { name: 'Recommendations' }).click();
+  await nav.getByRole('button', { name: 'Actions' }).click();
   await page.getByRole('button', { name: 'Aggressive' }).click();
   await nav.getByRole('button', { name: 'Overview' }).click();
   await expect(energy).not.toHaveText(before ?? '');
