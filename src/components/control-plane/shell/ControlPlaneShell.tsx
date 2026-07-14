@@ -25,9 +25,8 @@ const VIEW_COMPONENTS: Record<ControlView, () => JSX.Element> = {
 };
 
 /**
- * Application shell: global control bar on top, view navigation on the left,
- * the main visualization canvas in the center, the contextual inspector on the
- * right, and the chronological event stream along the bottom.
+ * Application shell: global controls, compact workspace navigation, one main
+ * visualization canvas, and contextual detail surfaces on demand.
  *
  * The active view lives in the URL (?view=…) so it is refresh-safe and
  * shareable; the simulation itself lives in the canonical store, so switching
@@ -44,7 +43,7 @@ export function ControlPlaneShell() {
     setSearchParams(next);
   };
 
-  const [streamCollapsed, setStreamCollapsed] = useState(false);
+  const [streamCollapsed, setStreamCollapsed] = useState(true);
   const [inspectorOpen, setInspectorOpen] = useState(false);
   const selectedEntity = useControlPlane((s) => s.sim.selectedEntity);
   const selectEntity = useControlPlane((s) => s.selectEntity);
@@ -72,24 +71,31 @@ export function ControlPlaneShell() {
   return (
     <div className="cps-shell">
       <ControlBar />
-      <div className="cps-main">
+      <div className="cps-workspacebar">
         <ControlNav view={view} onChange={setView} />
+        <button
+          type="button"
+          className={'cps-inspectorbtn cp-btn' + (inspectorOpen ? ' is-active' : '')}
+          aria-expanded={inspectorOpen}
+          onClick={() => setInspectorOpen((v) => !v)}
+        >
+          <span>Inspector</span>
+          <span className="cps-inspectorbtn__state mono">
+            {selectedEntity ? selectedEntity.type : 'scenario'}
+          </span>
+        </button>
+      </div>
+      <div className={'cps-main' + (inspectorOpen ? ' has-inspector' : '')}>
         <section className="cps-canvas" aria-label="Visualization canvas">
           <ViewComponent />
         </section>
-        <div className={'cps-side' + (inspectorOpen ? ' is-open' : '')}>
-          <Inspector onClose={() => setInspectorOpen(false)} />
-        </div>
+        {inspectorOpen && (
+          <div className="cps-side is-open">
+            <Inspector onClose={() => setInspectorOpen(false)} />
+          </div>
+        )}
       </div>
       <EventStream collapsed={streamCollapsed} onToggle={() => setStreamCollapsed((v) => !v)} />
-      <button
-        type="button"
-        className="cps-sheetbtn cp-btn"
-        aria-expanded={inspectorOpen}
-        onClick={() => setInspectorOpen((v) => !v)}
-      >
-        {inspectorOpen ? 'Close inspector' : 'Inspector'}
-      </button>
     </div>
   );
 }

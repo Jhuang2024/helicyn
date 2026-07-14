@@ -21,17 +21,20 @@ beforeEach(() => {
 const get = () => useControlPlane.getState();
 
 describe('Control Plane app shell', () => {
-  it('renders the control bar, navigation, canvas, inspector, and event stream', () => {
+  it('renders a focused canvas with detail surfaces collapsed by default', () => {
     renderShell();
     expect(screen.getByRole('heading', { name: 'Helicyn Control Plane' })).toBeInTheDocument();
     expect(screen.getByRole('navigation', { name: 'Control Plane views' })).toBeInTheDocument();
     expect(screen.getByRole('region', { name: 'Visualization canvas' })).toBeInTheDocument();
-    expect(screen.getByRole('complementary', { name: 'Inspector' })).toBeInTheDocument();
-    expect(screen.getByRole('log', { name: 'Simulation events' })).toBeInTheDocument();
+    expect(screen.queryByRole('complementary', { name: 'Inspector' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('log', { name: 'Simulation events' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Inspector scenario/ })).toHaveAttribute('aria-expanded', 'false');
   });
 
-  it('shows the scenario inspector with decision trace when nothing is selected', () => {
+  it('opens the scenario inspector with decision trace on demand', async () => {
+    const user = userEvent.setup();
     renderShell();
+    await user.click(screen.getByRole('button', { name: /Inspector scenario/ }));
     const inspector = screen.getByRole('complementary', { name: 'Inspector' });
     expect(within(inspector).getByText('Normal Operations')).toBeInTheDocument();
     expect(within(inspector).getByText('Decision trace')).toBeInTheDocument();
@@ -65,6 +68,7 @@ describe('Control Plane app shell', () => {
     await user.click(screen.getAllByRole('button', { name: 'Approve in simulation' })[0]!);
     expect(get().sim.queue).toHaveLength(1);
     // Approval event appears exactly once in the stream.
+    await user.click(screen.getByRole('button', { name: /Event stream/ }));
     const log = screen.getByRole('log', { name: 'Simulation events' });
     expect(within(log).getAllByText('Operator approved')).toHaveLength(1);
     expect(get().sim.events.filter((e) => e.category === 'approval' && e.recId === recId)).toHaveLength(1);
@@ -89,6 +93,7 @@ describe('Control Plane app shell', () => {
     const user = userEvent.setup();
     renderShell(['/control-plane?view=recommendations']);
     await user.click(screen.getAllByRole('button', { name: 'Approve in simulation' })[0]!);
+    await user.click(screen.getByRole('button', { name: /Event stream/ }));
     const log = screen.getByRole('log', { name: 'Simulation events' });
     await user.click(within(log).getByText('Operator approved'));
     expect(get().sim.selectedEntity?.type).toBe('event');

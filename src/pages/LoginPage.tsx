@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Seo } from '@/components/common/Seo';
 import { useAuth } from '@/app/auth/AuthProvider';
@@ -11,7 +11,6 @@ import {
   signInWithPassword,
   signUpWithPassword,
 } from '@/services/auth';
-import { useEffect } from 'react';
 
 type Mode = 'signin' | 'signup' | 'magic';
 
@@ -83,18 +82,40 @@ export default function LoginPage() {
   return (
     <div className="page page--login">
       <Seo title="Helicyn · Login" canonicalPath="/login" noindex openGraph={false} />
-      <section className="section">
-        <div className="wrap authform">
-          <span className="eyebrow mono" data-reveal>
-            Partner access
-          </span>
-          <h1>Sign in to Helicyn</h1>
-          <p style={{ color: 'var(--text-dim)', maxWidth: '52ch' }}>
-            Access the founding-partner portal, your application status, and account settings. This
-            is a pre-commercial research preview.
-          </p>
+      <section className="authpage">
+        <div className="wrap authpage__layout">
+          <div className="authpage__intro">
+            <a className="authpage__back mono" href="/">← Back to Helicyn</a>
+            <div>
+              <span className="eyebrow mono">Partner workspace</span>
+              <h1>Operate with the full picture.</h1>
+              <p>
+                Secure access for founding partners to review applications, shared work, and account
+                settings in one place.
+              </p>
+            </div>
+            <div className="authpage__signals" aria-label="Workspace capabilities">
+              <div><span className="authpage__signal" />Application status</div>
+              <div><span className="authpage__signal" />Partner workspace</div>
+              <div><span className="authpage__signal" />Account controls</div>
+            </div>
+            <p className="authpage__foot mono">Pre-commercial research preview · Authorized access only</p>
+          </div>
 
-          <div className="authform__tabs" role="tablist" aria-label="Authentication mode">
+          <div className="authform">
+            <div className="authform__head">
+              <span className="eyebrow mono">Secure access</span>
+              <h2>{mode === 'signup' ? 'Create your account' : mode === 'magic' ? 'Email a sign-in link' : 'Welcome back'}</h2>
+              <p>
+                {mode === 'signup'
+                  ? 'Set up access to the Helicyn partner workspace.'
+                  : mode === 'magic'
+                    ? 'No password needed. We will send a single-use link.'
+                    : 'Sign in to continue to your partner workspace.'}
+              </p>
+            </div>
+
+            <div className="authform__tabs" role="tablist" aria-label="Authentication mode">
             {(['signin', 'signup', 'magic'] as Mode[]).map((m) => (
               <button
                 key={m}
@@ -111,9 +132,9 @@ export default function LoginPage() {
                 {m === 'signin' ? 'Sign in' : m === 'signup' ? 'Create account' : 'Magic link'}
               </button>
             ))}
-          </div>
+            </div>
 
-          <form className="authform__form" onSubmit={onSubmit} noValidate>
+            <form className="authform__form" onSubmit={onSubmit} noValidate>
             {mode === 'signup' && (
               <label className="field">
                 <span className="field__label">Full name</span>
@@ -152,10 +173,17 @@ export default function LoginPage() {
                 />
               </label>
             )}
-            <label className="field field--check">
-              <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-              <span>Save login on this device</span>
-            </label>
+              <div className="authform__options">
+                <label className="field field--check">
+                  <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+                  <span>Keep me signed in</span>
+                </label>
+                {mode === 'signin' && (
+                  <button type="button" className="authform__link" onClick={onReset}>
+                    Forgot password?
+                  </button>
+                )}
+              </div>
 
             {error && (
               <p className="form-note err" role="alert">
@@ -168,7 +196,7 @@ export default function LoginPage() {
               </p>
             )}
 
-            <button className="navlink navlink--cta authform__submit" type="submit" disabled={busy}>
+              <button className="authform__submit" type="submit" disabled={busy}>
               {busy
                 ? 'Working…'
                 : mode === 'signin'
@@ -178,12 +206,11 @@ export default function LoginPage() {
                     : 'Send magic link'}
             </button>
 
-            {mode === 'signin' && (
-              <button type="button" className="authform__link" onClick={onReset}>
-                Forgot password?
-              </button>
-            )}
-          </form>
+            </form>
+            <p className="authform__privacy">
+              By continuing, you agree to use this workspace only for authorized partner activity.
+            </p>
+          </div>
         </div>
       </section>
     </div>
