@@ -35,3 +35,36 @@
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "SAMEORIGIN"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Auth pages must always load the current HTML shell and bundle references.
+# This prevents a browser or edge cache from retaining an older unconfigured
+# Supabase bundle after a production deployment.
+[[headers]]
+  for = "/login"
+  [headers.values]
+    Cache-Control = "no-store, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/auth-callback"
+  [headers.values]
+    Cache-Control = "no-store, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/partner-portal"
+  [headers.values]
+    Cache-Control = "no-store, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/onboarding"
+  [headers.values]
+    Cache-Control = "no-store, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/profile"
+  [headers.values]
+    Cache-Control = "no-store, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/supabase-config.js"
+  [headers.values]
+    Cache-Control = "no-store, max-age=0, must-revalidate"
