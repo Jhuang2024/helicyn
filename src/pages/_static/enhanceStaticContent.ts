@@ -3,10 +3,10 @@
  *
  * The marketing/legal/document pages keep their original, verbatim markup
  * (rendered from a legacy HTML fragment). This module re-attaches every in-page
- * interaction the legacy scripts provided — scroll reveals, the architecture-
+ * interaction the legacy scripts provided: scroll reveals, the architecture-
  * stack layer explainer, magnetic buttons, 3D tilt, count-up, typewriter /
  * decrypt text, floating tooltips, internal-link SPA routing, the runtime email
- * assembly, and the access/contact form — scoped to a root element and fully
+ * assembly, and the access/contact form: scoped to a root element and fully
  * torn down on cleanup. It runs once per mounted static page.
  *
  * Site-wide effects (the pointer backdrop, theme, nav) are owned by React

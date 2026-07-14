@@ -2,7 +2,7 @@
 
 The Control Plane behaves like a simulation application, not a static page. The
 simulation logic is a **framework-independent TypeScript module** under
-`src/simulation` — it never imports React. React renders state; the engine
+`src/simulation`: it never imports React. React renders state; the engine
 calculates it.
 
 ## Principles
@@ -10,7 +10,7 @@ calculates it.
 - **Deterministic.** Given the same scenario, seed, inputs, and operator
   actions, the engine produces the same result. The only stochastic values
   (telemetry noise, lifetime-counter drift) flow through a seeded PRNG
-  (`engine/prng.ts`) — never `Math.random()`.
+  (`engine/prng.ts`): never `Math.random()`.
 - **Pure, immutable transitions.** Every engine function takes a state and
   returns a **new** state; it never mutates its input and performs no I/O.
 - **Derived values stay derived.** Metrics are computed by `computeFleet` and
@@ -21,9 +21,9 @@ calculates it.
 | File | Responsibility |
 |---|---|
 | `engine/prng.ts` | Seeded mulberry32 PRNG (`createPrng`, `hashSeed`). |
-| `engine/constants.ts` | Verbatim scenario multipliers, mode outcomes, regional loads/risks, baselines, zones — the illustrative numbers. |
+| `engine/constants.ts` | Verbatim scenario multipliers, mode outcomes, regional loads/risks, baselines, zones: the illustrative numbers. |
 | `engine/accumulation.ts` | Diurnal `ACC(t)` curve and clock helpers. |
-| `engine/compute.ts` | `computeFleet(state)` — the pure re-derivation of every metric, region load, trend, and before/after value. |
+| `engine/compute.ts` | `computeFleet(state)`: the pure re-derivation of every metric, region load, trend, and before/after value. |
 | `engine/engine.ts` | The operator surface (see below) + effect application, lifecycle, serialization. |
 | `models/types.ts` | The closed, explicit type model for the whole fleet state. |
 | `scenarios/scenarios.ts` | Scenario registry (alerts, flows, regions, traces, events, metadata, seeds). |
@@ -63,7 +63,7 @@ every panel consistently.
   app. Telemetry history is not persisted (it's ephemeral).
 - **The loop** (`useSimulationLoop`) advances the clock once per second while the
   Control Plane is mounted, pauses when the tab is hidden, and cleans up on
-  unmount — no duplicate loops or leaks.
+  unmount: no duplicate loops or leaks.
 
 ## Impossible states are prevented
 

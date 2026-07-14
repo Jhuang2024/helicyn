@@ -1,4 +1,4 @@
-/* Global stylesheet entry — order matters (legacy cascade preserved).
+/* Global stylesheet entry: order matters (legacy cascade preserved).
    The legacy site loaded: styles → partner → premium → redesign → modern.
    Every legacy page loaded all five global sheets (styles, partner, premium,
    redesign, modern), so we import them here in that exact cascade order, then

@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!cancelled) setSession(s);
       })
       .catch(() => {
-        /* unconfigured or offline — treat as signed out */
+        /* unconfigured or offline: treat as signed out */
       })
       .finally(() => {
         if (!cancelled) setLoading(false);

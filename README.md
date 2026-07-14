@@ -1,12 +1,12 @@
-# Helicyn — website & Control Plane
+# Helicyn: website & Control Plane
 
 Helicyn is an AI coordination layer for data-center energy. This repository is
-the marketing website plus the **Control Plane** — an interactive, simulation-
-backed operator environment — built as a **React + TypeScript** application
+the marketing website plus the **Control Plane**: an interactive, simulation-
+backed operator environment: built as a **React + TypeScript** application
 (Vite, strict mode).
 
 > This is a pre-commercial research preview. Everything in the Control Plane is
-> illustrative, simulated data — not live customer telemetry or verified
+> illustrative, simulated data: not live customer telemetry or verified
 > operational savings.
 
 ## Stack
@@ -18,7 +18,7 @@ backed operator environment — built as a **React + TypeScript** application
 - **Supabase** for authentication and application data.
 - A **framework-independent TypeScript simulation engine** (no React) under
   `src/simulation`.
-- No charting/UI framework — charts are small inline SVG; the visual identity is
+- No charting/UI framework: charts are small inline SVG; the visual identity is
   the original dark, instrument-panel design (legacy CSS reused verbatim + a
   consolidated token layer).
 
@@ -40,7 +40,7 @@ VITE_SUPABASE_URL=https://YOUR-PROJECT.supabase.co
 VITE_SUPABASE_ANON_KEY=YOUR-PUBLIC-ANON-KEY
 ```
 
-The anon key is a **public** value protected by Row Level Security — never put a
+The anon key is a **public** value protected by Row Level Security: never put a
 service/secret key here. Without these, auth degrades gracefully (a clear
 "not configured" message) and the rest of the site works. See
 `docs/auth_setup.md`.
@@ -101,10 +101,10 @@ Deploy the contents of `dist/` to any static host that honours `_redirects`
 
 ## Documentation
 
-- `docs/simulation_architecture.md` — the simulation engine and store.
-- `docs/extending_the_control_plane.md` — how to add a scenario, a metric, or a
+- `docs/simulation_architecture.md`: the simulation engine and store.
+- `docs/extending_the_control_plane.md`: how to add a scenario, a metric, or a
   recommendation type.
-- `docs/auth_setup.md` — Supabase setup.
+- `docs/auth_setup.md`: Supabase setup.
 
 ## Testing & verification
 

@@ -1,5 +1,5 @@
 /**
- * Workload pool — the seven workload templates the orchestration table cycles
+ * Workload pool: the seven workload templates the orchestration table cycles
  * through. Copied verbatim from the original control.js workload POOL.
  */
 

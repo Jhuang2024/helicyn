@@ -48,7 +48,7 @@ describe('legacy static-content parity', () => {
     btn.dispatchEvent(new MouseEvent('pointerdown', { clientX: 5, clientY: 5, bubbles: true }));
 
     const dot = btn.querySelector('span')!;
-    // Must be the absolutely-positioned, clipped class the CSS actually styles —
+    // Must be the absolutely-positioned, clipped class the CSS actually styles :
     // an unstyled "ripple" span sits in normal flow and expands the button.
     expect(dot).toHaveClass('btn__ripple');
     expect(dot.className).not.toBe('ripple');

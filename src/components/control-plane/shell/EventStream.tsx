@@ -67,7 +67,7 @@ function TimelineScrubber() {
 
 /**
  * Persistent chronological event stream. Every entry is appended exactly once
- * by the simulation engine (unique ids — rerenders can never duplicate them).
+ * by the simulation engine (unique ids: rerenders can never duplicate them).
  * Supports category/severity filtering, auto-scroll with pause, jump-to-latest,
  * and selecting an event to inspect it and highlight its entities on the canvas.
  */

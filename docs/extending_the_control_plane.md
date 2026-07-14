@@ -12,7 +12,7 @@ small amount of wiring. After any change, run
 3. In `src/simulation/scenarios/scenarios.ts`, add an entry to `SCENARIO_META`
    (name, description, deterministic `seed`) and to `SCN` (alert, flows, region
    patches, decision trace, and 6 seed events).
-4. That's it — the scenario appears in the selector and drives every module.
+4. That's it: the scenario appears in the selector and drives every module.
    Make the loads, workloads, constraints, carbon, prices, cooling risks,
    recommendations, and trace meaningfully different, not just relabeled.
 
@@ -49,6 +49,6 @@ the table.
 ## Add a chart
 
 Add an inline SVG primitive to `src/components/control-plane/charts.tsx` and
-drive it from simulation state (or `state.history`) — never from independent
+drive it from simulation state (or `state.history`): never from independent
 random values. Give it a responsive `viewBox`, readable axis labels, an
 accessible `aria-label` summary, and respect reduced motion.

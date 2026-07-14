@@ -2,7 +2,7 @@
  * Structured event construction.
  *
  * Every event in the stream is created here, by the engine, exactly once per
- * state transition — render code never appends events, so rerenders and React
+ * state transition: render code never appends events, so rerenders and React
  * Strict Mode double-invocation can never duplicate entries. Scenario copy is
  * still authored in the legacy {time,type,text} format and converted to the
  * structured {@link SimEvent} shape at load time.

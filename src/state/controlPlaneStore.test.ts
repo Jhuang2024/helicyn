@@ -127,7 +127,7 @@ describe('centralized Control Plane store', () => {
     const id = get().sim.recommendations[0]!.id;
     get().approveRec(id);
     get().simulateRec(id);
-    get().rejectRec(id); // ignored — already verified
+    get().rejectRec(id); // ignored: already verified
     const card = get().sim.recommendations.find((r) => r.id === id)!;
     expect(card.state).toBe('verified');
   });

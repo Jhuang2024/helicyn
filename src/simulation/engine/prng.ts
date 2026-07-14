@@ -3,7 +3,7 @@
  *
  * The simulation engine must be reproducible: given the same scenario, seed,
  * and operator actions it must produce identical output. We therefore never
- * call `Math.random()` inside the engine — every stochastic value flows through
+ * call `Math.random()` inside the engine: every stochastic value flows through
  * a `Prng` instance created from an explicit seed.
  *
  * Implementation: SplitMix64-style seed expansion feeding a mulberry32 core.
@@ -24,7 +24,7 @@ export interface Prng {
   pick<T>(items: readonly T[]): T;
   /** Return true with the given probability. */
   chance(probability: number): boolean;
-  /** Current 32-bit internal state — used for serialization. */
+  /** Current 32-bit internal state: used for serialization. */
   getState(): number;
   /** Restore internal state produced by {@link getState}. */
   setState(state: number): void;

@@ -2,8 +2,8 @@ import { formatClock } from '@/simulation';
 import { useControlPlane } from '@/state/controlPlaneStore';
 
 /**
- * Operator queue. Separates lanes — pending review (approved, awaiting
- * simulation) and approved-in-simulation (verified) — with simulation-time
+ * Operator queue. Separates lanes: pending review (approved, awaiting
+ * simulation) and approved-in-simulation (verified): with simulation-time
  * timestamps. Nothing executes automatically; items only advance through
  * explicit operator actions on the recommendation cards.
  */

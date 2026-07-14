@@ -59,7 +59,7 @@ function arcPath(from: TopoNodeId, to: TopoNodeId): string {
 }
 
 /**
- * Regional coordination topology — the main canvas visualization. Every node
+ * Regional coordination topology: the main canvas visualization. Every node
  * derives from the unified region-telemetry selector (the same numbers the
  * region cards show), and clicking a node sets the global selected entity so
  * the inspector, event stream, and other views stay in sync. When a

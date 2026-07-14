@@ -3,7 +3,7 @@ import { useControlPlane } from '@/state/controlPlaneStore';
 import { Tooltip } from './Tooltip';
 import { fmt } from './format';
 
-/** Before / after Helicyn — same facility, one day. */
+/** Before / after Helicyn: same facility, one day. */
 export function BeforeAfterPanel() {
   return (
     <div className="cp-ba">
@@ -40,7 +40,7 @@ export function BeforeAfterPanel() {
   );
 }
 
-/** Lifetime optimization impact — persistent cumulative results. */
+/** Lifetime optimization impact: persistent cumulative results. */
 export function LifetimePanel() {
   const lifetime = useControlPlane((s) => s.sim.lifetime);
   return (
@@ -68,7 +68,7 @@ export function LifetimePanel() {
   );
 }
 
-/** What the Control Plane demonstrates — coordinated, not isolated. */
+/** What the Control Plane demonstrates: coordinated, not isolated. */
 export function DemonstratesPanel() {
   return (
     <ol className="cp-demolist">

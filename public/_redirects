@@ -1,4 +1,4 @@
-# Helicyn — SPA redirects (Netlify-style).
+# Helicyn: SPA redirects (Netlify-style).
 #
 # 1) Canonicalize legacy/space-encoded URLs to clean paths (301).
 # 2) Everything else falls through to the SPA shell (200), so direct loads and

@@ -4,21 +4,21 @@
    instrument-panel system: neutral blacks, a single confident
    volt accent, display typography, pill CTAs, sentence-case
    labels, softer surfaces, less HUD chrome. No features removed
-   — every module keeps its markup and behavior; only the visual
+  : every module keeps its markup and behavior; only the visual
    language changes.
    ============================================================ */
 
 /* ------------------------------------------------------------
-   0 · TOKENS — repointed, every layer downstream inherits
+   0 · TOKENS: repointed, every layer downstream inherits
    ------------------------------------------------------------ */
 :root {
-  /* neutral surface scale — kills the blue-grey monitor haze */
+  /* neutral surface scale: kills the blue-grey monitor haze */
   --bg:        #0a0a0c;
   --bg-1:      #0e0e11;
   --bg-2:      #121216;
   --bg-raise:  #17171c;
 
-  /* ink triple behind every hairline/tint/scrollbar below — flips
+  /* ink triple behind every hairline/tint/scrollbar below: flips
      wholesale in the light theme block instead of redefining each */
   --mist-rgb: 246, 246, 250;
 
@@ -33,7 +33,7 @@
   --text-faint: rgba(245, 246, 248, 0.42);
   --text-ghost: rgba(245, 246, 248, 0.22);
 
-  /* signal accent — Helicyn teal. a cool, energy-grid instrument
+  /* signal accent: Helicyn teal. a cool, energy-grid instrument
      colour that ties to the "cyn" in the name; calmer and more
      considered than an electric blue, used with intent */
   --signal:      oklch(0.78 0.115 194);
@@ -47,7 +47,7 @@
   --font-sans:    "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: "Inter Tight", "Inter", system-ui, sans-serif;
 
-  /* surfaces defined by the redesign layer — neutralized */
+  /* surfaces defined by the redesign layer: neutralized */
   --surf-raised:   #101014;
   --surf-floating: #141419;
   --surf-glass:    color-mix(in srgb, #141419 62%, transparent);
@@ -57,7 +57,7 @@
   --panel:   #0c0f13;
   --panel-2: #0e1217;
 
-  /* radii — softer object language */
+  /* radii: softer object language */
   --rad-sm: 8px;
   --rad-md: 14px;
   --rad-lg: 20px;
@@ -70,7 +70,7 @@
 }
 
 /* ------------------------------------------------------------
-   0b · LIGHT THEME — toggled via [data-theme="light"] on <html>
+   0b · LIGHT THEME: toggled via [data-theme="light"] on <html>
    ------------------------------------------------------------ */
 :root[data-theme="light"] {
   --bg:        #f6f6f3;
@@ -115,7 +115,7 @@ body {
 ::selection { background: var(--signal); color: var(--on-signal); }
 
 /* ------------------------------------------------------------
-   1 · TYPOGRAPHY — display headings, tighter, heavier
+   1 · TYPOGRAPHY: display headings, tighter, heavier
    ------------------------------------------------------------ */
 h1, h2, h3 {
   font-family: var(--font-display);
@@ -150,7 +150,7 @@ h1, h2, h3 {
 }
 
 /* ------------------------------------------------------------
-   2 · LABELS — retire the wide-tracked terminal micro-caps
+   2 · LABELS: retire the wide-tracked terminal micro-caps
    ------------------------------------------------------------ */
 .eyebrow {
   font-family: var(--font-sans);
@@ -168,7 +168,7 @@ h1, h2, h3 {
 .footer::after { -webkit-text-stroke: 1px rgba(var(--mist-rgb), 0.045); }
 
 /* ------------------------------------------------------------
-   3 · BUTTONS — pill CTAs with a real hierarchy
+   3 · BUTTONS: pill CTAs with a real hierarchy
    ------------------------------------------------------------ */
 .btn {
   border-radius: 999px;
@@ -189,7 +189,7 @@ h1, h2, h3 {
   background: linear-gradient(115deg, transparent, rgba(255, 255, 255, 0.14), transparent);
 }
 
-/* primary action — the one volt button in each cluster */
+/* primary action: the one volt button in each cluster */
 .hero__cta .btn:first-child,
 .pagehead__cta .btn:first-child,
 .navlink--cta,
@@ -235,7 +235,7 @@ h1, h2, h3 {
 }
 
 /* ------------------------------------------------------------
-   4 · CHIPS & PILLS — sentence case, borderless, quiet
+   4 · CHIPS & PILLS: sentence case, borderless, quiet
    ------------------------------------------------------------ */
 .hero__pill,
 .pagehead__meta .chip {
@@ -277,7 +277,7 @@ h1, h2, h3 {
 }
 
 /* ------------------------------------------------------------
-   4b · THEME TOGGLE — sun/moon icon button, matches navcmdk chrome
+   4b · THEME TOGGLE: sun/moon icon button, matches navcmdk chrome
    ------------------------------------------------------------ */
 .themetoggle { padding: 0.5rem; }
 .themetoggle__icon { display: block; }
@@ -286,7 +286,7 @@ h1, h2, h3 {
 :root[data-theme="light"] .themetoggle__moon { display: block; }
 
 /* ------------------------------------------------------------
-   5 · NAV — persistent glass, tighter rhythm
+   5 · NAV: persistent glass, tighter rhythm
    ------------------------------------------------------------ */
 .nav { padding-block: clamp(0.85rem, 1.6vh, 1.15rem); }
 .nav.scrolled {
@@ -305,14 +305,14 @@ h1, h2, h3 {
 .navcmdk__lbl { font-family: var(--font-sans); letter-spacing: 0.02em; text-transform: none; }
 
 /* ------------------------------------------------------------
-   6 · SURFACES — rounder cards, gentler borders
+   6 · SURFACES: rounder cards, gentler borders
    ------------------------------------------------------------ */
 .hero__scene { border-radius: var(--rad-lg); }
 
 .faqcard, .rolecard, .stagecard { border-radius: var(--rad-md); }
 
 /* ------------------------------------------------------------
-   6b · PHOTOGRAPHY — editorial grade, not an accent duotone
+   6b · PHOTOGRAPHY: editorial grade, not an accent duotone
    ------------------------------------------------------------ */
 .physband__item::before { background: transparent; opacity: 0; }
 .physband__img { filter: grayscale(0.3) brightness(0.72) contrast(1.06) saturate(0.85); }
@@ -321,7 +321,7 @@ h1, h2, h3 {
 }
 
 /* ------------------------------------------------------------
-   6c · CONTROL PLANE — one accent voice across the console
+   6c · CONTROL PLANE: one accent voice across the console
    ------------------------------------------------------------ */
 :root {
   --cyan:      var(--signal);
@@ -331,14 +331,14 @@ h1, h2, h3 {
 }
 
 /* ------------------------------------------------------------
-   7 · DECORATION — retire the HUD cosplay
+   7 · DECORATION: retire the HUD cosplay
    ------------------------------------------------------------ */
 .reticle { display: none; }
 
 .hero__coords { opacity: 0.75; }
 
 /* ------------------------------------------------------------
-   8 · NOTICES — configuration hiccups shouldn't look like alarms
+   8 · NOTICES: configuration hiccups shouldn't look like alarms
    ------------------------------------------------------------ */
 .authnotice { border-radius: var(--rad-md); }
 .authnotice--err { border-color: var(--warn-line); }
@@ -351,7 +351,7 @@ h1, h2, h3 {
 }
 
 /* ------------------------------------------------------------
-   9 · FORMS — larger touch targets, softer fields
+   9 · FORMS: larger touch targets, softer fields
    ------------------------------------------------------------ */
 input[type="text"], input[type="email"], input[type="password"],
 textarea, select {

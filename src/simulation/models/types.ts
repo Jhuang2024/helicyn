@@ -2,7 +2,7 @@
  * Framework-independent simulation type model.
  *
  * These types describe the entire Control Plane fleet state. Nothing here
- * imports React — the engine is a pure TypeScript module that computes state,
+ * imports React: the engine is a pure TypeScript module that computes state,
  * and the rendering layer reads it. Types are explicit and closed (string
  * literal unions rather than loose `string`) so impossible states are hard to
  * represent.
@@ -137,7 +137,7 @@ export interface RecommendationTemplate {
 }
 
 /**
- * Recommendation lifecycle. These states are mutually exclusive — a card can
+ * Recommendation lifecycle. These states are mutually exclusive: a card can
  * never be both approved and rejected. Terminal transitions are guarded in the
  * engine.
  */
@@ -324,7 +324,7 @@ export type SelectedEntity =
 
 /**
  * A recorded operator input. The log is append-only and, together with the
- * scenario seed, is sufficient to deterministically replay a session —
+ * scenario seed, is sufficient to deterministically replay a session :
  * backward timeline seeking can be layered on later without a schema change.
  */
 export interface OperatorActionRecord {

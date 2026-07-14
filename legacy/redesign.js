@@ -1,6 +1,6 @@
 /* ============================================================
    HELICYN · REDESIGN LAYER (behavior)
-   Additive only — no existing form/auth/scenario logic is
+   Additive only: no existing form/auth/scenario logic is
    touched. Provides: nav current-page state, footer system
    block, homepage chapter rail + scrollspy, hero operating-
    surface ticker (simulated, labeled), photo-layer parallax,
@@ -27,7 +27,7 @@
   /* ---- 2 · footer: compact system-status block -------------
      Injected on every page so the ten footers stay in sync.
      Content mirrors labels already in the static footer
-     (research preview build string) — no new claims. */
+     (research preview build string): no new claims. */
   (function footerSys() {
     var base = $('.footer__base');
     if (!base || $('.footer__sys')) return;

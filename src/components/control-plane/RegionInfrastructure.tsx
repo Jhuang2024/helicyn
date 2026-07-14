@@ -18,7 +18,7 @@ function loadColor(pct: number): string {
 /**
  * Selectable region cards with live simulated telemetry (GPU load, carbon
  * intensity, cooling risk). All numbers come from the shared region-telemetry
- * selector — identical to the topology map — and selecting a card sets the
+ * selector: identical to the topology map: and selecting a card sets the
  * global selected entity, opening the region inspector.
  */
 export function RegionGrid() {

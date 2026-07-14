@@ -156,9 +156,9 @@ function SimulationMenu() {
 }
 
 /**
- * Global control bar. All globally relevant simulation controls live here —
+ * Global control bar. All globally relevant simulation controls live here :
  * scenario, system status, simulation time, transport (pause/resume/step),
- * playback speed, reset, and the baseline vs. coordinated comparison — and are
+ * playback speed, reset, and the baseline vs. coordinated comparison: and are
  * not duplicated inside views. Stays visually stable across view changes.
  */
 export function ControlBar() {

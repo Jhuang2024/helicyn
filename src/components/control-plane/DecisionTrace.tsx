@@ -12,7 +12,7 @@ const HIERARCHY: [string, string, string][] = [
 
 /**
  * The inspectable decision trace: an auditable chain (detected → reasoning →
- * response → verified) driven by the active scenario — concise operational
+ * response → verified) driven by the active scenario: concise operational
  * factors, not hidden chain-of-thought. Shown in the inspector so the "why"
  * always travels with the entity being inspected.
  */

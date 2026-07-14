@@ -21,7 +21,7 @@ const COMMANDS: Command[] = [
 ];
 
 /**
- * Command palette (Ctrl/Cmd-K) for keyboard navigation. Fully functional — it
+ * Command palette (Ctrl/Cmd-K) for keyboard navigation. Fully functional: it
  * filters routes and navigates on selection, preserving the legacy search
  * affordance rather than leaving a dead button.
  */

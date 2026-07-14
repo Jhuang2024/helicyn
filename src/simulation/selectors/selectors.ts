@@ -1,5 +1,5 @@
 /**
- * Selectors — derived values computed from simulation state.
+ * Selectors: derived values computed from simulation state.
  *
  * Keeping derived values here (rather than storing conflicting copies in
  * components) guarantees that every module reads the same numbers. Selectors
@@ -53,7 +53,7 @@ export function selectConstrainedRegionCount(state: SimulationState): number {
  * The "saved / avoided / shifted" figures are MODELLED savings: the difference
  * between the uncoordinated baseline and the coordinated result (the
  * before/after panel), accrued by the diurnal fraction so they climb through
- * the day. They are illustrative — not measured production savings.
+ * the day. They are illustrative: not measured production savings.
  */
 
 /** Illustrative price applied to modelled peak-power reduction (USD per MW-day). */
@@ -164,7 +164,7 @@ export interface RegionTelemetry {
 /**
  * One derivation for regional display telemetry. Previously the topology map
  * and the region grid each computed their own jitter/carbon, so the same
- * region could show two different numbers at once — this selector is now the
+ * region could show two different numbers at once: this selector is now the
  * single source both render from.
  */
 export function selectRegionTelemetry(state: SimulationState): RegionTelemetry[] {

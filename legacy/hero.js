@@ -16,7 +16,7 @@
   STATE.motion = STATE.motion ?? 0.6;   // 0..1
 
   // resolve a CSS custom property to an "r,g,b" triple by painting it
-  // to a 1px canvas — works whatever colour space the token uses
+  // to a 1px canvas: works whatever colour space the token uses
   // (oklch, rgb, hex), so the accent has a single source of truth in
   // modern.css and this canvas follows it automatically.
   function cssRGB(varName, fallback) {
@@ -234,7 +234,7 @@
       grad.addColorStop(1, `rgba(${sig},0.7)`);
       ctx.strokeStyle = grad; ctx.lineWidth = 1.4;
       ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x, y); ctx.stroke();
-      // head — bright leading dot
+      // head: bright leading dot
       ctx.fillStyle = 'rgba(245,246,248,0.95)';
       ctx.beginPath(); ctx.arc(x, y, 1.7, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = `rgba(${sig},0.25)`;

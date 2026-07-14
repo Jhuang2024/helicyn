@@ -3,7 +3,7 @@
  *
  * Merges the two original data sources (control.js multipliers/loads and
  * scenario.js coordination content) into one typed record per scenario. All
- * copy — alerts, decision traces, coordination events, region roles — is
+ * copy: alerts, decision traces, coordination events, region roles: is
  * reproduced verbatim so the migrated Control Plane reads identically.
  */
 

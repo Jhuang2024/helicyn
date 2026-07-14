@@ -8,7 +8,7 @@
  * shell. App/auth routes (noindex) are intentionally left as the SPA shell.
  *
  * This step is resilient: if a headless browser is unavailable it logs a
- * warning and exits 0 — the SPA still serves every route via history fallback.
+ * warning and exits 0: the SPA still serves every route via history fallback.
  */
 import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -31,7 +31,7 @@ async function main() {
   try {
     ({ chromium } = await import('@playwright/test'));
   } catch {
-    console.warn('[prerender] playwright not available — skipping (SPA fallback still serves all routes)');
+    console.warn('[prerender] playwright not available: skipping (SPA fallback still serves all routes)');
     return;
   }
 
@@ -44,7 +44,7 @@ async function main() {
   try {
     browser = await chromium.launch(existsSync(PINNED) ? { executablePath: PINNED } : {});
   } catch (err) {
-    console.warn('[prerender] could not launch a browser — skipping:', (err as Error).message);
+    console.warn('[prerender] could not launch a browser: skipping:', (err as Error).message);
     server.kill();
     return;
   }

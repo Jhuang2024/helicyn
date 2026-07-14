@@ -9,7 +9,7 @@
    ============================================================ */
 
 /* ------------------------------------------------------------
-   0 · TOKENS — spacing, type, surfaces, radii, shadows, motion
+   0 · TOKENS: spacing, type, surfaces, radii, shadows, motion
    ------------------------------------------------------------ */
 :root {
   /* spacing scale */
@@ -60,7 +60,7 @@
 }
 
 /* ------------------------------------------------------------
-   1 · GLOBAL RHYTHM — sharper type, more negative space
+   1 · GLOBAL RHYTHM: sharper type, more negative space
    ------------------------------------------------------------ */
 .sec-head h2 {
   font-size: var(--fs-xl);
@@ -68,7 +68,7 @@
   letter-spacing: -0.03em;
 }
 
-/* ghost section index — big numeral pinned to the section corner */
+/* ghost section index: big numeral pinned to the section corner */
 .secindex {
   position: absolute;
   top: clamp(1.5rem, 4vh, 3rem);
@@ -101,7 +101,7 @@
 }
 
 /* ------------------------------------------------------------
-   2 · NAV — active state, scroll state, mobile choreography
+   2 · NAV: active state, scroll state, mobile choreography
    ------------------------------------------------------------ */
 .navlink[aria-current="page"] { color: var(--text); }
 .navlink[aria-current="page"]::after {
@@ -135,7 +135,7 @@
 }
 
 /* ------------------------------------------------------------
-   3 · CHAPTER RAIL — fixed left spine on the homepage (desktop)
+   3 · CHAPTER RAIL: fixed left spine on the homepage (desktop)
    Built by redesign.js from [data-chapter] sections.
    ------------------------------------------------------------ */
 .chapterail {
@@ -180,7 +180,7 @@
 }
 
 /* ------------------------------------------------------------
-   4 · HERO — cinematic composition
+   4 · HERO: cinematic composition
    ------------------------------------------------------------ */
 .hero__content .wrap { max-width: none; }
 
@@ -202,14 +202,14 @@
 @keyframes horizonSweep { 0% { left: -10%; opacity: 0; } 12% { opacity: 1; } 88% { opacity: 1; } 100% { left: 105%; opacity: 0; } }
 
 /* ------------------------------------------------------------
-   5 · HERO STATEMENT — editorial beat after the fold
+   5 · HERO STATEMENT: editorial beat after the fold
    ------------------------------------------------------------ */
 .herostatement { overflow: clip; }
 .herostatement__lead { font-size: clamp(2rem, 4.4vw, 3.8rem); line-height: 1.1; }
 .herostatement .herostatement__wrap { max-width: 62ch; }
 
 /* ------------------------------------------------------------
-   6 · COCKPIT PANEL SECTIONS — full-bleed raised blocks that
+   6 · COCKPIT PANEL SECTIONS: full-bleed raised blocks that
    break the "identical bordered rectangles" rhythm
    ------------------------------------------------------------ */
 .section--panel {
@@ -237,7 +237,7 @@
 .section--panel > .wrap > .panelshell > * { position: relative; }
 
 /* ------------------------------------------------------------
-   7 · ARCHITECTURE STACK — layered operating stack
+   7 · ARCHITECTURE STACK: layered operating stack
    ------------------------------------------------------------ */
 .archstack__body { position: relative; }
 @media (min-width: 860px) {
@@ -290,7 +290,7 @@
 }
 
 /* ------------------------------------------------------------
-   8 · SIGNAL BOARD — telemetry wall
+   8 · SIGNAL BOARD: telemetry wall
    ------------------------------------------------------------ */
 .signalboard__grid {
   border: 0; background: transparent; gap: 8px; overflow: visible; border-radius: 0;
@@ -331,7 +331,7 @@
 @keyframes meterSweep { to { left: 100%; } }
 
 /* ------------------------------------------------------------
-   9 · ENGINE DIAGRAM — decision graph, not tiles
+   9 · ENGINE DIAGRAM: decision graph, not tiles
    ------------------------------------------------------------ */
 .enginediagram__pipeline {
   border: 0; background: transparent; gap: 0; overflow: visible; border-radius: 0;
@@ -387,7 +387,7 @@
 }
 
 /* ------------------------------------------------------------
-   10 · PHYSICAL LAYER — editorial photo composition
+   10 · PHYSICAL LAYER: editorial photo composition
    ------------------------------------------------------------ */
 .physband { padding-block: clamp(3rem, 8vh, 6rem); overflow: clip; }
 .physband__head {
@@ -449,7 +449,7 @@
 .physband__cap .idx { font-family: var(--font-mono); font-size: 0.54rem; letter-spacing: 0.22em; color: var(--signal); text-transform: uppercase; }
 .physband__cap .t { font-weight: 500; font-size: 1.05rem; letter-spacing: -0.01em; color: var(--text); }
 .physband__cap .s { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); }
-/* masked reveal — clip wipes upward as the band enters */
+/* masked reveal: clip wipes upward as the band enters */
 @media (prefers-reduced-motion: no-preference) {
   .js .physband__item { clip-path: inset(12% 0 12% 0 round var(--rad-lg)); transition: clip-path 1.1s var(--ease); }
   .js .physband__grid.is-revealing .physband__item { clip-path: inset(0 0 0 0 round var(--rad-lg)); }
@@ -463,7 +463,7 @@
 }
 
 /* ------------------------------------------------------------
-   11 · CONTROL-PLANE CTA — product-preview bridge
+   11 · CONTROL-PLANE CTA: product-preview bridge
    ------------------------------------------------------------ */
 .cpcta__panelstack { position: relative; }
 /* echo panel behind the real one → layered depth */
@@ -515,7 +515,7 @@
 }
 
 /* ------------------------------------------------------------
-   12 · STATUS BAND — ticker treatment
+   12 · STATUS BAND: ticker treatment
    ------------------------------------------------------------ */
 .statusband {
   background:
@@ -524,7 +524,7 @@
 }
 
 /* ------------------------------------------------------------
-   13 · FOOTER — system block + watermark
+   13 · FOOTER: system block + watermark
    ------------------------------------------------------------ */
 .footer { position: relative; overflow: clip; background: var(--surf-command); }
 .footer::after {
@@ -558,7 +558,7 @@
 .footer__base { border-top-color: var(--line-soft); }
 
 /* ------------------------------------------------------------
-   14 · PAGEHEAD v2 — sitewide premium page header
+   14 · PAGEHEAD v2: sitewide premium page header
    ------------------------------------------------------------ */
 .pagehead {
   padding-top: clamp(8.5rem, 18vh, 13rem);
@@ -603,7 +603,7 @@
 .pagehead__meta .chip--warn .d { background: var(--warn); box-shadow: 0 0 8px var(--warn-glow); }
 
 /* ------------------------------------------------------------
-   15 · PARTNERS — program rail + stage motion
+   15 · PARTNERS: program rail + stage motion
    ------------------------------------------------------------ */
 .stagegrid { position: relative; }
 .stagecard { border-radius: var(--rad-md); box-shadow: var(--shadow-1); }
@@ -620,7 +620,7 @@
 .stagegrid .stagecard:nth-child(3)::after { z-index: 3; }
 
 /* ------------------------------------------------------------
-   16 · RESEARCH — publication blocks
+   16 · RESEARCH: publication blocks
    ------------------------------------------------------------ */
 .comingsoon {
   border-radius: var(--rad-md);
@@ -628,7 +628,7 @@
 }
 
 /* ------------------------------------------------------------
-   17 · FORM SURFACES — auth, onboarding, careers, portal
+   17 · FORM SURFACES: auth, onboarding, careers, portal
    ------------------------------------------------------------ */
 .authcard, .hirecard, .portalcard {
   border-radius: var(--rad-lg);
@@ -650,7 +650,7 @@
 .btn:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
 
 /* ------------------------------------------------------------
-   18 · CONTROL PLANE — cockpit polish (scoped, no logic change)
+   18 · CONTROL PLANE: cockpit polish (scoped, no logic change)
    ------------------------------------------------------------ */
 .cp-statusbar {
   backdrop-filter: blur(16px) saturate(1.25);
@@ -667,7 +667,7 @@
 .cp-run:active { transform: translateY(1px) scale(0.985); }
 .cp-select__btn:active { transform: translateY(1px); }
 
-/* coordinated "recalculating" veil — redesign.js toggles
+/* coordinated "recalculating" veil: redesign.js toggles
    body.cp-recalc for ~900ms when the scenario changes.
    Purely visual; pointer-events stay live underneath is fine
    because scenario.js already disables the select while running. */
@@ -697,7 +697,7 @@ body.cp-recalc .demo-recs::after {
 }
 
 /* ------------------------------------------------------------
-   19 · REDUCED MOTION — global guards for this layer
+   19 · REDUCED MOTION: global guards for this layer
    ------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
   .hero__horizon::after,
@@ -710,7 +710,7 @@ body.cp-recalc .demo-recs::after {
 }
 
 /* ------------------------------------------------------------
-   20 · SMALL SCREENS — intentional mobile layouts
+   20 · SMALL SCREENS: intentional mobile layouts
    ------------------------------------------------------------ */
 @media (max-width: 640px) {
   .secindex { top: 1.2rem; }

@@ -4,7 +4,7 @@ import { CONTROL_VIEWS, type ControlView } from './views';
 
 /**
  * Internal view navigation. These are application views over one shared
- * simulation — switching never resets state. Badges surface live counts
+ * simulation: switching never resets state. Badges surface live counts
  * (pending decisions, constrained regions) from the canonical store.
  */
 export function ControlNav({

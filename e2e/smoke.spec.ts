@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 /**
  * Collect real JavaScript console errors (acceptance #12). External resource
- * failures (Google Fonts, analytics) are ignored — outbound CDN requests are
+ * failures (Google Fonts, analytics) are ignored: outbound CDN requests are
  * blocked in the offline test sandbox and are not application errors.
  */
 function trackConsole(page: import('@playwright/test').Page): string[] {
@@ -99,7 +99,7 @@ test('control plane: approve → simulate flows through queue and verification',
   await expect(page.locator('.cps-event__title', { hasText: 'Operator approved' })).toHaveCount(1);
   await firstRec.getByRole('button', { name: 'Simulate' }).click();
 
-  // Same state, different view — switching views never resets the simulation.
+  // Same state, different view: switching views never resets the simulation.
   await page.getByRole('navigation', { name: 'Control Plane views' }).getByRole('button', { name: 'Results' }).click();
   await expect(page.locator('.cp-verify__body')).toBeVisible();
   await expect(page.locator('.cp-verify__status').first()).toContainText('Verified in simulation');

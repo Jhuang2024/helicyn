@@ -28,7 +28,7 @@ const OLD_BUILD_DATE = '2026.07.10';
 /**
  * Update stale version/build labels in ported legacy page bodies so no page
  * shows a conflicting version. NOTE: do not use this on the patch-notes
- * changelog — historical entries legitimately mention older versions.
+ * changelog: historical entries legitimately mention older versions.
  */
 export function syncVersionStrings(html: string): string {
   return html

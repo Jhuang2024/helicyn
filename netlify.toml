@@ -1,6 +1,6 @@
 # Helicyn deployment configuration.
 #
-# The site is a Vite + React + TypeScript app. It MUST be built — the source
+# The site is a Vite + React + TypeScript app. It MUST be built: the source
 # `index.html` references `/src/main.tsx`, which browsers cannot load directly.
 # Netlify runs the build below and publishes the compiled `dist/` output, whose
 # index.html references the hashed production bundle. SPA history fallback and

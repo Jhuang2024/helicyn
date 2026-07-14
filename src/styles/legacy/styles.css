@@ -1244,7 +1244,7 @@ body.is-pointer .cp-ambient { opacity: 1; }
 /* ============================================================
    MOBILE NAV TOGGLE
    Site nav grew from 2 links + a CTA to 6 links + search + theme toggle
-   + a CTA once Phase 5 pages and the theme switcher were added — that no
+   + a CTA once Phase 5 pages and the theme switcher were added: that no
    longer fits down to 1180px wide (it was overflowing off-screen at
    860-1150px, including standard tablet-landscape widths). Below 1180px
    it collapses into a slide-in panel instead of shrinking indefinitely,

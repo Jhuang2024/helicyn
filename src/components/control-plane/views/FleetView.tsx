@@ -1,7 +1,7 @@
 import { CoolingZonesPanel, PowerPanel, TrendPanels } from '../Telemetry';
 
 /**
- * Fleet: facility-level telemetry downstream of coordination — power demand,
+ * Fleet: facility-level telemetry downstream of coordination: power demand,
  * cooling load by zone, and carbon / GPU / PUE trends, all fed by the shared
  * simulation history.
  */

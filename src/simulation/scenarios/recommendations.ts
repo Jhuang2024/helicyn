@@ -1,5 +1,5 @@
 /**
- * Recommendation pool — the seven recommendation templates the Control Plane
+ * Recommendation pool: the seven recommendation templates the Control Plane
  * cycles through. Copied verbatim from the original control.js POOL so the
  * migrated recommendation cards carry identical reasoning, impact, and effects.
  */

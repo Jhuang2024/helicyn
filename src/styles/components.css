@@ -182,7 +182,7 @@
    desktop widths (laptops at 1280–1400) the full item set plus the large page
    gutter left the "Apply as partner" CTA clipping off the right edge. Between
    the drawer breakpoint and roomy desktop, drop the decorative UTC clock and
-   tighten spacing so every item — including the CTA — stays on screen. */
+   tighten spacing so every item: including the CTA: stays on screen. */
 @media (min-width: 1181px) and (max-width: 1440px) {
   .nav__meta {
     display: none;

@@ -4,7 +4,7 @@
  * Config is read from Vite env (`VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`)
  * with a fallback to the legacy `window.HELICYN_SUPABASE_*` globals so an
  * existing runtime-config script keeps working. The anon key is a PUBLIC value
- * protected by Row Level Security — it is never a service/secret key.
+ * protected by Row Level Security: it is never a service/secret key.
  *
  * "Save login on this device" is honoured through a storage adapter that routes
  * the session to localStorage (persist) or sessionStorage (per-tab), matching
@@ -43,7 +43,7 @@ export const isSupabaseConfigured = looksConfigured(SUPABASE_URL, SUPABASE_ANON_
 
 export const CONFIG_ERROR_MESSAGE =
   'Supabase is not configured for this deployment. Set VITE_SUPABASE_URL and ' +
-  'VITE_SUPABASE_ANON_KEY (your project URL + public anon key — see docs/auth_setup.md). ' +
+  'VITE_SUPABASE_ANON_KEY (your project URL + public anon key: see docs/auth_setup.md). ' +
   'No account or application data can be created until this is set up.';
 
 const REMEMBER_KEY = 'helicyn.rememberMe';

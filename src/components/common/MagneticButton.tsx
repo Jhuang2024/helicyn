@@ -15,7 +15,7 @@ type MagneticButtonProps =
 
 /**
  * A button/link that eases slightly toward the pointer (magnetic effect) and
- * settles back on leave. Transform is applied directly to the node inside rAF —
+ * settles back on leave. Transform is applied directly to the node inside rAF :
  * no rerenders. Disabled under reduced motion. Shared across every route.
  */
 export function MagneticButton(props: MagneticButtonProps) {

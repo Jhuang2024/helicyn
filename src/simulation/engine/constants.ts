@@ -1,5 +1,5 @@
 /**
- * Simulation constants — copied verbatim from the original control.js / scenario.js
+ * Simulation constants: copied verbatim from the original control.js / scenario.js
  * so the TypeScript engine reproduces the exact same illustrative numbers.
  *
  * All values here are SIMULATED / MODELLED figures used to drive the Control

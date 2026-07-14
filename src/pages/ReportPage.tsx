@@ -8,9 +8,9 @@ import { REPORT_JSONLD } from './seo-data';
 /**
  * The long-form technical report. Its body (extracted to a static asset to keep
  * it out of the JS bundle) is fetched on demand and enhanced with the SAME
- * shared interaction system as the rest of the site — the site-wide pointer
+ * shared interaction system as the rest of the site: the site-wide pointer
  * backdrop comes from the shell, and scroll reveals run through the shared
- * enhancer — so /report no longer feels like an older version of the site.
+ * enhancer: so /report no longer feels like an older version of the site.
  * Figures keep their white backing for legibility.
  */
 export default function ReportPage() {

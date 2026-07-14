@@ -20,7 +20,7 @@ interface StaticContentProps {
  * interaction through the shared enhancer (scroll reveals, arch-stack tabs,
  * magnetic buttons, tilt, count-up, internal-link SPA routing, email assembly,
  * contact form). The site-wide pointer backdrop and nav come from the shell, so
- * every static route — including /report — gets consistent motion without a
+ * every static route: including /report: gets consistent motion without a
  * second implementation.
  */
 export function StaticContent({ html, className }: StaticContentProps) {
@@ -39,7 +39,7 @@ export function StaticContent({ html, className }: StaticContentProps) {
     <div
       ref={ref}
       className={['static-content', className].filter(Boolean).join(' ')}
-      // Content is our own trusted, build-time legacy markup — not user input.
+      // Content is our own trusted, build-time legacy markup: not user input.
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

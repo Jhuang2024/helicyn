@@ -4,7 +4,7 @@ import { HierarchyPanel } from '../DecisionTrace';
 
 /**
  * Assumptions: model assumptions, scenario methodology, limitations, and the
- * framing copy that introduced the original Control Plane page — preserved
+ * framing copy that introduced the original Control Plane page: preserved
  * here so the simulation's scope is always explicit.
  */
 export function AssumptionsView() {

@@ -96,7 +96,7 @@ function AttentionPanel() {
 }
 
 /**
- * Overview: fleet-wide state at a glance — scenario pulse, headline metrics,
+ * Overview: fleet-wide state at a glance: scenario pulse, headline metrics,
  * topology, attention items, and the baseline/coordinated comparison.
  */
 export function OverviewView() {

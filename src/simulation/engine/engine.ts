@@ -1,5 +1,5 @@
 /**
- * Simulation engine — framework-independent, deterministic.
+ * Simulation engine: framework-independent, deterministic.
  *
  * Exposes the full operator surface: create, load, advance, update controls,
  * generate/approve/reject/stage/simulate/verify, reset, serialize, restore.
@@ -90,7 +90,7 @@ function traceActionNumber(scenario: ScenarioKey): number {
 
 /** Default simulation clock seeded to a mid-afternoon operating point. */
 function defaultClockSeconds(): number {
-  // 14:30 UTC — a representative point on the accumulation curve so the demo
+  // 14:30 UTC: a representative point on the accumulation curve so the demo
   // opens mid-day rather than at the overnight floor. Deterministic (no Date).
   return 14 * 3600 + 30 * 60;
 }
@@ -340,7 +340,7 @@ export function rejectRecommendation(state: SimulationState, id: string): Simula
 /**
  * Simulate an approved recommendation → applies its fleet effects, produces a
  * verification result, and advances the operator queue. This is the only point
- * at which a recommendation changes fleet state — nothing executes silently.
+ * at which a recommendation changes fleet state: nothing executes silently.
  */
 export function simulateAction(state: SimulationState, id: string): SimulationState {
   const card = state.recommendations.find((r) => r.id === id);
@@ -601,7 +601,7 @@ export function stepForward(state: SimulationState, seconds = 900): SimulationSt
  * Seek the timeline forward to an absolute simulation time (seconds of the
  * virtual day). Forward-only: the engine advances deterministically in bounded
  * chunks so telemetry sampling cadence is preserved. Backward seeking is not
- * faked — replaying from the initial state via {@link SimulationState.actionLog}
+ * faked: replaying from the initial state via {@link SimulationState.actionLog}
  * is the structured path for adding it later.
  */
 export function seekToTime(state: SimulationState, targetSeconds: number): SimulationState {

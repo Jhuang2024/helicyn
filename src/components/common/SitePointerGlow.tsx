@@ -3,7 +3,7 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 /**
  * The single site-wide cursor backdrop. Rendered once in the app shell so it
- * follows the pointer across every route — including /report — with exactly one
+ * follows the pointer across every route: including /report: with exactly one
  * global listener. Purely decorative: aria-hidden and pointer-events:none.
  */
 export function SitePointerGlow() {

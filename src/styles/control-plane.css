@@ -1,5 +1,5 @@
 /* ============================================================
-   Control Plane — operator environment styling.
+   Control Plane: operator environment styling.
    Dark, dense, instrument-panel aesthetic built on the shared design
    tokens. Loaded only with the Control Plane route (lazy import) so
    marketing pages never download it.
@@ -1223,7 +1223,7 @@
 .cps-bar__mode b { color: var(--text-dim); font-weight: 500; }
 .cp-seg--bar .cp-seg__btn { padding: 0.32rem 0.65rem; font-size: 0.74rem; }
 /* On mid-size laptops the mode readout is the least essential bar item and
-   the one that forces a second row — the mode is still set and shown in the
+   the one that forces a second row: the mode is still set and shown in the
    Recommendations view. Drop just its "MODE" caption, then the whole value. */
 @media (max-width: 1500px) {
   .cps-bar__mode { font-size: 0.68rem; }
