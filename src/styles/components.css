@@ -634,6 +634,7 @@ button.navlink:not(.navlink--cta) {
 .hirecard__toggle {
   color: var(--text-faint);
   font-size: 1.4rem;
+  line-height: 1;
 }
 .hirecard__body {
   padding-top: var(--space-4);
