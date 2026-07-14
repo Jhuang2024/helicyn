@@ -28,13 +28,13 @@ describe('Control Plane app shell', () => {
     expect(screen.getByRole('region', { name: 'Visualization canvas' })).toBeInTheDocument();
     expect(screen.queryByRole('complementary', { name: 'Details' })).not.toBeInTheDocument();
     expect(screen.queryByRole('log', { name: 'Simulation events' })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Details scenario/ })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByRole('button', { name: 'Details' })).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('opens the scenario inspector with decision trace on demand', async () => {
     const user = userEvent.setup();
     renderShell();
-    await user.click(screen.getByRole('button', { name: /Details scenario/ }));
+    await user.click(screen.getByRole('button', { name: 'Details' }));
     const inspector = screen.getByRole('complementary', { name: 'Details' });
     expect(within(inspector).getByText('Normal Operations')).toBeInTheDocument();
     expect(within(inspector).getByText('Decision trace')).toBeInTheDocument();

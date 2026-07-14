@@ -39,10 +39,6 @@ export function MetricCards({ keys }: { keys?: string[] }) {
             color={m.key === 'pue' ? 'var(--ok)' : m.key === 'cooling' ? 'var(--warn)' : 'var(--signal)'}
             ariaLabel={`${m.label} trend over the day`}
           />
-          <div className="cp-metric__axis mono">
-            <span>00:00 UTC</span>
-            <span>24:00</span>
-          </div>
         </article>
       ))}
     </div>

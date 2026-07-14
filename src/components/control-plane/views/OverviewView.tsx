@@ -4,37 +4,16 @@ import { MetricCards } from '../MetricCards';
 import { ComparePanel } from '../Telemetry';
 import { Topology } from '../Topology';
 
-const SEQ_STEPS = [
-  ['detect', 'Detect'],
-  ['analyze', 'Analyze'],
-  ['act', 'Act'],
-  ['verify', 'Verify'],
-  ['save', 'Save'],
-] as const;
-
-/** Scenario alert + live Detect→Save coordination rail. */
+/** The active scenario's headline alert. */
 function ScenarioPulse() {
   const scenario = useControlPlane((s) => s.sim.scenario);
-  const seconds = useControlPlane((s) => s.sim.clock.seconds);
   const alert = SCN[scenario].alert;
-  const activeStep = Math.floor(seconds / 5) % SEQ_STEPS.length;
   return (
     <div className="cps-pulse">
       <div className={'cp-alert cp-alert--' + alert.level} role="status" aria-live="polite">
         <span className="cp-alert__ttl">{alert.ttl}</span>
         <span className="cp-alert__body">{alert.body}</span>
       </div>
-      <ol className="cp-seq" aria-label="Coordination sequence">
-        {SEQ_STEPS.map(([key, label], index) => (
-          <li
-            key={key}
-            className={'cp-seq__step' + (index === activeStep ? ' is-active' : '') + (index < activeStep ? ' is-done' : '')}
-            aria-current={index === activeStep ? 'step' : undefined}
-          >
-            <span className="mono">{label}</span>
-          </li>
-        ))}
-      </ol>
     </div>
   );
 }

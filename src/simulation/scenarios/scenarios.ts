@@ -69,26 +69,29 @@ export const SCENARIO_META: Record<ScenarioKey, ScenarioMeta> = {
 // ---- Topology node positions (lon/lat) --------------------------------------
 
 export interface NodePos {
-  lon: number;
-  lat: number;
+  /** Pixel position on the world-outline artwork (public/images/world-outline.png). */
+  x: number;
+  y: number;
   label: string;
 }
 
 export const NODE_POS: Record<TopoNodeId, NodePos> = {
-  virginia: { lon: -78.5, lat: 38.0, label: 'VIRGINIA' },
-  oregon: { lon: -121.0, lat: 44.0, label: 'OREGON' },
-  frankfurt: { lon: 8.7, lat: 50.1, label: 'FRANKFURT' },
-  singapore: { lon: 103.8, lat: 1.3, label: 'SINGAPORE' },
-  tokyo: { lon: 139.7, lat: 35.7, label: 'TOKYO' },
+  virginia: { x: 207, y: 208, label: 'VIRGINIA' },
+  oregon: { x: 126, y: 178, label: 'OREGON' },
+  frankfurt: { x: 361, y: 182, label: 'FRANKFURT' },
+  singapore: { x: 535, y: 283, label: 'SINGAPORE' },
+  tokyo: { x: 595, y: 213, label: 'TOKYO' },
 };
 
-/** Equirectangular map projection bounds (matches the original SVG map). */
-export const MAP = { W: 1000, H: 383, lonMin: -180, lonMax: 180, latMax: 80, latMin: -58 } as const;
+/**
+ * The topology canvas draws over the world-outline artwork. IMG_W/IMG_H are
+ * the artwork's pixel size; X/Y/W/H is the viewBox window into it (trimming
+ * the artwork's empty margins). Node positions above are artwork pixels.
+ */
+export const MAP = { IMG_W: 740, IMG_H: 423, X: 24, Y: 30, W: 692, H: 380 } as const;
 
 export function projectNode(id: TopoNodeId): { x: number; y: number } {
-  const { lon, lat } = NODE_POS[id];
-  const x = ((lon - MAP.lonMin) / (MAP.lonMax - MAP.lonMin)) * MAP.W;
-  const y = ((MAP.latMax - lat) / (MAP.latMax - MAP.latMin)) * MAP.H;
+  const { x, y } = NODE_POS[id];
   return { x, y };
 }
 

@@ -76,39 +76,7 @@ function ScenarioSelect() {
   );
 }
 
-/** Session snapshot menu (export / import / reset-to-default). */
-function SessionMenu() {
-  const [open, setOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!open) return;
-    const onPointer = (e: PointerEvent) => {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener('pointerdown', onPointer);
-    return () => document.removeEventListener('pointerdown', onPointer);
-  }, [open]);
-  return (
-    <div className="cps-session" ref={rootRef}>
-      <button
-        type="button"
-        className="cp-btn"
-        aria-haspopup="true"
-        aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-      >
-        Save / load
-      </button>
-      {open && (
-        <div className="cps-session__pop" role="menu" aria-label="Save or load a session">
-          <ExportImport />
-        </div>
-      )}
-    </div>
-  );
-}
-
-/** Less frequently used playback controls, kept out of the primary toolbar. */
+/** Less frequently used playback and session controls, kept out of the primary toolbar. */
 function SimulationMenu() {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -156,6 +124,7 @@ function SimulationMenu() {
           <button type="button" className="cp-btn cp-btn--danger" onClick={reset}>
             Restart scenario
           </button>
+          <ExportImport />
         </div>
       )}
     </div>
@@ -224,7 +193,6 @@ export function ControlBar() {
             Helicyn plan
           </button>
         </div>
-        <SessionMenu />
       </div>
     </header>
   );

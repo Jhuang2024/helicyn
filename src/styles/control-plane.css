@@ -393,13 +393,12 @@
 .cp-topo__map {
   width: 100%;
   height: auto;
-  aspect-ratio: 1000 / 383;
+  aspect-ratio: 692 / 380;
 }
-.cp-topo__land path {
-  fill: color-mix(in oklch, var(--bg-raise) 62%, transparent);
-  stroke: var(--line-2);
-  stroke-width: 1.15;
-  vector-effect: non-scaling-stroke;
+/* World-outline artwork: white line art on transparent, dimmed to sit behind
+ * the live nodes and flows like an etched instrument-panel backdrop. */
+.cp-topo__world {
+  opacity: 0.42;
 }
 .cp-topo__node {
   cursor: pointer;
@@ -412,7 +411,7 @@
 }
 .cp-topo__nodelabel {
   fill: var(--text-faint);
-  font-size: 11px;
+  font-size: 8.5px;
   letter-spacing: 0.04em;
 }
 .cp-topo__flowdash {

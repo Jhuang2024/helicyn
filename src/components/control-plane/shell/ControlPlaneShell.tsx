@@ -80,9 +80,7 @@ export function ControlPlaneShell() {
           onClick={() => setInspectorOpen((v) => !v)}
         >
           <span>Details</span>
-          <span className="cps-inspectorbtn__state mono">
-            {selectedEntity ? selectedEntity.type : 'scenario'}
-          </span>
+          {selectedEntity && <span className="cps-inspectorbtn__state mono">{selectedEntity.type}</span>}
         </button>
       </div>
       <div className={'cps-main' + (inspectorOpen ? ' has-inspector' : '')}>

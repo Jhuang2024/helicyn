@@ -19,9 +19,9 @@ const STATUS_COLOR: Record<RegionNode['status'], string> = {
 };
 
 const STATUS_LABEL: Record<RegionNode['status'], string> = {
-  ok: 'Nominal',
+  ok: 'Healthy',
   opt: 'Optimizing',
-  warn: 'Strained',
+  warn: 'Under strain',
   crit: 'Alert',
 };
 
@@ -30,25 +30,6 @@ const FLOW_COLOR: Record<FlowArc['kind'], string> = {
   ok: 'var(--ok)',
   warn: 'var(--warn)',
 };
-
-// Coarse geographic silhouettes from the original Control Plane.
-const CONTINENTS: Array<Array<[number, number]>> = [
-  [[-165,60],[-156,71],[-128,71],[-95,72],[-62,68],[-78,62],[-55,51],[-70,41],[-81,25],[-97,26],[-112,30],[-124,48],[-150,59],[-165,60]],
-  [[-78,8],[-60,9],[-49,0],[-35,-8],[-48,-25],[-62,-40],[-69,-52],[-74,-50],[-71,-33],[-70,-18],[-81,-6],[-78,8]],
-  [[-16,15],[-10,30],[0,36],[25,32],[35,24],[51,12],[43,-2],[35,-22],[26,-34],[18,-34],[12,-17],[9,0],[-8,5],[-16,15]],
-  [[-10,36],[-9,43],[-4,48],[-1,58],[12,65],[25,71],[30,66],[28,60],[55,58],[48,50],[30,45],[20,40],[6,43],[-10,36]],
-  [[48,50],[68,55],[85,75],[105,78],[158,72],[170,66],[156,52],[135,38],[122,31],[108,18],[103,4],[91,22],[80,13],[67,24],[52,16],[40,22],[34,30],[48,50]],
-  [[114,-22],[130,-12],[142,-11],[150,-24],[153,-28],[150,-37],[143,-39],[129,-32],[115,-34],[114,-22]],
-  [[-46,60],[-22,70],[-20,76],[-32,80],[-50,78],[-55,70],[-46,60]],
-];
-
-function landPath(points: Array<[number, number]>): string {
-  return points.map(([lon, lat], i) => {
-    const x = ((lon - MAP.lonMin) / (MAP.lonMax - MAP.lonMin)) * MAP.W;
-    const y = ((MAP.latMax - lat) / (MAP.latMax - MAP.latMin)) * MAP.H;
-    return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)} ${y.toFixed(1)}`;
-  }).join(' ') + ' Z';
-}
 
 function arcPath(from: TopoNodeId, to: TopoNodeId): string {
   const a = projectNode(from);
@@ -119,23 +100,29 @@ export function Topology({ compact = false }: { compact?: boolean }) {
     <div className={'cp-topo' + (compact ? ' cp-topo--compact' : '')}>
       <svg
         className="cp-topo__map"
-        viewBox={`0 0 ${MAP.W} ${MAP.H}`}
+        viewBox={`${MAP.X} ${MAP.Y} ${MAP.W} ${MAP.H}`}
         role="img"
         aria-label="World map showing workload coordination flows between five regions"
       >
         {/* graticule backdrop */}
         <g className="cp-topo__grid" aria-hidden="true">
           {[0.2, 0.4, 0.6, 0.8].map((g) => (
-            <line key={'h' + g} x1={0} y1={MAP.H * g} x2={MAP.W} y2={MAP.H * g} stroke="var(--line-soft)" />
+            <line key={'h' + g} x1={MAP.X} y1={MAP.Y + MAP.H * g} x2={MAP.X + MAP.W} y2={MAP.Y + MAP.H * g} stroke="var(--line-soft)" />
           ))}
           {[0.2, 0.4, 0.6, 0.8].map((g) => (
-            <line key={'v' + g} x1={MAP.W * g} y1={0} x2={MAP.W * g} y2={MAP.H} stroke="var(--line-soft)" />
+            <line key={'v' + g} x1={MAP.X + MAP.W * g} y1={MAP.Y} x2={MAP.X + MAP.W * g} y2={MAP.Y + MAP.H} stroke="var(--line-soft)" />
           ))}
         </g>
 
-        <g className="cp-topo__land" aria-hidden="true">
-          {CONTINENTS.map((points, i) => <path key={i} d={landPath(points)} />)}
-        </g>
+        <image
+          className="cp-topo__world"
+          href="/images/world-outline.png"
+          x={0}
+          y={0}
+          width={MAP.IMG_W}
+          height={MAP.IMG_H}
+          aria-hidden="true"
+        />
 
         {/* flow arcs */}
         <g className={'cp-topo__flows' + (previewPath ? ' is-previewing' : '')}>
@@ -204,10 +191,10 @@ export function Topology({ compact = false }: { compact?: boolean }) {
                   }
                 }}
               >
-                {isRelated && <circle r={17} fill="none" stroke="var(--signal)" strokeDasharray="3 4" opacity="0.8" />}
-                <circle r={isActive ? 13 : 10} fill={STATUS_COLOR[r.status]} opacity="0.18" />
-                <circle r={isActive ? 7 : 5} fill={STATUS_COLOR[r.status]} />
-                <text className="cp-topo__nodelabel mono" y={-16} textAnchor="middle">
+                {isRelated && <circle r={13} fill="none" stroke="var(--signal)" strokeDasharray="3 4" opacity="0.8" />}
+                <circle r={isActive ? 10 : 8} fill={STATUS_COLOR[r.status]} opacity="0.18" />
+                <circle r={isActive ? 5.5 : 4} fill={STATUS_COLOR[r.status]} />
+                <text className="cp-topo__nodelabel mono" y={-13} textAnchor="middle">
                   {NODE_POS[r.id].label}
                 </text>
               </g>
@@ -219,7 +206,7 @@ export function Topology({ compact = false }: { compact?: boolean }) {
       {tip && tipPos && !compact && (
         <div
           className="cp-topo__tip"
-          style={{ left: `${(tipPos.x / MAP.W) * 100}%`, top: `${(tipPos.y / MAP.H) * 100}%` }}
+          style={{ left: `${((tipPos.x - MAP.X) / MAP.W) * 100}%`, top: `${((tipPos.y - MAP.Y) / MAP.H) * 100}%` }}
           role="status"
         >
           <strong>{NODE_POS[tip.id].label}</strong>
@@ -235,9 +222,9 @@ export function Topology({ compact = false }: { compact?: boolean }) {
       )}
 
       <div className="cp-topo__legend" aria-hidden="true">
-        <span><span className="cp-dot cp-dot--opt" />Optimized workload flow</span>
-        <span><span className="cp-dot cp-dot--ok" />Balanced capacity</span>
-        <span><span className="cp-dot cp-dot--warn" />Constrained region</span>
+        <span><span className="cp-dot cp-dot--opt" />Work being moved</span>
+        <span><span className="cp-dot cp-dot--ok" />Healthy</span>
+        <span><span className="cp-dot cp-dot--warn" />Under stress</span>
       </div>
     </div>
   );
