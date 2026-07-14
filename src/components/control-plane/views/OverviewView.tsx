@@ -104,7 +104,7 @@ export function OverviewView() {
     <div className="cps-view cps-view--overview">
       <ScenarioPulse />
       <p className="cp-caption">
-        Today, coordinated — totals accumulate from 00:00 UTC and tick live. Solid sparkline is
+        Today, coordinated: totals accumulate from 00:00 UTC and tick live. Solid sparkline is
         accumulated, dashed is projected. Use the Baseline / Coordinated toggle in the control bar
         to switch basis.
       </p>

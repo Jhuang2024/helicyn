@@ -31,7 +31,7 @@ export const SCENARIO_META: Record<ScenarioKey, ScenarioMeta> = {
   normal: {
     key: 'normal',
     name: 'Normal Operations',
-    description: 'Steady multi-region load with no active constraints — the fleet coordinates routine training, inference, and batch work.',
+    description: 'Steady multi-region load with no active constraints. The fleet coordinates routine training, inference, and batch work.',
     seed: 'helicyn-normal',
   },
   surge: {

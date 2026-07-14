@@ -30,7 +30,7 @@ export function ExportImport() {
     const file = e.target.files?.[0];
     if (!file) return;
     const text = await file.text();
-    setStatus(importSnapshot(text) ? 'Snapshot imported.' : 'Invalid snapshot file — not applied.');
+    setStatus(importSnapshot(text) ? 'Snapshot imported.' : 'Invalid snapshot file: not applied.');
     e.target.value = '';
   };
 

@@ -106,7 +106,7 @@ function OnboardingForm() {
     return (
       <div className="authnotice authnotice--ok">
         <h2>Application received</h2>
-        <p>Thanks — your founding-partner application is in. We&apos;ll follow up with next steps.</p>
+        <p>Thanks. Your founding-partner application is in. We&apos;ll follow up with next steps.</p>
       </div>
     );
   }
