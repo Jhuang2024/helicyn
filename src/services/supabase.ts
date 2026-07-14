@@ -20,14 +20,21 @@ declare global {
   }
 }
 
+// Browser-safe production defaults preserve auth if the deployment platform
+// does not inject Vite variables or the runtime config script is unavailable.
+// This is a public publishable key. Supabase RLS protects application data.
+const DEFAULT_SUPABASE_URL = 'https://beclmkfozwbbtftbyecs.supabase.co';
+const DEFAULT_SUPABASE_PUBLISHABLE_KEY =
+  'sb_publishable_DQhOlsRQjnxnowcZxhABjg_8yTytv5_';
+
 const SUPABASE_URL =
   import.meta.env.VITE_SUPABASE_URL ??
   (typeof window !== 'undefined' ? window.HELICYN_SUPABASE_URL : undefined) ??
-  '';
+  DEFAULT_SUPABASE_URL;
 const SUPABASE_ANON_KEY =
   import.meta.env.VITE_SUPABASE_ANON_KEY ??
   (typeof window !== 'undefined' ? window.HELICYN_SUPABASE_ANON_KEY : undefined) ??
-  '';
+  DEFAULT_SUPABASE_PUBLISHABLE_KEY;
 
 function looksConfigured(url: string, key: string): boolean {
   return Boolean(
