@@ -302,17 +302,17 @@
 /* Metric cards */
 .cp-metrics {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
 }
 .cp-metric {
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  padding: var(--space-4);
+  padding: var(--space-3);
   background: var(--bg-1);
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.28rem;
 }
 .cp-metric__top {
   display: flex;
@@ -324,7 +324,7 @@
   color: var(--text-dim);
 }
 .cp-metric__value {
-  font-size: 1.9rem;
+  font-size: 1.6rem;
   font-family: var(--font-display, var(--font-sans));
   transition: color var(--dur);
 }
@@ -346,8 +346,8 @@
 }
 .cp-spark {
   width: 100%;
-  height: 46px;
-  margin-top: 0.3rem;
+  height: 36px;
+  margin-top: 0.15rem;
 }
 .cp-metric__axis {
   display: flex;
@@ -1173,9 +1173,9 @@
 .cps-bar {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-3) var(--space-4);
   flex-wrap: wrap;
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-2) var(--space-4);
   border-bottom: 1px solid var(--line);
   background: color-mix(in oklch, var(--bg) 92%, transparent);
   backdrop-filter: blur(10px);
@@ -1184,30 +1184,36 @@
 .cps-bar__brand {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
   min-width: 0;
 }
 .cps-bar__title {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-family: var(--font-display, var(--font-sans));
   white-space: nowrap;
   padding-bottom: 0;
 }
 .cps-bar .cp-select {
-  min-width: 210px;
+  min-width: 190px;
   flex-direction: row;
   align-items: center;
   gap: var(--space-2);
 }
 .cps-bar .cp-select__k { white-space: nowrap; }
-.cps-bar .cp-select__btn { padding: 0.4rem 0.7rem; font-size: 0.85rem; flex: 1; }
+.cps-bar .cp-select__btn { padding: 0.38rem 0.65rem; font-size: 0.84rem; flex: 1; }
 .cps-bar .cp-select__list { min-width: 340px; }
 .cps-bar__right {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2) var(--space-3);
   margin-left: auto;
   flex-wrap: wrap;
+}
+/* Reclaim horizontal room so the whole bar holds one row on 1366-class
+   laptops; the "Interactive simulation" chip is redundant with the demo
+   badge in Assumptions and the persistent simulated-telemetry framing. */
+@media (max-width: 1440px) {
+  .cps-bar__brand .cp-demobadge { display: none; }
 }
 .cps-bar__mode {
   font-size: 0.72rem;
@@ -1216,6 +1222,15 @@
 }
 .cps-bar__mode b { color: var(--text-dim); font-weight: 500; }
 .cp-seg--bar .cp-seg__btn { padding: 0.32rem 0.65rem; font-size: 0.74rem; }
+/* On mid-size laptops the mode readout is the least essential bar item and
+   the one that forces a second row — the mode is still set and shown in the
+   Recommendations view. Drop just its "MODE" caption, then the whole value. */
+@media (max-width: 1500px) {
+  .cps-bar__mode { font-size: 0.68rem; }
+}
+@media (max-width: 1400px) {
+  .cps-bar__mode { display: none; }
+}
 
 /* System status pill */
 .cps-status {
@@ -1281,6 +1296,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  min-height: 0;
 }
 .cps-nav ul {
   list-style: none;
@@ -1300,7 +1316,7 @@
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   color: var(--text-dim);
-  padding: 0.5rem 0.7rem;
+  padding: 0.42rem 0.7rem;
   font: inherit;
   font-size: 0.84rem;
   text-align: left;
@@ -1328,8 +1344,15 @@
   border-top: 1px solid var(--line-soft);
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.3rem;
   font-size: 0.72rem;
+  /* Keep a small breathing gap above the fold so the last row never clips. */
+  padding-bottom: var(--space-2);
+}
+/* Below this height the four fleet stats fight the nav items for vertical
+   room; drop them (the same figures live in the Overview view). */
+@media (max-height: 780px) {
+  .cps-nav__stats { display: none; }
 }
 .cps-nav__stats div { display: flex; justify-content: space-between; gap: var(--space-2); }
 .cps-nav__stats dt { color: var(--text-faint); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; }
@@ -1345,7 +1368,7 @@
 .cps-view {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
   animation: cps-viewin 0.28s var(--ease) both;
 }
 @keyframes cps-viewin {
@@ -1579,7 +1602,8 @@
   background: color-mix(in oklch, var(--bg) 94%, transparent);
   display: flex;
   flex-direction: column;
-  max-height: 220px;
+  /* A quarter of a 768-tall laptop, leaving the canvas the bulk of the fold. */
+  max-height: clamp(150px, 24vh, 210px);
 }
 .cps-stream.is-collapsed { max-height: none; }
 .cps-stream__bar {

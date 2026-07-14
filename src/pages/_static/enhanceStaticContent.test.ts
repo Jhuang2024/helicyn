@@ -39,6 +39,23 @@ describe('legacy static-content parity', () => {
     dispose();
   });
 
+  it('uses the styled ripple class so the button is not ballooned by an in-flow span', () => {
+    document.body.innerHTML = `<main id="root"><a class="btn" href="control-plane">Go</a></main>`;
+    const root = document.querySelector<HTMLElement>('#root')!;
+    // reduce=false enables the pointer-driven ripple.
+    const dispose = enhanceStaticContent(root, { navigate: vi.fn(), reduce: false });
+    const btn = root.querySelector<HTMLElement>('.btn')!;
+    btn.dispatchEvent(new MouseEvent('pointerdown', { clientX: 5, clientY: 5, bubbles: true }));
+
+    const dot = btn.querySelector('span')!;
+    // Must be the absolutely-positioned, clipped class the CSS actually styles —
+    // an unstyled "ripple" span sits in normal flow and expands the button.
+    expect(dot).toHaveClass('btn__ripple');
+    expect(dot.className).not.toBe('ripple');
+
+    dispose();
+  });
+
   it('restores the extracted thesis modal controls', () => {
     document.body.innerHTML = `
       <main id="root">

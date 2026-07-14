@@ -668,7 +668,10 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
       const ripple = (event: PointerEvent) => {
         const bounds = button.getBoundingClientRect();
         const dot = document.createElement('span');
-        dot.className = 'ripple';
+        // Must match the styled class (.btn__ripple): it is absolutely
+        // positioned and clipped by the button's overflow. Using an unstyled
+        // class leaves the span in normal flow, ballooning the button on press.
+        dot.className = 'btn__ripple';
         const size = Math.max(bounds.width, bounds.height) * 1.35;
         Object.assign(dot.style, {
           width: `${size}px`, height: `${size}px`,
