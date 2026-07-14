@@ -285,6 +285,39 @@
   resize: vertical;
 }
 
+/* The careers, onboarding, and profile forms reuse `.field`, but the legacy
+   `.field` (styles.css) is a horizontal, underlined single-line field built for
+   the homepage email capture: it sets `align-items: center` and never stretches
+   its control, which collapsed these stacked label-over-input forms to
+   intrinsic-width, centered fields. Re-assert the stacked layout and full-width
+   controls, scoped to the form containers so the legacy homepage field is
+   untouched. */
+.onboarding-form .field,
+.profile-form .field,
+.hireform .field {
+  align-items: stretch;
+  gap: 0.35rem;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+.onboarding-form .field::after,
+.profile-form .field::after,
+.hireform .field::after {
+  display: none;
+}
+.onboarding-form .field input,
+.onboarding-form .field select,
+.onboarding-form .field textarea,
+.profile-form .field input,
+.profile-form .field select,
+.profile-form .field textarea,
+.hireform .field input,
+.hireform .field select,
+.hireform .field textarea {
+  width: 100%;
+  flex: 0 0 auto;
+}
+
 /* Landing-page email capture: roomy enough for complete business addresses. */
 .static-content .access .field input[type='email'] {
   width: min(100%, 34rem);
@@ -438,6 +471,16 @@
 }
 .authgate__actions {
   margin-top: var(--space-4);
+}
+
+/* `.navlink` is an anchor style; used on a <button> (the profile "Sign out"
+   action) the browser's default button chrome showed through as a pale box.
+   Reset non-CTA navlink buttons to inherit the link treatment. */
+button.navlink:not(.navlink--cta) {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
 }
 
 /* Profile avatar */
