@@ -30,9 +30,20 @@ export interface MetricView {
   nowFraction: number;
 }
 
+/** "+14% vs yesterday" style trend line for a cumulative daily metric. */
+function vsYesterday(cur: number, ref: number): string {
+  const diff = ref ? (cur / ref - 1) * 100 : 0;
+  return `${diff >= 0 ? '↗ +' : '↘ −'}${Math.abs(diff).toFixed(0)}% vs yesterday`;
+}
+
+/** Rough real-world equivalents that make the headline numbers tangible. */
+const HOME_MWH_PER_DAY = 0.03; // ~30 kWh average household day
+const CAR_TCO2_PER_YEAR = 4.6; // EPA typical passenger vehicle
+
 /**
- * Assemble the six metric cards from the fleet computation, preserving the
- * original labels, units, tooltips, and context lines verbatim.
+ * Assemble the metric cards from the fleet computation. Labels and context
+ * lines are written for a general audience; the tooltips carry the precise
+ * technical definitions for operators who want them.
  */
 export function buildMetricViews(fleet: FleetComputation, dayFraction: number): MetricView[] {
   const now = Math.max(0.004, Math.min(0.9995, dayFraction));
@@ -43,84 +54,84 @@ export function buildMetricViews(fleet: FleetComputation, dayFraction: number): 
   const gpu = fleet.metrics.gpu;
   const cooling = fleet.metrics.cooling;
 
-  const pct = (cur: number, ref: number) => (ref ? (cur / ref) * 100 : 0);
+  const pueDelta = pue.today - pue.yesterday;
 
   return [
     {
       key: 'energy',
-      label: 'Modeled energy saved',
+      label: 'Energy saved today',
       value: fmt(energy.today, 1),
       unit: 'MWh',
-      trend: `↗ ${pct(energy.today, energy.yesterday).toFixed(1)}% of yesterday`,
-      trendGood: true,
-      context: 'across 5 coordinated regions',
+      trend: vsYesterday(energy.today, energy.yesterday),
+      trendGood: energy.today >= energy.yesterday,
+      context: `≈ a day of electricity for ${fmt(Math.round(energy.today / HOME_MWH_PER_DAY), 0)} homes`,
       tooltip:
-        'Modeled Energy Saved. Simulated energy saved by coordinating workload placement, scheduling, and cooling instead of running each system independently.',
+        'Electricity saved by coordinating where and when work runs, instead of letting each site run independently. Modeled, in megawatt-hours (MWh), across 5 coordinated regions.',
       series: cumulativeSeries(energy.projected),
       nowFraction: now,
     },
     {
       key: 'cost',
-      label: 'Estimated cost avoided',
+      label: 'Money saved today',
       value: '$' + fmt(cost.today, 0),
       unit: '',
-      trend: `↗ ${pct(cost.today, cost.yesterday).toFixed(1)}% of yesterday`,
-      trendGood: true,
-      context: 'grid arbitrage + deferred load',
+      trend: vsYesterday(cost.today, cost.yesterday),
+      trendGood: cost.today >= cost.yesterday,
+      context: 'from cheaper power and smarter timing',
       tooltip:
-        'Cost Avoided. Spend avoided through grid arbitrage (running flexible load when and where power is cheaper), plus deferred non-urgent jobs.',
+        'Estimated spend avoided by running flexible work when and where power is cheaper (grid arbitrage), plus deferring non-urgent jobs.',
       series: cumulativeSeries(cost.projected),
       nowFraction: now,
     },
     {
       key: 'carbon',
-      label: 'Emissions shifted',
+      label: 'CO₂ avoided today',
       value: fmt(carbon.today, 1),
-      unit: 'tCO₂e',
-      trend: `↗ ${pct(carbon.today, carbon.yesterday).toFixed(1)}% of yesterday`,
-      trendGood: true,
-      context: 'load moved to low-carbon windows',
+      unit: 'tons',
+      trend: vsYesterday(carbon.today, carbon.yesterday),
+      trendGood: carbon.today >= carbon.yesterday,
+      context: `≈ ${fmt(Math.round(carbon.today / CAR_TCO2_PER_YEAR), 0)} cars taken off the road for a year`,
       tooltip:
-        'Emissions Shifted. Estimated emissions avoided by moving flexible workloads to lower-carbon regions or time windows.',
+        'Estimated emissions avoided by moving flexible work to cleaner-energy regions or times of day. Measured in metric tons of CO₂ equivalent (tCO₂e).',
       series: cumulativeSeries(carbon.projected),
       nowFraction: now,
     },
     {
       key: 'pue',
-      label: 'Average PUE',
+      label: 'Energy efficiency',
       value: fmt(pue.today, 2),
-      unit: '',
-      trend: `${pue.today - pue.yesterday >= 0 ? '↗ +' : '↘ −'}${Math.abs(pue.today - pue.yesterday).toFixed(2)} vs. yesterday`,
-      trendGood: pue.today - pue.yesterday < 0,
-      context: 'power usage effectiveness',
+      unit: 'PUE',
+      trend: `${pueDelta < 0 ? '↘' : '↗'} ${Math.abs(pueDelta).toFixed(2)} ${pueDelta < 0 ? 'better' : 'worse'} than yesterday`,
+      trendGood: pueDelta < 0,
+      context: 'lower is better · 1.00 is perfect',
       tooltip:
-        'PUE. Power Usage Effectiveness: the ratio of total facility energy to IT equipment energy. Lower is better.',
+        'Power Usage Effectiveness (PUE): total facility energy divided by the energy that reaches the computers. 1.24 means 24% extra goes to cooling and overhead. Lower is better.',
       series: rampSeries(1.31, pue.projected),
       nowFraction: now,
     },
     {
       key: 'gpu',
-      label: 'GPU utilization',
+      label: 'Computers kept busy',
       value: fmt(gpu.today, 0),
       unit: '%',
-      trend: `${gpu.today - gpu.yesterday >= 0 ? '↗ +' : '↘ −'}${Math.abs(gpu.today - gpu.yesterday).toFixed(1)} pts vs. yesterday`,
+      trend: `${gpu.today - gpu.yesterday >= 0 ? '↗ +' : '↘ −'}${Math.abs(gpu.today - gpu.yesterday).toFixed(1)} pts vs yesterday`,
       trendGood: gpu.today - gpu.yesterday >= 0,
-      context: 'fleet-wide, scheduling-aware',
+      context: 'share of computing power doing useful work',
       tooltip:
-        'GPU Utilization. Share of fleet GPU capacity doing useful work. Coordination keeps this high while shifting load.',
+        'GPU utilization: the share of the fleet’s computing capacity doing useful work. Coordination keeps this high even while work is being moved around.',
       series: rampSeries(46, gpu.projected),
       nowFraction: now,
     },
     {
       key: 'cooling',
-      label: 'Cooling load reduction',
+      label: 'Cooling energy saved',
       value: fmt(cooling.today, 1),
       unit: '%',
-      trend: `↗ ${pct(cooling.today, cooling.yesterday).toFixed(1)}% of yesterday`,
-      trendGood: true,
-      context: 'thermal headroom recovered',
+      trend: vsYesterday(cooling.today, cooling.yesterday),
+      trendGood: cooling.today >= cooling.yesterday,
+      context: 'less energy spent on air conditioning',
       tooltip:
-        'Cooling Load Reduction. Reduction in cooling demand from thermal-aware workload placement and setpoint coordination.',
+        'Reduction in cooling demand from placing heat-producing work where the cooling system has room to spare.',
       series: cumulativeSeries(cooling.projected),
       nowFraction: now,
     },

@@ -79,7 +79,7 @@ export function ControlPlaneShell() {
           aria-expanded={inspectorOpen}
           onClick={() => setInspectorOpen((v) => !v)}
         >
-          <span>Inspector</span>
+          <span>Details</span>
           <span className="cps-inspectorbtn__state mono">
             {selectedEntity ? selectedEntity.type : 'scenario'}
           </span>

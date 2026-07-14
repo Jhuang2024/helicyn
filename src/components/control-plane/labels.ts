@@ -62,3 +62,18 @@ export const EVENT_GROUPS: { key: string; label: string; categories: EventCatego
 export function eventGroupOf(category: EventCategory): string {
   return EVENT_GROUPS.find((g) => g.categories.includes(category))?.key ?? 'system';
 }
+
+/** Plain-language chip text for each event category (shown in the activity log). */
+export const EVENT_CATEGORY_LABEL: Record<EventCategory, string> = {
+  telemetry: 'Reading',
+  constraint: 'Alert',
+  analysis: 'Analysis',
+  recommendation: 'Suggestion',
+  approval: 'Approved',
+  rejection: 'Rejected',
+  action: 'Action',
+  migration: 'Move',
+  verification: 'Check',
+  savings: 'Savings',
+  system: 'System',
+};

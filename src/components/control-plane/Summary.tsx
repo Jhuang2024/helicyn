@@ -10,29 +10,38 @@ export function BeforeAfterPanel() {
       <div className="cp-ba__col">
         <h3>Before Helicyn</h3>
         <dl>
-          <div><dt>Average PUE:</dt><dd>1.31</dd></div>
+          <div>
+            <dt>
+              Energy efficiency (PUE):
+              <Tooltip
+                label="About PUE"
+                text="Power Usage Effectiveness: total facility energy divided by the energy that reaches the computers. Lower is better; 1.00 is perfect."
+              />
+            </dt>
+            <dd>1.31</dd>
+          </div>
           <div><dt>Cooling load:</dt><dd>100%</dd></div>
           <div>
             <dt>
-              Thermal variance:
+              Temperature spread:
               <Tooltip
-                label="About thermal variance"
-                text="Thermal Variance. The spread between hottest and coolest racks. Lower variance means more even cooling and less hotspot risk."
+                label="About temperature spread"
+                text="The gap between the hottest and coolest server racks. A smaller spread means more even cooling and less risk of hot spots."
               />
             </dt>
             <dd>9.8°C</dd>
           </div>
-          <div><dt>Hotspot risk:</dt><dd>Elevated</dd></div>
+          <div><dt>Hot-spot risk:</dt><dd>Elevated</dd></div>
           <div><dt>Daily cost:</dt><dd>$38,700</dd></div>
         </dl>
       </div>
       <div className="cp-ba__col cp-ba__col--after">
         <h3>After Helicyn</h3>
         <dl>
-          <div><dt>Average PUE:</dt><dd>1.18</dd></div>
+          <div><dt>Energy efficiency (PUE):</dt><dd>1.18</dd></div>
           <div><dt>Cooling load:</dt><dd>88.4%</dd></div>
-          <div><dt>Thermal variance:</dt><dd>4.2°C</dd></div>
-          <div><dt>Hotspot risk:</dt><dd>Stable</dd></div>
+          <div><dt>Temperature spread:</dt><dd>4.2°C</dd></div>
+          <div><dt>Hot-spot risk:</dt><dd>Stable</dd></div>
           <div><dt>Daily cost:</dt><dd>$33,706</dd></div>
         </dl>
       </div>
@@ -52,15 +61,15 @@ export function LifetimePanel() {
         </div>
         <div className="cp-lifecell">
           <span className="cp-lifecell__v">${fmt(lifetime.cost, 1)} M</span>
-          <span className="cp-lifecell__k">Est. cost avoided</span>
+          <span className="cp-lifecell__k">Money saved (est.)</span>
         </div>
         <div className="cp-lifecell">
-          <span className="cp-lifecell__v">{fmt(lifetime.carbon, 0)} tCO₂e</span>
-          <span className="cp-lifecell__k">Emissions shifted</span>
+          <span className="cp-lifecell__v">{fmt(lifetime.carbon, 0)} tons</span>
+          <span className="cp-lifecell__k">CO₂ avoided</span>
         </div>
         <div className="cp-lifecell">
           <span className="cp-lifecell__v">{fmt(lifetime.gpuh, 2)} M</span>
-          <span className="cp-lifecell__k">GPU-hours rescheduled</span>
+          <span className="cp-lifecell__k">Computing hours rescheduled</span>
         </div>
       </div>
       <p className="cp-note mono">Illustrative metrics and events shown for demonstration purposes.</p>

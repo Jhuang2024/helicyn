@@ -79,9 +79,9 @@ export function Verification() {
           </h3>
           <dl className="cp-verify__rows">
             <div><dt>Peak power</dt><dd>{verification.strings.peak}</dd></div>
-            <div><dt>PUE</dt><dd>{verification.strings.pue}</dd></div>
-            <div><dt>Thermal variance</dt><dd>{verification.strings.variance}</dd></div>
-            <div><dt>Emissions shifted</dt><dd>{verification.strings.emissions}</dd></div>
+            <div><dt>Energy efficiency (PUE)</dt><dd>{verification.strings.pue}</dd></div>
+            <div><dt>Temperature spread</dt><dd>{verification.strings.variance}</dd></div>
+            <div><dt>CO₂ avoided</dt><dd>{verification.strings.emissions}</dd></div>
           </dl>
           <p className="cp-verify__status mono">Verified in simulation · pending real telemetry</p>
         </div>

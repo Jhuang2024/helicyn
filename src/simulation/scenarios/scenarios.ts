@@ -125,7 +125,7 @@ export interface ScenarioContent {
 
 export const SCN: Record<ScenarioKey, ScenarioContent> = {
   normal: {
-    alert: { level: 'info', ttl: 'Systems nominal', body: 'Coordinating across 5 regions. No constraints active.' },
+    alert: { level: 'info', ttl: 'All systems normal', body: 'Coordinating across 5 regions. Nothing needs your attention.' },
     flows: [
       { from: 'virginia', to: 'oregon', kind: 'opt', label: '18% training shifted' },
       { from: 'singapore', to: 'frankfurt', kind: 'opt', label: 'inference overflow balanced' },

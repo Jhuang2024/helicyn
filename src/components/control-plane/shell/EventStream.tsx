@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { CustomSelect } from '@/components/common/CustomSelect';
 import { formatClock, type EventSeverity, type SimEvent } from '@/simulation';
 import { useControlPlane } from '@/state/controlPlaneStore';
-import { EVENT_GROUPS, eventGroupOf } from '../labels';
+import { EVENT_CATEGORY_LABEL, EVENT_GROUPS, eventGroupOf } from '../labels';
 
 const SEVERITIES: { key: EventSeverity | 'all'; label: string }[] = [
   { key: 'all', label: 'All severities' },
@@ -107,7 +107,7 @@ export function EventStream({ collapsed, onToggle }: { collapsed: boolean; onTog
   };
 
   return (
-    <section className={'cps-stream' + (collapsed ? ' is-collapsed' : '')} aria-label="Event stream">
+    <section className={'cps-stream' + (collapsed ? ' is-collapsed' : '')} aria-label="Activity log">
       <div className="cps-stream__bar">
         <button
           type="button"
@@ -115,7 +115,7 @@ export function EventStream({ collapsed, onToggle }: { collapsed: boolean; onTog
           aria-expanded={!collapsed}
           onClick={onToggle}
         >
-          {collapsed ? '▴' : '▾'} Event stream
+          {collapsed ? '▴' : '▾'} Activity log
           <span className="cps-stream__count mono">{events.length}</span>
         </button>
 
@@ -176,7 +176,7 @@ export function EventStream({ collapsed, onToggle }: { collapsed: boolean; onTog
                 onClick={() => onSelect(e)}
               >
                 <span className="cps-event__time mono">{e.time}</span>
-                <span className={'cps-event__cat mono'}>{e.category.toUpperCase()}</span>
+                <span className={'cps-event__cat mono'}>{(EVENT_CATEGORY_LABEL[e.category] ?? e.category).toUpperCase()}</span>
                 <span className="cps-event__sevdot" aria-hidden="true" />
                 <span className="cps-event__title">{e.title}</span>
                 <span className="cps-event__text" dangerouslySetInnerHTML={{ __html: e.text }} />

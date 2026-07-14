@@ -5,11 +5,11 @@ import { ComparePanel } from '../Telemetry';
 import { Topology } from '../Topology';
 
 const SEQ_STEPS = [
-  ['detect', '01 · Detect'],
-  ['analyze', '02 · Analyze'],
-  ['act', '03 · Act'],
-  ['verify', '04 · Verify'],
-  ['save', '05 · Save'],
+  ['detect', 'Detect'],
+  ['analyze', 'Analyze'],
+  ['act', 'Act'],
+  ['verify', 'Verify'],
+  ['save', 'Save'],
 ] as const;
 
 /** Scenario alert + live Detect→Save coordination rail. */
@@ -51,13 +51,13 @@ function AttentionPanel() {
     <div className="cp-panel cps-attention">
       <div className="cp-panel__head">
         <h3>Needs attention</h3>
-        <span className="mono">{constrained.length} constrained · {pending.length} pending</span>
+        <span className="mono">{constrained.length} under stress · {pending.length} awaiting a decision</span>
       </div>
       <div className="cps-attention__grid">
         <div>
-          <h4 className="cps-attention__k mono">Active constraints</h4>
+          <h4 className="cps-attention__k mono">Sites under stress</h4>
           {constrained.length === 0 ? (
-            <p className="cp-queue__empty">No constrained regions.</p>
+            <p className="cp-queue__empty">All sites are running comfortably.</p>
           ) : (
             <ul className="cps-attention__list">
               {constrained.map((r) => (
@@ -75,16 +75,15 @@ function AttentionPanel() {
           )}
         </div>
         <div>
-          <h4 className="cps-attention__k mono">Current recommendation</h4>
+          <h4 className="cps-attention__k mono">Suggested next step</h4>
           {!top ? (
-            <p className="cp-queue__empty">No pending recommendations.</p>
+            <p className="cp-queue__empty">Nothing waiting on you right now.</p>
           ) : (
             <button
               type="button"
               className="cps-attention__rec"
               onClick={() => selectEntity({ type: 'recommendation', id: top.id })}
             >
-              <span className="mono">{top.id}</span>
               <span dangerouslySetInnerHTML={{ __html: top.template.text }} />
               <span className="mono cps-attention__impact">{top.template.impact} · {top.template.conf}% confidence</span>
             </button>
@@ -116,12 +115,12 @@ export function OverviewView() {
       <p className="cp-caption">
         Results update live. Solid lines show progress so far; dashed lines project the rest of the day.
       </p>
-      <MetricCards />
+      <MetricCards keys={['energy', 'cost', 'carbon', 'pue']} />
       <div className="cps-view__cols">
         <div className="cp-panel">
           <div className="cp-panel__head">
-            <h3>Regional coordination</h3>
-            <span className="mono">5 regions · carbon-aware routing</span>
+            <h3>Work moving between sites</h3>
+            <span className="mono">5 regions · routed toward clean energy</span>
           </div>
           <Topology compact />
         </div>

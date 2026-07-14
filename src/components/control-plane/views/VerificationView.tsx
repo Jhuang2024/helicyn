@@ -11,11 +11,11 @@ export function VerificationView() {
     <div className="cps-view cps-view--verification">
       <div className="cp-split">
         <div className="cp-panel">
-          <div className="cp-panel__head"><h3>Operator queue</h3><span className="mono">Recommendations only</span></div>
+          <div className="cp-panel__head"><h3>Decision queue</h3><span className="mono">Nothing runs without approval</span></div>
           <OperatorQueue />
         </div>
         <div className="cp-panel">
-          <div className="cp-panel__head"><h3>Verification window</h3></div>
+          <div className="cp-panel__head"><h3>Did the approved actions work?</h3></div>
           <Verification />
         </div>
       </div>
@@ -24,7 +24,7 @@ export function VerificationView() {
         <BeforeAfterPanel />
       </div>
       <div className="cp-panel">
-        <div className="cp-panel__head"><h3>Lifetime optimization impact</h3><span className="mono">Simulated control plane data</span></div>
+        <div className="cp-panel__head"><h3>All-time impact</h3><span className="mono">Simulated data</span></div>
         <LifetimePanel />
       </div>
     </div>

@@ -9,8 +9,8 @@ export function WorkloadsView() {
   return (
     <div className="cps-view cps-view--workloads">
       <p className="cp-caption">
-        Helicyn treats work as the first control surface. Flexible jobs can move, critical inference
-        can hold, and batch workloads can defer when energy or thermal conditions change.
+        Every computing job running across the fleet. Flexible jobs can move to a better site or
+        wait for a better time; critical jobs stay exactly where they are, no matter what.
       </p>
       <Workloads />
     </div>

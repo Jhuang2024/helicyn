@@ -10,8 +10,8 @@ export function RegionsView() {
   return (
     <div className="cps-view cps-view--regions">
       <p className="cp-caption">
-        Workload routing across constrained and underutilized regions. Each data center is a node
-        in a larger system, not an island. Select a region for detail.
+        Helicyn moves work between data centers around the world — away from sites that are
+        stressed, toward sites with room to spare. Select a region to see its details.
       </p>
       <Topology />
       <RegionGrid />

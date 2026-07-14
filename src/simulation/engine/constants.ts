@@ -197,14 +197,14 @@ export const REGION_DETAIL: Record<InfraRegionId, RegionDetail> = {
 
 /** Control-deck explainer strings by mode. */
 export const MODE_EXPLAIN: Record<OptimizationMode, string> = {
-  conservative: 'Conservative mode favors SLA confidence and thermal headroom over savings; fewer workloads are eligible to move.',
-  balanced: 'Balanced mode prioritizes energy savings while preserving thermal headroom and SLA-locked workloads.',
-  aggressive: 'Aggressive mode unlocks the most savings and surfaces more warnings, with lower confidence.',
+  conservative: 'Conservative mode plays it safe: it keeps extra cooling margin and moves very little work, trading savings for certainty.',
+  balanced: 'Balanced mode chases energy savings while keeping a comfortable cooling margin and never touching protected work.',
+  aggressive: 'Aggressive mode unlocks the most savings but runs closer to the limits, so it raises more warnings.',
 };
 
 export const CARBON_EXPLAIN: Partial<Record<CarbonPriority, string>> = {
-  high: ' High carbon priority moves flexible workloads toward lower-carbon regions even when cost savings are smaller.',
-  low: ' Low carbon priority weights cost and energy efficiency over emissions.',
+  high: ' With carbon priority high, flexible work moves toward cleaner power even when it saves less money.',
+  low: ' With carbon priority low, cost and efficiency matter more than emissions.',
 };
 
 /** Lifetime counter seed values (illustrative running totals). */

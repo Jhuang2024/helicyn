@@ -26,16 +26,16 @@ describe('Control Plane app shell', () => {
     expect(screen.getByRole('heading', { name: 'Helicyn Control Plane' })).toBeInTheDocument();
     expect(screen.getByRole('navigation', { name: 'Control Plane views' })).toBeInTheDocument();
     expect(screen.getByRole('region', { name: 'Visualization canvas' })).toBeInTheDocument();
-    expect(screen.queryByRole('complementary', { name: 'Inspector' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('complementary', { name: 'Details' })).not.toBeInTheDocument();
     expect(screen.queryByRole('log', { name: 'Simulation events' })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Inspector scenario/ })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByRole('button', { name: /Details scenario/ })).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('opens the scenario inspector with decision trace on demand', async () => {
     const user = userEvent.setup();
     renderShell();
-    await user.click(screen.getByRole('button', { name: /Inspector scenario/ }));
-    const inspector = screen.getByRole('complementary', { name: 'Inspector' });
+    await user.click(screen.getByRole('button', { name: /Details scenario/ }));
+    const inspector = screen.getByRole('complementary', { name: 'Details' });
     expect(within(inspector).getByText('Normal Operations')).toBeInTheDocument();
     expect(within(inspector).getByText('Decision trace')).toBeInTheDocument();
   });
@@ -45,7 +45,7 @@ describe('Control Plane app shell', () => {
     renderShell(['/control-plane?view=regions']);
     await user.click(screen.getAllByRole('button', { name: /US-WEST region detail/ })[0]!);
     expect(get().sim.selectedEntity).toEqual({ type: 'region', id: 'oregon' });
-    const inspector = screen.getByRole('complementary', { name: 'Inspector' });
+    const inspector = screen.getByRole('complementary', { name: 'Details' });
     expect(within(inspector).getByText('OREGON')).toBeInTheDocument();
     expect(within(inspector).getByText('Compute load')).toBeInTheDocument();
     expect(within(inspector).getByText('Available capacity')).toBeInTheDocument();
@@ -56,7 +56,7 @@ describe('Control Plane app shell', () => {
     renderShell(['/control-plane?view=workloads']);
     await user.click(screen.getAllByTitle('Inspect this workload')[0]!);
     expect(get().sim.selectedEntity?.type).toBe('workload');
-    const inspector = screen.getByRole('complementary', { name: 'Inspector' });
+    const inspector = screen.getByRole('complementary', { name: 'Details' });
     expect(within(inspector).getByText('Current placement')).toBeInTheDocument();
     expect(within(inspector).getByRole('button', { name: /Stage:/ })).toBeInTheDocument();
   });
@@ -68,12 +68,12 @@ describe('Control Plane app shell', () => {
     await user.click(screen.getAllByRole('button', { name: 'Approve in simulation' })[0]!);
     expect(get().sim.queue).toHaveLength(1);
     // Approval event appears exactly once in the stream.
-    await user.click(screen.getByRole('button', { name: /Event stream/ }));
+    await user.click(screen.getByRole('button', { name: /Activity log/ }));
     const log = screen.getByRole('log', { name: 'Simulation events' });
     expect(within(log).getAllByText('Operator approved')).toHaveLength(1);
     expect(get().sim.events.filter((e) => e.category === 'approval' && e.recId === recId)).toHaveLength(1);
     // Control-bar status reflects the staged decision.
-    expect(screen.getByText('Action staged · decision in flight')).toBeInTheDocument();
+    expect(screen.getByText('Action staged · being applied')).toBeInTheDocument();
   });
 
   it('changing views preserves simulation state', async () => {
@@ -93,11 +93,11 @@ describe('Control Plane app shell', () => {
     const user = userEvent.setup();
     renderShell(['/control-plane?view=recommendations']);
     await user.click(screen.getAllByRole('button', { name: 'Approve in simulation' })[0]!);
-    await user.click(screen.getByRole('button', { name: /Event stream/ }));
+    await user.click(screen.getByRole('button', { name: /Activity log/ }));
     const log = screen.getByRole('log', { name: 'Simulation events' });
     await user.click(within(log).getByText('Operator approved'));
     expect(get().sim.selectedEntity?.type).toBe('event');
-    const inspector = screen.getByRole('complementary', { name: 'Inspector' });
+    const inspector = screen.getByRole('complementary', { name: 'Details' });
     expect(within(inspector).getByText('Related entities')).toBeInTheDocument();
     expect(within(inspector).getByText('Linked recommendation')).toBeInTheDocument();
   });
@@ -107,7 +107,7 @@ describe('Control Plane app shell', () => {
     renderShell(['/control-plane?view=recommendations']);
     const recId = get().sim.recommendations[0]!.id;
     await user.click(screen.getByRole('button', { name: recId }));
-    const inspector = screen.getByRole('complementary', { name: 'Inspector' });
+    const inspector = screen.getByRole('complementary', { name: 'Details' });
     expect(within(inspector).getByText('Simulated effect')).toBeInTheDocument();
     expect(within(inspector).getByText('Affected regions')).toBeInTheDocument();
     // Clicking an affected region chip re-targets the inspector to the region.

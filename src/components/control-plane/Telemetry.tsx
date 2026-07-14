@@ -95,9 +95,9 @@ export function CoolingZonesPanel() {
                   <h4>Zone {z} · thermal detail</h4>
                   <dl>
                     <div><dt>Cooling load</dt><dd>{ZONE_DETAIL[z].load}</dd></div>
-                    <div><dt>Rack inlet variance</dt><dd>{ZONE_DETAIL[z].variance}</dd></div>
-                    <div><dt>Headroom</dt><dd>{ZONE_DETAIL[z].headroom}</dd></div>
-                    <div><dt>Recommended action</dt><dd>{ZONE_DETAIL[z].action}</dd></div>
+                    <div><dt>Temperature spread</dt><dd>{ZONE_DETAIL[z].variance}</dd></div>
+                    <div><dt>Safety margin</dt><dd>{ZONE_DETAIL[z].headroom}</dd></div>
+                    <div><dt>Suggested action</dt><dd>{ZONE_DETAIL[z].action}</dd></div>
                   </dl>
                 </div>
               )}
@@ -128,43 +128,43 @@ export function TrendPanels() {
   return (
     <div className="cp-trendgrid">
       <div className="cp-panel">
-        <h3>Carbon intensity forecast</h3>
+        <h3>Grid carbon forecast</h3>
         <TrendChart
           series={carbonSeries}
           nowFraction={now}
           fullySolid
           color="var(--warn)"
-          ariaLabel={`Carbon intensity forecast, currently ${Math.round(carbonNow)} grams per kilowatt hour`}
+          ariaLabel={`Grid carbon forecast, currently ${Math.round(carbonNow)} grams per kilowatt hour`}
           now={`${Math.round(carbonNow)} g`}
           hi={`${Math.round(Math.max(...carbonSeries))}`}
           lo={`${Math.round(Math.min(...carbonSeries))}`}
-          unit="g CO₂e / kWh · fleet average"
+          unit="g CO₂ per kWh · lower is cleaner power"
         />
       </div>
       <div className="cp-panel">
-        <h3>GPU utilization trend</h3>
+        <h3>Computers kept busy</h3>
         <TrendChart
           series={gpuSeries}
           nowFraction={now}
           color="var(--signal)"
-          ariaLabel={`GPU utilization trend, currently ${Math.round(latest?.gpu ?? fleet.metrics.gpu.today)} percent`}
+          ariaLabel={`Share of computing capacity in use, currently ${Math.round(latest?.gpu ?? fleet.metrics.gpu.today)} percent`}
           now={`${Math.round(latest?.gpu ?? fleet.metrics.gpu.today)}%`}
           hi={`${Math.round(Math.max(...gpuSeries))}`}
           lo={`${Math.round(Math.min(...gpuSeries))}`}
-          unit="% fleet GPU capacity in use"
+          unit="% of computing power doing useful work"
         />
       </div>
       <div className="cp-panel">
-        <h3>PUE trend</h3>
+        <h3>Energy efficiency</h3>
         <TrendChart
           series={pueSeries}
           nowFraction={now}
           color="var(--ok)"
-          ariaLabel={`PUE trend, currently ${(latest?.pue ?? fleet.metrics.pue.today).toFixed(2)}`}
+          ariaLabel={`Energy efficiency (PUE), currently ${(latest?.pue ?? fleet.metrics.pue.today).toFixed(2)}`}
           now={(latest?.pue ?? fleet.metrics.pue.today).toFixed(2)}
           hi={Math.max(...pueSeries).toFixed(2)}
           lo={Math.min(...pueSeries).toFixed(2)}
-          unit="power usage effectiveness"
+          unit="PUE · lower is better"
         />
       </div>
     </div>
@@ -178,13 +178,13 @@ export function ComparePanel() {
   return (
     <div className="cp-panel">
       <div className="cp-panel__head">
-        <h3>Before / after optimization</h3>
-        <span className="mono">baseline → coordinated</span>
+        <h3>With and without Helicyn</h3>
+        <span className="mono">original plan → Helicyn plan</span>
       </div>
       <div className="cp-comparegrid">
         <CompareBars label="Peak power" before={fleet.compare.peak.before} after={fleet.compare.peak.after} unit="MW" dp={1} />
-        <CompareBars label="Carbon / hr (tCO₂e)" before={fleet.compare.carbon.before} after={fleet.compare.carbon.after} unit="t" dp={1} />
-        <CompareBars label="PUE" before={fleet.compare.pue.before} after={fleet.compare.pue.after} unit="" dp={2} />
+        <CompareBars label="CO₂ per hour" before={fleet.compare.carbon.before} after={fleet.compare.carbon.after} unit="t" dp={1} />
+        <CompareBars label="Efficiency (PUE)" before={fleet.compare.pue.before} after={fleet.compare.pue.after} unit="" dp={2} />
       </div>
     </div>
   );

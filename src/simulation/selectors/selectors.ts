@@ -230,12 +230,12 @@ export interface SystemStatus {
  */
 export function selectSystemStatus(state: SimulationState): SystemStatus {
   const applying = state.queue.some((q) => q.lane === 'approved');
-  if (applying) return { key: 'applying', label: 'Action staged · decision in flight', level: 'info' };
+  if (applying) return { key: 'applying', label: 'Action staged · being applied', level: 'info' };
   const alert = SCN[state.scenario].alert;
-  if (alert.level === 'crit') return { key: 'constrained', label: 'Constrained · decision required', level: 'crit' };
-  if (alert.level === 'warn') return { key: 'strained', label: 'Strained · monitoring', level: 'warn' };
-  if (state.verification) return { key: 'recovered', label: 'Recovered · verified in simulation', level: 'ok' };
-  return { key: 'nominal', label: 'Nominal', level: 'ok' };
+  if (alert.level === 'crit') return { key: 'constrained', label: 'Needs a decision', level: 'crit' };
+  if (alert.level === 'warn') return { key: 'strained', label: 'Under strain · watching', level: 'warn' };
+  if (state.verification) return { key: 'recovered', label: 'Recovered · results confirmed', level: 'ok' };
+  return { key: 'nominal', label: 'All systems healthy', level: 'ok' };
 }
 
 // ---- Recommendation / workload relations -----------------------------------------

@@ -132,15 +132,15 @@ export function Workloads() {
             <tr>
               <th scope="col">Workload</th>
               <th scope="col">Priority</th>
-              <th scope="col">Region</th>
-              <th scope="col">Power draw</th>
-              <th scope="col">Thermal risk</th>
-              <th scope="col">State</th>
+              <th scope="col">Location</th>
+              <th scope="col">Power use</th>
+              <th scope="col">Heat risk</th>
+              <th scope="col">Status</th>
               <th scope="col">
-                Recommended action
+                Suggested action
                 <Tooltip
-                  label="About recommended action"
-                  text="Recommended Action. The coordinator's proposed move for each workload: shift to another region, hold in place, defer to a better window, or reroute away from risk. Each one needs operator approval."
+                  label="About suggested action"
+                  text="Helicyn's proposed move for each workload: shift to another site, hold in place, delay to a better time, or reroute away from risk. Nothing happens without operator approval."
                 />
               </th>
               <th scope="col">Why</th>

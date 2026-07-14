@@ -6,15 +6,17 @@ import { Tooltip } from './Tooltip';
 
 /**
  * "Today, coordinated" headline metrics. Every value is derived from the shared
- * fleet computation (accumulated so far vs. projected), transitions smoothly via
- * CSS, and preserves the original labels, units, context lines, and tooltip
- * definitions. The global Baseline/Coordinated toggle (control bar) switches
- * the accumulation basis.
+ * fleet computation (accumulated so far vs. projected) and transitions smoothly
+ * via CSS. The global Baseline/Coordinated toggle (control bar) switches the
+ * accumulation basis. Pass `keys` to show a subset (the Overview leads with the
+ * four headline cards; the technical cards live in Fleet health).
  */
-export function MetricCards() {
+export function MetricCards({ keys }: { keys?: string[] }) {
   const sim = useControlPlane((s) => s.sim);
   const fleet = computeFleet(sim);
-  const metrics = buildMetricViews(fleet, fleet.dayFraction);
+  const metrics = buildMetricViews(fleet, fleet.dayFraction).filter(
+    (m) => !keys || keys.includes(m.key),
+  );
   const isBaseline = sim.controls.view === 'baseline';
 
   return (

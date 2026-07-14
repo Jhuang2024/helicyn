@@ -419,10 +419,10 @@ export function Inspector({ onClose }: { onClose?: () => void }) {
   const selectEntity = useControlPlane((s) => s.selectEntity);
 
   return (
-    <aside className="cps-inspector" aria-label="Inspector" aria-live="polite">
+    <aside className="cps-inspector" aria-label="Details" aria-live="polite">
       <div className="cps-inspector__head">
         <h2 className="cps-inspector__title mono">
-          {selectedEntity ? TITLES[selectedEntity.type] : 'Scenario'} inspector
+          {selectedEntity ? TITLES[selectedEntity.type] : 'Scenario'} details
         </h2>
         {selectedEntity && (
           <button

@@ -11,13 +11,13 @@ export function RecommendationsView() {
       <div className="cp-split">
         <div>
           <p className="cp-caption">
-            Approve to stage an action, simulate to file it, or reject to dismiss it. Every approval
-            generates the next recommendation. Operator approval required.
+            Helicyn suggests actions; you decide. Approve a suggestion to line it up, simulate it
+            to see the result, or reject it. Nothing ever runs without your approval.
           </p>
           <Recommendations />
         </div>
         <div>
-          <p className="cp-caption">Operators define the boundaries. Helicyn proposes actions inside them.</p>
+          <p className="cp-caption">You set the boundaries here. Helicyn only proposes actions inside them.</p>
           <SimulationControls />
         </div>
       </div>

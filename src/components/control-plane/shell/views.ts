@@ -16,7 +16,7 @@ export const CONTROL_VIEWS: { key: ControlView; label: string }[] = [
   { key: 'workloads', label: 'Workloads' },
   { key: 'recommendations', label: 'Actions' },
   { key: 'verification', label: 'Results' },
-  { key: 'assumptions', label: 'Model notes' },
+  { key: 'assumptions', label: 'About this demo' },
 ];
 
 export function isControlView(value: string | null): value is ControlView {

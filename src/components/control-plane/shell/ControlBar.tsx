@@ -97,10 +97,10 @@ function SessionMenu() {
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
-        Session
+        Save / load
       </button>
       {open && (
-        <div className="cps-session__pop" role="menu" aria-label="Session snapshot">
+        <div className="cps-session__pop" role="menu" aria-label="Save or load a session">
           <ExportImport />
         </div>
       )}
