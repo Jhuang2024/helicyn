@@ -47,7 +47,6 @@ export function Footer() {
             </a>
             <a href={emailHref()}>Email us</a>
             <Link to="/terms">Terms and Conditions</Link>
-            <span className="fcol__note">Follow us on LinkedIn for future updates.</span>
           </RevealOnScroll>
         </div>
 
