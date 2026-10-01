@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { createInitialSimulationState } from '../src/simulation';
 import { VERSION_LABEL } from '../src/app/version';
 
 test.use({ reducedMotion: 'reduce' });
@@ -54,7 +55,7 @@ test('scenario selector supports arrow keys and Enter', async ({ page }) => {
   await expect(page.getByRole('listbox', { name: 'Operating scenario' })).toBeVisible();
   await page.keyboard.press('Enter');
   await expect(button).toBeFocused();
-  await expect(button).toContainText('Cooling Constraint');
+  await expect(button).toContainText('Training Surge');
 });
 
 test('patch notes show the release in each applicable category', async ({ page }) => {
@@ -82,4 +83,29 @@ test.describe('public prerender', () => {
       await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://helicyn.com${route}`);
     });
   }
+});
+
+
+test('timeline seeks forward after midnight and pause preserves activity', async ({ page }) => {
+  const sim = createInitialSimulationState();
+  sim.clock.seconds = 90000;
+  sim.clock.running = false;
+  await page.addInitScript((snapshot) => {
+    localStorage.setItem('helicyn.control-plane', JSON.stringify({ state: { sim: snapshot }, version: 3 }));
+  }, sim);
+  await page.goto('/control-plane');
+  await page.locator('.cps-stream__toggle').click();
+  const count = await page.locator('.cps-event__title').count();
+  await page.waitForTimeout(8500);
+  await expect(page.locator('.cps-event__title')).toHaveCount(count);
+  await page.getByRole('slider', { name: 'Timeline position (forward seek only)' }).press('End');
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('helicyn.control-plane')!).state.sim.clock.seconds)).toBe(172800);
+});
+
+test('invalid snapshot is rejected without replacing the active scenario', async ({ page }) => {
+  await page.goto('/control-plane');
+  await page.getByRole('button', { name: 'More controls' }).click();
+  await page.getByLabel('Import simulation snapshot').setInputFiles({ name: 'invalid.json', mimeType: 'application/json', buffer: Buffer.from('{"schemaVersion":3,"controls":{},"clock":{"seconds":"invalid"}}') });
+  await expect(page.getByRole('status').filter({ hasText: 'Invalid snapshot file' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Operating scenario' })).toContainText('Normal Operations');
 });
