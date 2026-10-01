@@ -7,8 +7,8 @@
  * engines and social scrapers see fully rendered HTML rather than an empty
  * shell. App/auth routes (noindex) are intentionally left as the SPA shell.
  *
- * This step is resilient: if a headless browser is unavailable it logs a
- * warning and exits 0: the SPA still serves every route via history fallback.
+ * Local builds can skip an unavailable browser; production and CI set
+ * REQUIRE_PRERENDER=1 so missing browsers or failed routes fail the build.
  */
 import { spawn } from 'node:child_process';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -68,6 +68,8 @@ async function main() {
         route.title,
         { timeout: 8000 },
       );
+      // Capture complete text and reveal state after React's enhancement effect.
+      await page.waitForFunction(() => !document.querySelector('.static-content [data-reveal]:not(.is-revealed)'));
       const html = '<!doctype html>\n' + (await page.evaluate(() => document.documentElement.outerHTML));
       const outDir =
         route.path === '/' ? join(root, 'dist') : join(root, 'dist', route.path.replace(/^\//, ''));

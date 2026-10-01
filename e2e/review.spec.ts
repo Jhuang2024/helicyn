@@ -13,7 +13,8 @@ for (const route of ['/', '/research', '/report', '/partners', '/careers', '/pat
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 2)).toBe(true);
     expect(errors).toEqual([]);
     if (['/', '/control-plane', '/patch-notes', '/report'].includes(route)) {
-      await page.screenshot({ path: testInfo.outputPath(`audit-${route.replaceAll('/', '') || 'home'}.png`), fullPage: true });
+      await expect.poll(() => page.evaluate(() => document.querySelectorAll('.static-content [data-reveal]:not(.is-revealed)').length)).toBe(0);
+      await page.screenshot({ path: testInfo.outputPath(`audit-${route.replaceAll('/', '') || 'home'}.png`), fullPage: route === '/control-plane', animations: 'disabled' });
     }
   });
 }

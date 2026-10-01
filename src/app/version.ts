@@ -12,13 +12,13 @@ export const BUILD_DATE = '2026.10.01';
 /** Short build label (YYYY.MM) used in compact status strips. */
 export const BUILD_SHORT = '2026.10';
 
-/** e.g. "v1.1.0" */
+/** e.g. "v1.2.0" */
 export const VERSION_LABEL = `v${VERSION}`;
-/** e.g. "Research preview · Build v1.1.0" */
+/** e.g. "Research preview · Build v1.2.0" */
 export const RESEARCH_PREVIEW_LABEL = `Research preview · Build ${VERSION_LABEL}`;
-/** e.g. "v1.1.0 / build 2026.07.11" */
+/** e.g. "v1.2.0 / build 2026.10.01" */
 export const FOOTER_BUILD_LABEL = `${VERSION_LABEL} / build ${BUILD_DATE}`;
-/** e.g. "v1.1.0 · 2026.07" */
+/** e.g. "v1.2.0 · 2026.10" */
 export const STATUS_BUILD_LABEL = `${VERSION_LABEL} · ${BUILD_SHORT}`;
 
 /** Keep ported page labels current; never apply this to historical patch notes. */
