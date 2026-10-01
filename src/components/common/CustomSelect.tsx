@@ -84,7 +84,7 @@ export function CustomSelect<T extends string = string>({
   }, [activeIndex, open]);
 
   const openMenu = (index = selectedIndex) => {
-    if (disabled) return;
+    if (disabled || !options.length) return;
     setActiveIndex(index);
     setOpen(true);
   };
@@ -146,7 +146,7 @@ export function CustomSelect<T extends string = string>({
         aria-haspopup="listbox"
         aria-controls={listboxId}
         aria-expanded={open}
-        disabled={disabled}
+        disabled={disabled || !options.length}
         onClick={() => (open ? setOpen(false) : openMenu())}
         onKeyDown={onButtonKeyDown}
       >
@@ -157,7 +157,7 @@ export function CustomSelect<T extends string = string>({
       </button>
 
       {open && (
-        <div className="custom-select__menu" id={listboxId} role="listbox">
+        <div className="custom-select__menu" id={listboxId} role="listbox" aria-label={ariaLabel} aria-labelledby={ariaLabelledBy}>
           {options.map((option, index) => (
             <button
               key={option.value}

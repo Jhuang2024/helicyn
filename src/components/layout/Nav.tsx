@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { BrandMark } from './BrandMark';
 import { LiveClock } from './LiveClock';
@@ -20,9 +20,14 @@ const LINKS = [
  * used across every route for cross-page consistency.
  */
 export function Nav() {
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const accountRef = useRef<HTMLDivElement>(null);
+  const closePalette = useCallback(() => setCmdkOpen(false), []);
   const [open, setOpen] = useState(false);
   const [cmdkOpen, setCmdkOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
@@ -57,13 +62,30 @@ export function Nav() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  useEffect(() => {
+    if (!open && !menuOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (menuOpen) accountRef.current?.querySelector('button')?.focus();
+        else toggleRef.current?.focus();
+        setMenuOpen(false); setOpen(false);
+      }
+    };
+    const onPointer = (event: PointerEvent) => {
+      const target = event.target as Node;
+      if (menuOpen && !accountRef.current?.contains(target)) setMenuOpen(false);
+      if (open && !navRef.current?.contains(target) && !toggleRef.current?.contains(target)) setOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onPointer);
+    return () => { document.removeEventListener('keydown', onKey); document.removeEventListener('pointerdown', onPointer); };
+  }, [open, menuOpen]);
+
   const handleSignOut = async () => {
     try {
       await signOut();
-    } catch {
-      /* ignore */
-    }
-    navigate('/');
+      navigate('/');
+    } catch { setSignOutError('Could not sign out. Please try again.'); }
   };
 
   return (
@@ -74,6 +96,7 @@ export function Nav() {
       </Link>
 
       <button
+        ref={toggleRef}
         className="navtoggle"
         type="button"
         aria-expanded={open}
@@ -86,7 +109,7 @@ export function Nav() {
         <span className="navtoggle__bar" />
       </button>
 
-      <nav className={'nav__right' + (open ? ' is-open' : '')} id="navmenu">
+      <nav ref={navRef} className={'nav__right' + (open ? ' is-open' : '')} id="navmenu">
         <span className="nav__meta">
           <span className="statusdot" aria-hidden="true" />
           <LiveClock />
@@ -137,7 +160,7 @@ export function Nav() {
         </NavLink>
 
         {user ? (
-          <div className="navprofile">
+          <div className="navprofile" ref={accountRef}>
             <button
               type="button"
               className="navprofile__btn"
@@ -180,7 +203,8 @@ export function Nav() {
         </NavLink>
       </nav>
 
-      <CommandPalette open={cmdkOpen} onClose={() => setCmdkOpen(false)} />
+      {signOutError && <p className="form-note err" role="alert">{signOutError}</p>}
+      <CommandPalette open={cmdkOpen} onClose={closePalette} />
     </header>
   );
 }

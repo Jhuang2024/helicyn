@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Seo } from '@/components/common/Seo';
 import { AuthGate } from '@/components/common/AuthGate';
 import { useAuth } from '@/app/auth/AuthProvider';
 import { getMyFoundingPartnerApplication, signOut } from '@/services/auth';
 
+import { useAsyncData } from '@/hooks/useAsyncData';
+
 interface Application {
+  status?: string;
   company_name?: string;
   created_at?: string;
   founding_partner_interests?: string[];
@@ -15,6 +18,7 @@ const STATUS_LABELS: Record<string, string> = {
   not_started: 'Not started',
   submitted: 'Submitted',
   under_review: 'Under review',
+  reviewing: 'Under review',
   accepted: 'Accepted',
   waitlisted: 'Waitlisted',
   declined: 'Declined',
@@ -23,31 +27,24 @@ const STATUS_LABELS: Record<string, string> = {
 function Portal() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [app, setApp] = useState<Application | null>(null);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    getMyFoundingPartnerApplication()
-      .then((data) => setApp(data as Application | null))
-      .catch(() => {})
-      .finally(() => setLoaded(true));
-  }, []);
+  const { data, loading, error: loadError, retry } = useAsyncData(getMyFoundingPartnerApplication);
+  const app = data as Application | null;
+  const [signOutError, setSignOutError] = useState<string | null>(null);
 
   const onSignOut = async () => {
     try {
       await signOut();
-    } catch {
-      /* ignore */
-    }
-    navigate('/login');
+      navigate('/login');
+    } catch { setSignOutError('Could not sign out. Please try again.'); }
   };
 
-  const status = app ? 'submitted' : 'not_started';
+  const status = app ? app.status ?? 'submitted' : 'not_started';
 
   return (
     <div className="portal-grid">
       <div className="portalcard">
         <h3>Account</h3>
+        {signOutError && <p className="form-note err" role="alert">{signOutError}</p>}
         <p className="mono" style={{ color: 'var(--text-dim)' }}>
           {user?.email}
         </p>
@@ -63,11 +60,13 @@ function Portal() {
 
       <div className="portalcard">
         <h3>Application status</h3>
-        {!loaded ? (
+        {loading ? (
           <p className="mono">Loading…</p>
+        ) : loadError ? (
+          <div><p className="form-note err" role="alert">{loadError}</p><button className="navlink" onClick={retry}>Try again</button></div>
         ) : (
           <>
-            <span className={'status-pill status-pill--' + status}>{STATUS_LABELS[status]}</span>
+            <span className={'status-pill status-pill--' + status}>{STATUS_LABELS[status] ?? 'Status unavailable'}</span>
             {app ? (
               <ul className="portalcard__list">
                 {app.company_name && <li>Company: {app.company_name}</li>}
@@ -92,7 +91,7 @@ function Portal() {
           <li>Early access to the coordination layer</li>
           <li>Direct product input and technical review</li>
           <li>Priority onboarding at launch</li>
-          <li>Preferred, performance-based launch pricing</li>
+          <li>Preferred launch pricing; performance-based pricing after verified savings</li>
         </ul>
       </div>
 

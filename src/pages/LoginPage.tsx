@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Seo } from '@/components/common/Seo';
 import { useAuth } from '@/app/auth/AuthProvider';
 import {
@@ -9,6 +9,8 @@ import {
   signInWithPassword,
   signUpWithPassword,
 } from '@/services/auth';
+
+import { safeReturnTo } from '@/services/authNavigation';
 
 type Mode = 'signin' | 'signup';
 
@@ -27,27 +29,31 @@ export default function LoginPage() {
   const [notice, setNotice] = useState<string | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const returnTo = safeReturnTo(params.get('next'));
 
   // Already signed in → straight to the portal.
   useEffect(() => {
-    if (user) navigate('/partner-portal', { replace: true });
-  }, [user, navigate]);
+    if (user) navigate(returnTo, { replace: true });
+  }, [user, navigate, returnTo]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (busy) return;
     setError(null);
     setNotice(null);
     if (!isSupabaseConfigured) {
       setError(CONFIG_ERROR_MESSAGE);
       return;
     }
+    if (mode === 'signup' && !fullName.trim()) { setError('Enter your full name.'); return; }
     setBusy(true);
     try {
       if (mode === 'signin') {
-        await signInWithPassword(email, password);
-        navigate('/partner-portal');
+        await signInWithPassword(email.trim(), password);
+        navigate(returnTo);
       } else if (mode === 'signup') {
-        await signUpWithPassword(email, password, { full_name: fullName });
+        await signUpWithPassword(email.trim(), password, { full_name: fullName.trim() });
         setNotice('Check your inbox to confirm your email, then sign in.');
       }
     } catch (err) {
@@ -58,18 +64,20 @@ export default function LoginPage() {
   };
 
   const onReset = async () => {
+    if (busy) return;
     setError(null);
     setNotice(null);
     if (!email) {
       setError('Enter your email first, then request a reset link.');
       return;
     }
+    setBusy(true);
     try {
-      await requestPasswordReset(email);
+      await requestPasswordReset(email.trim());
       setNotice('Password reset link sent. Check your inbox.');
     } catch (err) {
       setError(messageFor(err));
-    }
+    } finally { setBusy(false); }
   };
 
   return (
@@ -112,6 +120,7 @@ export default function LoginPage() {
                   key={m}
                   type="button"
                   role="tab"
+                  disabled={busy}
                   aria-selected={mode === m}
                   className={'authform__tab' + (mode === m ? ' is-active' : '')}
                   onClick={() => {
@@ -125,7 +134,7 @@ export default function LoginPage() {
               ))}
             </div>
 
-            <form className="authform__form" onSubmit={onSubmit} noValidate>
+            <form className="authform__form" onSubmit={onSubmit}>
               {mode === 'signup' && (
                 <label className="authfield">
                   <span className="field__label">Full name</span>
@@ -157,14 +166,14 @@ export default function LoginPage() {
                   name="password"
                   autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                   required
-                  minLength={8}
+                  minLength={mode === 'signup' ? 8 : undefined}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </label>
               <div className="authform__options">
                 {mode === 'signin' && (
-                  <button type="button" className="authform__link" onClick={onReset}>
+                  <button type="button" className="authform__link" disabled={busy} onClick={onReset}>
                     Forgot password?
                   </button>
                 )}

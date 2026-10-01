@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { useControlPlane } from '@/state/controlPlaneStore';
+import { MAX_SNAPSHOT_BYTES } from '@/simulation/engine/validation';
 import { createInitialSimulationState } from '@/simulation';
 
 /**
@@ -29,9 +30,13 @@ export function ExportImport() {
   const onImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const text = await file.text();
-    setStatus(importSnapshot(text) ? 'Snapshot imported.' : 'Invalid snapshot file: not applied.');
-    e.target.value = '';
+    const input = e.currentTarget;
+    try {
+      if (file.size > MAX_SNAPSHOT_BYTES) { setStatus('Snapshot must be 2 MB or smaller. Not applied.'); return; }
+      const text = await file.text();
+      setStatus(importSnapshot(text) ? 'Snapshot imported.' : 'Invalid snapshot file: not applied.');
+    } catch { setStatus('Could not read this snapshot. Not applied.'); }
+    finally { input.value = ''; }
   };
 
   const onReset = () => {

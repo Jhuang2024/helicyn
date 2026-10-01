@@ -1,3 +1,4 @@
+import { InlineMarkup } from '@/components/common/InlineMarkup';
 import { useControlPlane } from '@/state/controlPlaneStore';
 import { CARBON_EXPLAIN, MODE_EXPLAIN, PRIO_CLASS, type RecommendationCard } from '@/simulation';
 import { Tooltip } from './Tooltip';
@@ -49,7 +50,7 @@ function RecCard({ card }: { card: RecommendationCard }) {
         <span className="cp-rec__type">{t.type}</span>
         <span className={'cp-rec__state ' + badge.cls}>{badge.txt}</span>
       </div>
-      <p className="cp-rec__text" dangerouslySetInnerHTML={{ __html: t.text }} />
+      <p className="cp-rec__text"><InlineMarkup text={t.text} /></p>
       <dl className="cp-rec__meta">
         <div>
           <dt>Priority</dt>

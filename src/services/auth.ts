@@ -6,6 +6,7 @@
  * application table calls. All access is gated by Supabase Row Level Security.
  */
 
+import { jobApplicationPayload, partnerApplicationPayload } from './applicationPayloads';
 import type { Session } from '@supabase/supabase-js';
 import {
   CONFIG_ERROR_MESSAGE,
@@ -111,7 +112,7 @@ export async function signOut() {
 
 export async function requestPasswordReset(email: string) {
   const client = requireClient();
-  const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo: authCallbackUrl() });
+  const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo: authCallbackUrl('recovery') });
   if (error) throw error;
 }
 
@@ -171,7 +172,7 @@ export async function submitFoundingPartnerApplication(fields: Record<string, un
 
   const { data, error } = await client
     .from(APPLICATIONS_TABLE)
-    .insert({ ...fields, user_id: session.user.id })
+    .insert({ ...partnerApplicationPayload(fields), user_id: session.user.id })
     .select()
     .single();
   if (error) throw error;
@@ -208,7 +209,7 @@ export async function submitJobApplication(fields: Record<string, unknown>) {
 
   const { data, error } = await client
     .from(JOB_APPLICATIONS_TABLE)
-    .insert({ ...fields, user_id: session.user.id })
+    .insert({ ...jobApplicationPayload(fields), user_id: session.user.id })
     .select()
     .single();
   if (error) throw error;

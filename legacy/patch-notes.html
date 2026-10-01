@@ -91,6 +91,28 @@
     </div>
     <hr class="psep psep--fade" />
     <div class="patchlist">
+      <article class="patchcard pglow-ring" data-reveal style="--i:0" data-tag="Fixes">
+        <div class="patchcard__meta">
+          <time class="mono patchcard__date" datetime="2026-10-01">October 1, 2026</time>
+          <span class="patchtag">Fixes</span><span class="patchtag">Security</span><span class="patchtag">Performance</span><span class="patchtag">Design</span>
+          <span class="pbadge pbadge--signal">Latest</span><span class="mono patchcard__read">2 min read</span>
+        </div>
+        <h3 class="patchcard__title">Website reliability and safer account flows · v1.2.0</h3>
+        <ul class="patchcard__body">
+          <li>Fixed job applications to use the database's answer and eligibility fields; validated application inputs and blocked repeated submissions while requests are pending.</li>
+          <li>Made password recovery wait for session initialization, preserved recovery errors, prevented stale session races, and returned sign-ins to their intended account page.</li>
+          <li>Partner and careers pages now display real application statuses, loading failures with retry, and visible sign-out failures.</li>
+          <li>The contact form accurately explains that it opens an email draft; it no longer claims an unsent request was received.</li>
+          <li>Rejected malformed and oversized simulation snapshots, rebuilt trusted recommendation templates, and rendered imported activity text without executable HTML.</li>
+          <li>Paused simulations stop producing ambient activity, invalid clock changes are ignored, and timeline seeking works after midnight.</li>
+          <li>Added keyboard scenario selection, modal focus containment, Escape handling for menus, safer modified-click navigation, and resilient section-link scrolling.</li>
+          <li>Fixed patch-note category filtering, duplicate search descriptions, private-page indexing, snapshot file errors, legacy redirects, and missing-file handling.</li>
+          <li>Reduced the report HTML from about 10 MB to 0.20 MB by extracting its 17 figures into cacheable, lazily loaded images; all report content remains available.</li>
+          <li>Added mandatory production prerendering, desktop/mobile website checks, account regression tests, and application permission tests.</li>
+          <li>Prepared a database migration that prevents applicants from editing review decisions. The hosted database is inactive; this migration must be applied when service resumes.</li>
+        </ul>
+      </article>
+
       <article class="patchcard pglow-ring" data-reveal style="--i:0" data-tag="Product">
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-07-13">July 13, 2026</time>
@@ -98,7 +120,7 @@
           <span class="patchtag">Design</span>
           <span class="patchtag">Performance</span>
           <span class="patchtag">Fixes</span>
-          <span class="pbadge pbadge--signal">Latest</span>
+
           <span class="mono patchcard__read">3 min read</span>
         </div>
         <h3 class="patchcard__title">React migration and interface refinement</h3>
@@ -125,7 +147,7 @@
         <div class="patchcard__meta">
           <time class="mono patchcard__date" datetime="2026-07-10">July 10, 2026</time>
           <span class="patchtag">Design</span>
-          
+
           <span class="mono patchcard__read">1 min read</span>
         </div>
         <h3 class="patchcard__title">Visual refresh, light theme, and v1.0.1</h3>

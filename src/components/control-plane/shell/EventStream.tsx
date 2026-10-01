@@ -1,3 +1,4 @@
+import { InlineMarkup } from '@/components/common/InlineMarkup';
 import { useEffect, useRef, useState } from 'react';
 import { CustomSelect } from '@/components/common/CustomSelect';
 import { formatClock, type EventSeverity, type SimEvent } from '@/simulation';
@@ -19,6 +20,7 @@ function TimelineScrubber() {
   const actionLog = useControlPlane((s) => s.sim.actionLog);
   const seekTo = useControlPlane((s) => s.seekTo);
   const [drag, setDrag] = useState<number | null>(null);
+  const dayStart = Math.floor(seconds / 86400) * 86400;
   const shown = drag ?? seconds;
 
   const commit = () => {
@@ -50,14 +52,14 @@ function TimelineScrubber() {
           min={0}
           max={86400}
           step={60}
-          value={Math.min(86400, Math.round(shown % 86400))}
+          value={Math.min(86400, Math.round(shown - dayStart))}
           aria-label="Timeline position (forward seek only)"
           title="Drag forward to advance the simulation deterministically. Backward seeking requires replay and is intentionally not faked."
-          onChange={(e) => setDrag(Number(e.target.value))}
+          onChange={(e) => setDrag(dayStart + Number(e.target.value))}
           onPointerUp={commit}
           onKeyUp={(e) => {
             if (e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === 'End') commit();
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') setDrag(null);
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === 'Home') setDrag(null);
           }}
           onBlur={commit}
         />
@@ -179,7 +181,7 @@ export function EventStream({ collapsed, onToggle }: { collapsed: boolean; onTog
                 <span className={'cps-event__cat mono'}>{(EVENT_CATEGORY_LABEL[e.category] ?? e.category).toUpperCase()}</span>
                 <span className="cps-event__sevdot" aria-hidden="true" />
                 <span className="cps-event__title">{e.title}</span>
-                <span className="cps-event__text" dangerouslySetInnerHTML={{ __html: e.text }} />
+                <span className="cps-event__text"><InlineMarkup text={e.text} /></span>
               </button>
             </li>
           ))}

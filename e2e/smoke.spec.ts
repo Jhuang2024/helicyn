@@ -1,3 +1,4 @@
+import { VERSION_LABEL } from '../src/app/version';
 import { test, expect } from '@playwright/test';
 
 /**
@@ -29,7 +30,7 @@ test('homepage renders with nav, headings, and footer', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Eight signals, one board.' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'From signal to verified action.' })).toBeVisible();
   await expect(page.locator('footer.footer')).toContainText('© 2026 Helicyn');
-  await expect(page.locator('footer.footer')).toContainText('v1.1.0');
+  await expect(page.locator('footer.footer')).toContainText(VERSION_LABEL);
   expect(errors).toEqual([]);
 });
 

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Seo } from '@/components/common/Seo';
-import { getSession, resendSignupEmail, updatePassword } from '@/services/auth';
+import { getSession, resendSignupEmail, requestPasswordReset, signInWithMagicLink, updatePassword } from '@/services/auth';
+
+import { initialAuthCallback } from '@/services/supabase';
 
 type State = 'working' | 'recovery' | 'error' | 'done';
 
@@ -15,58 +17,63 @@ export default function AuthCallbackPage() {
   const [message, setMessage] = useState<string>('Finishing sign-in…');
   const [password, setPassword] = useState('');
   const [resendEmail, setResendEmail] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [sent, setSent] = useState(false);
+  const isRecovery = initialAuthCallback.type === 'recovery';
   const navigate = useNavigate();
 
   useEffect(() => {
-    const isRecovery =
-      window.location.hash.includes('type=recovery') ||
-      new URLSearchParams(window.location.search).get('type') === 'recovery';
-
-    // Give the Supabase client a moment to detect the session from the URL.
-    const id = window.setTimeout(async () => {
+    let cancelled = false;
+    async function finish() {
       try {
-        const session = await getSession();
-        if (isRecovery && session) {
-          setState('recovery');
-          return;
-        }
+        if (initialAuthCallback.error) throw new Error('Invalid link');
+        const session = await getSession(); // Supabase waits for URL/session initialization.
+        if (cancelled) return;
+        if (isRecovery && session) { setState('recovery'); return; }
         if (session) {
           setState('done');
-          navigate('/partner-portal', { replace: true });
+          navigate(initialAuthCallback.returnTo, { replace: true });
           return;
         }
-        setState('error');
-        setMessage(
-          'This link is invalid or has expired (it may have already been used). Request a new one below.',
-        );
+        throw new Error('Invalid link');
       } catch {
-        setState('error');
-        setMessage('We could not complete sign-in. Request a new link below.');
+        if (!cancelled) {
+          setState('error');
+          setMessage('This link is invalid or has expired. Request a new link below.');
+        }
       }
-    }, 600);
-    return () => window.clearTimeout(id);
-  }, [navigate]);
+    }
+    void finish();
+    return () => { cancelled = true; };
+  }, [navigate, isRecovery]);
 
   const onSetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (busy) return;
+    setBusy(true);
     try {
       await updatePassword(password);
       setState('done');
-      navigate('/partner-portal', { replace: true });
+      navigate(initialAuthCallback.returnTo, { replace: true });
     } catch (err) {
       setMessage(err instanceof Error ? err.message : 'Could not update password.');
-      setState('error');
-    }
+    } finally { setBusy(false); }
   };
 
   const onResend = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (busy) return;
+    setBusy(true);
     try {
-      await resendSignupEmail(resendEmail);
-      setMessage('A fresh confirmation email is on the way. Check your inbox.');
+      if (isRecovery) await requestPasswordReset(resendEmail.trim());
+      else if (initialAuthCallback.type === 'magiclink') await signInWithMagicLink(resendEmail.trim());
+      else await resendSignupEmail(resendEmail.trim());
+      setSent(true);
+      setMessage('A fresh email is on the way. Check your inbox.');
     } catch (err) {
+      setSent(false);
       setMessage(err instanceof Error ? err.message : 'Could not resend the email.');
-    }
+    } finally { setBusy(false); }
   };
 
   return (
@@ -84,6 +91,7 @@ export default function AuthCallbackPage() {
           {state === 'recovery' && (
             <>
               <h1>Set a new password</h1>
+              {message !== 'Finishing sign-in…' && <p role="alert" className="form-note err">{message}</p>}
               <form className="authform__form" onSubmit={onSetPassword}>
                 <label className="field">
                   <span className="field__label">New password</span>
@@ -96,7 +104,7 @@ export default function AuthCallbackPage() {
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </label>
-                <button className="navlink navlink--cta" type="submit">
+                <button className="navlink navlink--cta" type="submit" disabled={busy}>
                   Update password
                 </button>
               </form>
@@ -106,7 +114,7 @@ export default function AuthCallbackPage() {
           {state === 'error' && (
             <>
               <h1>Link problem</h1>
-              <p className="form-note err" role="alert">
+              <p className={sent ? "form-note ok" : "form-note err"} role={sent ? "status" : "alert"}>
                 {message}
               </p>
               <form className="authform__form" onSubmit={onResend}>
@@ -119,8 +127,8 @@ export default function AuthCallbackPage() {
                     onChange={(e) => setResendEmail(e.target.value)}
                   />
                 </label>
-                <button className="navlink navlink--cta" type="submit">
-                  Resend confirmation email
+                <button className="navlink navlink--cta" type="submit" disabled={busy}>
+                  {isRecovery ? 'Send password reset link' : initialAuthCallback.type === 'magiclink' ? 'Send sign-in link' : 'Resend confirmation email'}
                 </button>
               </form>
             </>

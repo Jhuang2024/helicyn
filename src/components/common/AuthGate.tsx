@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/app/auth/AuthProvider';
 
 /**
@@ -8,6 +8,7 @@ import { useAuth } from '@/app/auth/AuthProvider';
  * users see the gated content.
  */
 export function AuthGate({ children, title }: { children: ReactNode; title?: string }) {
+  const location = useLocation();
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -29,7 +30,7 @@ export function AuthGate({ children, title }: { children: ReactNode; title?: str
             You need a Helicyn account to view this page. Sign in or create one to continue.
           </p>
           <div className="authgate__actions">
-            <Link className="navlink navlink--cta" to="/login">
+            <Link className="navlink navlink--cta" to={`/login?next=${encodeURIComponent(location.pathname + location.search + location.hash)}`}>
               Sign in <span className="arr" aria-hidden="true">↗</span>
             </Link>
           </div>

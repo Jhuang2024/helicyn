@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Seo } from '@/components/common/Seo';
 import { AuthGate } from '@/components/common/AuthGate';
 import { getMyJobApplications, submitJobApplication } from '@/services/auth';
+
+import { useAsyncData } from '@/hooks/useAsyncData';
 
 interface Role {
   key: string;
@@ -92,7 +94,7 @@ function RoleForm({ role, applied }: { role: Role; applied: boolean }) {
   };
 
   return (
-    <form className="hireform" onSubmit={onSubmit} noValidate>
+    <form className="hireform" onSubmit={onSubmit}>
       <label className="field">
         <span className="field__label">Full name *</span>
         <input type="text" name="full_name" required />
@@ -140,17 +142,10 @@ function RoleForm({ role, applied }: { role: Role; applied: boolean }) {
 }
 
 function CareersBoard() {
-  const [applied, setApplied] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    getMyJobApplications()
-      .then((apps) => {
-        const roles = new Set<string>();
-        for (const a of apps as Array<{ role?: string }>) if (a.role) roles.add(a.role);
-        setApplied(roles);
-      })
-      .catch(() => {});
-  }, []);
+  const { data: apps, loading, error, retry } = useAsyncData(getMyJobApplications);
+  const applied = new Set((apps ?? []).map((app: { role?: string }) => app.role));
+  if (loading) return <p role="status">Loading your applications…</p>;
+  if (error) return <div><p className="form-note err" role="alert">{error}</p><button className="navlink" onClick={retry}>Try again</button></div>;
 
   return (
     <div className="hirecards">

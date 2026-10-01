@@ -29,3 +29,9 @@ migration-notes/
 
 # Generated at build/dev time from legacy/report.html (10MB): not committed
 public/report-body.html
+
+# Report figures are derived from the checked-in report at build time.
+public/report-assets/
+
+*.tsbuildinfo
+supabase/.temp/

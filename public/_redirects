@@ -7,9 +7,7 @@
 
 # Old space-encoded Control Plane URLs → clean path
 /control%20plane        /control-plane   301
-/control plane          /control-plane   301
 /Control%20Plane.html   /control-plane   301
-/Control Plane.html     /control-plane   301
 
 # Canonicalize any lingering .html links/bookmarks to clean paths
 /control-plane.html     /control-plane   301

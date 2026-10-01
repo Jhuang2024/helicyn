@@ -1,3 +1,4 @@
+import { InlineMarkup } from '@/components/common/InlineMarkup';
 import {
   NODE_POS,
   PRIO_CLASS,
@@ -228,7 +229,7 @@ function RecommendationInspector({ id }: { id: string }) {
         <span className={'cp-rec__state ' + badge.cls}>{badge.txt}</span>
       </div>
       <p className="cps-inspector__desc">{t.type} · generated {formatClock(card.createdAt).slice(0, 5)} UTC</p>
-      <p className="cps-inspector__text" dangerouslySetInnerHTML={{ __html: t.text }} />
+      <p className="cps-inspector__text"><InlineMarkup text={t.text} /></p>
 
       <dl className="cps-kv">
         <div><dt>Priority</dt><dd className={PRIO_CLASS[t.prio]}>{t.prio}</dd></div>
@@ -359,7 +360,7 @@ function EventInspector({ id }: { id: string }) {
       <p className="cps-inspector__desc mono">
         {event.id} · {event.category.toUpperCase()} · {event.time} UTC
       </p>
-      <p className="cps-inspector__text" dangerouslySetInnerHTML={{ __html: event.text }} />
+      <p className="cps-inspector__text"><InlineMarkup text={event.text} /></p>
 
       {event.entities.length > 0 && (
         <div className="cps-inspector__section">

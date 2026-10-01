@@ -1,3 +1,4 @@
+import { InlineMarkup } from '@/components/common/InlineMarkup';
 import { SCN, selectPendingRecommendations, selectRegionTelemetry } from '@/simulation';
 import { useControlPlane } from '@/state/controlPlaneStore';
 import { MetricCards } from '../MetricCards';
@@ -63,7 +64,7 @@ function AttentionPanel() {
               className="cps-attention__rec"
               onClick={() => selectEntity({ type: 'recommendation', id: top.id })}
             >
-              <span dangerouslySetInnerHTML={{ __html: top.template.text }} />
+              <span><InlineMarkup text={top.template.text} /></span>
               <span className="mono cps-attention__impact">{top.template.impact} · {top.template.conf}% confidence</span>
             </button>
           )}

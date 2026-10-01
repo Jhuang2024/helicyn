@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, useId } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { useDialogFocus } from '@/hooks/useDialogFocus';
 
 interface Command {
   label: string;
@@ -28,6 +30,9 @@ const COMMANDS: Command[] = [
 export function CommandPalette({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(0);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const listId = useId();
+  useDialogFocus(panelRef, open, onClose);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -48,15 +53,6 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
     return undefined;
   }, [open]);
 
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
-
   if (!open) return null;
 
   const go = (path: string) => {
@@ -74,7 +70,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="cmdk-panel">
+      <div className="cmdk-panel" ref={panelRef}>
         <input
           ref={inputRef}
           className="cmdk-input"
@@ -82,6 +78,11 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
           placeholder="Search pages…"
           value={query}
           aria-label="Search pages"
+          role="combobox"
+          aria-expanded="true"
+          aria-autocomplete="list"
+          aria-controls={listId}
+          aria-activedescendant={results[active] ? `${listId}-${active}` : undefined}
           onChange={(e) => {
             setQuery(e.target.value);
             setActive(0);
@@ -89,7 +90,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
           onKeyDown={(e) => {
             if (e.key === 'ArrowDown') {
               e.preventDefault();
-              setActive((a) => Math.min(a + 1, results.length - 1));
+              setActive((a) => Math.max(0, Math.min(a + 1, results.length - 1)));
             } else if (e.key === 'ArrowUp') {
               e.preventDefault();
               setActive((a) => Math.max(a - 1, 0));
@@ -100,11 +101,12 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
             }
           }}
         />
-        <ul className="cmdk-list" role="listbox" aria-label="Pages">
+        <ul id={listId} className="cmdk-list" role="listbox" aria-label="Pages">
           {results.map((c, i) => (
             <li key={c.path}>
               <button
                 type="button"
+                id={`${listId}-${i}`}
                 role="option"
                 aria-selected={i === active}
                 className={'cmdk-item' + (i === active ? ' is-active' : '')}

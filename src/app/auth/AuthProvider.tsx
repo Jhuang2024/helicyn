@@ -23,9 +23,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
+    let sessionChanged = false;
     getSession()
       .then((s) => {
-        if (!cancelled) setSession(s);
+        if (!cancelled && !sessionChanged) setSession(s);
       })
       .catch(() => {
         /* unconfigured or offline: treat as signed out */
@@ -35,7 +36,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
     const sub = onAuthStateChange((s) => {
-      if (!cancelled) setSession(s);
+      sessionChanged = true;
+      if (!cancelled) { setSession(s); setLoading(false); }
     });
 
     return () => {

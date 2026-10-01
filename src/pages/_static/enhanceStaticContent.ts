@@ -704,13 +704,20 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
     backToTop.remove();
   });
 
+  // Legacy assets lived beside every page; keep downloads rooted on clean/trailing-slash routes.
+  $$('a[href]').forEach((element) => {
+    const href = element.getAttribute('href');
+    if (href && !/^(?:[a-z][a-z0-9+.-]*:|\/|#)/i.test(href)) element.setAttribute('href', '/' + href);
+  });
+
   // ---- internal-link SPA routing --------------------------------------------
   const onClick = (e: MouseEvent) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     const anchor = (e.target as HTMLElement).closest('a');
     if (!anchor) return;
     const href = anchor.getAttribute('href');
     if (!href) return;
-    if (anchor.target === '_blank' || href.startsWith('http') || href.startsWith('mailto:')) return;
+    if (anchor.target && anchor.target !== '_self' || anchor.hasAttribute('download') || /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(href)) return;
     if (href.startsWith('#')) return; // let anchor scrolling behave natively
     e.preventDefault();
     const path = href.startsWith('/') ? href : '/' + href;
@@ -746,15 +753,11 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
       const body = encodeURIComponent('Access request from: ' + v + '\nRole: ' + role);
       window.location.href = 'mailto:' + dest + '?subject=' + subject + '&body=' + body;
       if (note) {
-        note.textContent = '// request received. secure channel will follow';
+        note.textContent = '// email draft opened. Send it in your email app to contact us.';
+        note.setAttribute('role', 'status');
         note.classList.remove('err');
         note.classList.add('ok');
       }
-      if (input) {
-        input.value = '';
-        input.setAttribute('disabled', 'true');
-      }
-      form.querySelector('button')?.setAttribute('disabled', 'true');
     };
     form.addEventListener('submit', onSubmit);
     cleanups.push(() => form.removeEventListener('submit', onSubmit));
@@ -765,12 +768,13 @@ export function enhanceStaticContent(root: HTMLElement, options: EnhanceOptions)
   if (patchTabs) {
     const tabButtons = Array.from(patchTabs.querySelectorAll<HTMLButtonElement>('[data-filter-tag]'));
     const cards = $$('.patchcard');
-    const indicator = patchTabs.querySelector<HTMLElement>('.ptabs__indicator');
+    const indicator = patchTabs.querySelector<HTMLElement>('.ptabs-indicator, .ptabs__indicator');
     const onTab = (btn: HTMLButtonElement) => {
       const tag = btn.getAttribute('data-filter-tag') ?? 'all';
-      tabButtons.forEach((b) => b.classList.toggle('is-active', b === btn));
+      tabButtons.forEach((b) => { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-pressed', String(b === btn)); });
       cards.forEach((c) => {
-        const match = tag === 'all' || c.getAttribute('data-tag') === tag;
+        const tags = [c.getAttribute('data-tag'), ...Array.from(c.querySelectorAll('.patchtag')).map((label) => label.textContent?.trim())];
+        const match = tag === 'all' || tags.includes(tag);
         (c as HTMLElement).style.display = match ? '' : 'none';
       });
       if (indicator) {

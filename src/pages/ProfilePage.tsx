@@ -76,14 +76,12 @@ function ProfileForm() {
   const onSignOut = async () => {
     try {
       await signOut();
-    } catch {
-      /* ignore */
-    }
-    navigate('/');
+      navigate('/');
+    } catch { setError('Could not sign out. Please try again.'); }
   };
 
   return (
-    <form className="profile-form" onSubmit={onSave} noValidate>
+    <form className="profile-form" onSubmit={onSave}>
       <div className="profile-avatar">
         <span className="profile-avatar__img" aria-hidden="true">
           {avatar ? <img src={avatar} alt="" /> : (user?.email ?? '?').slice(0, 1).toUpperCase()}
@@ -98,6 +96,7 @@ function ProfileForm() {
               type="file"
               accept="image/png,image/jpeg,image/webp"
               onChange={onAvatar}
+              disabled={busy}
             />
           </label>
         </div>

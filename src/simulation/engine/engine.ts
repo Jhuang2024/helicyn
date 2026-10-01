@@ -28,6 +28,7 @@ import type {
   WorkloadState,
   ZoneId,
 } from '../models/types';
+import { MAX_SNAPSHOT_BYTES, validSnapshot, restoreTemplates } from './validation';
 import { BUMP_SCALE, INFRA_TO_TOPO, LIFETIME_SEED, ZONE_BASE, clamp } from './constants';
 import { SCN, SCENARIO_META } from '../scenarios/scenarios';
 import { RECOMMENDATION_POOL } from '../scenarios/recommendations';
@@ -552,9 +553,10 @@ export function advanceSimulation(
   dtSeconds: number,
   force = false,
 ): SimulationState {
-  if (!state.clock.running && !force) return state;
+  if ((!state.clock.running && !force) || !Number.isFinite(dtSeconds) || dtSeconds <= 0) return state;
   const advanceBy = dtSeconds * (force ? 1 : state.clock.speed);
   const seconds = state.clock.seconds + advanceBy;
+  if (!Number.isFinite(advanceBy) || !Number.isFinite(seconds)) return state;
 
   const prng = createPrng(0);
   prng.setState(state.prngState);
@@ -605,6 +607,7 @@ export function stepForward(state: SimulationState, seconds = 900): SimulationSt
  * is the structured path for adding it later.
  */
 export function seekToTime(state: SimulationState, targetSeconds: number): SimulationState {
+  if (!Number.isFinite(targetSeconds)) return state;
   const delta = targetSeconds - state.clock.seconds;
   if (delta <= 0) return state;
   // Sample at most every 15 simulated minutes, with a hard chunk bound.
@@ -621,11 +624,13 @@ export function setClockRunning(state: SimulationState, running: boolean): Simul
 }
 
 export function setClockSpeed(state: SimulationState, speed: number): SimulationState {
+  if (!Number.isFinite(speed)) return state;
   return { ...state, clock: { ...state.clock, speed: clamp(speed, 1, 3600) } };
 }
 
 /** Append the next deterministic low-frequency coordination event. */
 export function appendAmbientEvent(state: SimulationState): SimulationState {
+  if (!state.clock.running) return state;
   const template = AMBIENT_EVENTS[state.actionCounter % AMBIENT_EVENTS.length]!;
   return withEvent({ ...state, actionCounter: state.actionCounter + 1 }, template);
 }
@@ -646,6 +651,7 @@ const SCENARIO_KEY_SET = new Set(Object.keys(SCENARIO_META));
 
 /** Validate and restore persisted state; returns null if the payload is invalid. */
 export function restoreSimulation(payload: string | unknown): SimulationState | null {
+  if (typeof payload === 'string' && payload.length > MAX_SNAPSHOT_BYTES) return null;
   let data: unknown;
   try {
     data = typeof payload === 'string' ? JSON.parse(payload) : payload;
@@ -656,7 +662,8 @@ export function restoreSimulation(payload: string | unknown): SimulationState | 
   const candidate = data as Partial<SimulationState>;
   if (typeof candidate.scenario !== 'string' || !SCENARIO_KEY_SET.has(candidate.scenario)) return null;
   if (!candidate.controls || typeof candidate.controls !== 'object') return null;
-  if (typeof candidate.schemaVersion !== 'number') return null;
+  if (!Number.isInteger(candidate.schemaVersion) || candidate.schemaVersion! < 1 || candidate.schemaVersion! > SCHEMA_VERSION) return null;
+  if (!validSnapshot(data as Record<string, unknown>)) return null;
 
   // Rebuild from a fresh base and overlay validated fields so that a partial or
   // older-schema payload cannot leave the store in a broken shape.
@@ -668,14 +675,14 @@ export function restoreSimulation(payload: string | unknown): SimulationState | 
     scenario: candidate.scenario,
     controls: { ...base.controls, ...candidate.controls },
     clock: { ...base.clock, ...(candidate.clock ?? {}) },
-    effects: { ...freshEffects(), ...(candidate.effects ?? {}) },
+    effects: { ...freshEffects(), ...(candidate.effects ?? {}), bump: { ...freshBump(), ...candidate.effects?.bump } },
     lifetime: { ...base.lifetime, ...(candidate.lifetime ?? {}) },
   };
 
   // Schema migration: v2 payloads carried unstructured events and a
   // region-only selection. Re-seed events and map the selection forward.
   const eventsValid =
-    Array.isArray(merged.events) && merged.events.every((e) => e && typeof e === 'object' && 'id' in e);
+    candidate.schemaVersion! >= 3 && Array.isArray(merged.events) && merged.events.every((e) => e && typeof e === 'object' && 'id' in e);
   if (!eventsValid) {
     merged.events = base.events;
     merged.eventSeq = base.eventSeq;
@@ -687,5 +694,6 @@ export function restoreSimulation(payload: string | unknown): SimulationState | 
     merged.selectedEntity = legacyRegion ? { type: 'region', id: legacyRegion } : null;
   }
   delete (merged as { selectedRegion?: unknown }).selectedRegion;
+  restoreTemplates(merged);
   return merged;
 }

@@ -7,14 +7,15 @@
 # legacy 301s live in `public/_redirects` (copied into `dist/`).
 
 [build]
-  command = "pnpm build"
+  command = "pnpm exec playwright install chromium && pnpm build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "22"
   # pnpm is auto-detected from pnpm-lock.yaml; pin the major line for stability.
-  PNPM_VERSION = "10"
-  # Allow esbuild's install script to run (matches pnpm.onlyBuiltDependencies).
+  PNPM_VERSION = "10.34.6"
+  REQUIRE_PRERENDER = "1"
+  # Allow esbuild's install script to run (matches pnpm-workspace.yaml).
   NPM_CONFIG_PRODUCTION = "false"
 
 # Security + caching headers. Immutable, content-hashed assets can be cached
@@ -43,28 +44,39 @@
   for = "/login"
   [headers.values]
     Cache-Control = "no-store, max-age=0, must-revalidate"
+    X-Robots-Tag = "noindex, nofollow"
 
 [[headers]]
   for = "/auth-callback"
   [headers.values]
     Cache-Control = "no-store, max-age=0, must-revalidate"
+    X-Robots-Tag = "noindex, nofollow"
 
 [[headers]]
   for = "/partner-portal"
   [headers.values]
     Cache-Control = "no-store, max-age=0, must-revalidate"
+    X-Robots-Tag = "noindex, nofollow"
 
 [[headers]]
   for = "/onboarding"
   [headers.values]
     Cache-Control = "no-store, max-age=0, must-revalidate"
+    X-Robots-Tag = "noindex, nofollow"
 
 [[headers]]
   for = "/profile"
   [headers.values]
     Cache-Control = "no-store, max-age=0, must-revalidate"
+    X-Robots-Tag = "noindex, nofollow"
 
 [[headers]]
   for = "/supabase-config.js"
   [headers.values]
     Cache-Control = "no-store, max-age=0, must-revalidate"
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/report-assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

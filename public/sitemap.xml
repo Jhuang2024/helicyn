@@ -36,10 +36,4 @@
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
-  <url>
-    <loc>https://helicyn.com/onboarding</loc>
-    <lastmod>2026-07-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
 </urlset>

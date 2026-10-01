@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Seo } from '@/components/common/Seo';
 import { AuthGate } from '@/components/common/AuthGate';
 import { CustomSelect } from '@/components/common/CustomSelect';
@@ -6,6 +6,8 @@ import {
   getMyFoundingPartnerApplication,
   submitFoundingPartnerApplication,
 } from '@/services/auth';
+
+import { useAsyncData } from '@/hooks/useAsyncData';
 
 const RELATIONSHIP_OPTIONS = [
   { value: '', label: 'Select one' },
@@ -50,19 +52,12 @@ const INTERESTS = [
 ] as const;
 
 function OnboardingForm() {
-  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
+  const { data: existing, loading, error: loadError, retry } = useAsyncData(getMyFoundingPartnerApplication);
+  const alreadySubmitted = Boolean(existing);
   const [submitted, setSubmitted] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [interests, setInterests] = useState<string[]>([]);
-
-  useEffect(() => {
-    getMyFoundingPartnerApplication()
-      .then((app) => {
-        if (app) setAlreadySubmitted(true);
-      })
-      .catch(() => {});
-  }, []);
 
   const toggleInterest = (v: string) =>
     setInterests((cur) => (cur.includes(v) ? cur.filter((x) => x !== v) : [...cur, v]));
@@ -114,13 +109,15 @@ function OnboardingForm() {
 
   return (
     <>
+      {loading && <p role="status">Checking previous applications…</p>}
+      {loadError && <div><p className="form-note err" role="alert">{loadError}</p><button type="button" className="navlink" onClick={retry}>Try again</button></div>}
       {alreadySubmitted && (
         <div className="authnotice authnotice--ok" style={{ marginBottom: '2rem' }}>
           You&apos;ve already submitted a founding-partner application. Submitting again will add a new
           entry.
         </div>
       )}
-      <form className="onboarding-form" onSubmit={onSubmit} noValidate>
+      <form className="onboarding-form" onSubmit={onSubmit}>
         <fieldset className="formsection">
           <legend className="eyebrow">Company</legend>
           <label className="field">
@@ -249,6 +246,7 @@ export default function OnboardingPage() {
         description="Apply to become a Helicyn founding partner: early access to an AI coordination layer for GPU workloads and data center energy, plus launch pricing."
         canonicalPath="/onboarding"
         ogType="website"
+        noindex
       />
       <section className="section">
         <div className="wrap">

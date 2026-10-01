@@ -5,7 +5,6 @@ import {
   SCENARIO_META,
   formatClock,
   selectSystemStatus,
-  type ScenarioKey,
 } from '@/simulation';
 import { useControlPlane } from '@/state/controlPlaneStore';
 import { ExportImport } from '../ExportImport';
@@ -17,61 +16,12 @@ const SPEED_OPTIONS = SPEEDS.map((speed) => ({ value: String(speed), label: `${s
 function ScenarioSelect() {
   const scenario = useControlPlane((s) => s.sim.scenario);
   const setScenario = useControlPlane((s) => s.setScenario);
-  const [open, setOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onPointer = (e: PointerEvent) => {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
-    };
-    document.addEventListener('pointerdown', onPointer);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('pointerdown', onPointer);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
-
-  const meta = SCENARIO_META[scenario];
   return (
-    <div className="cp-select" data-value={scenario} ref={rootRef}>
+    <div className="cp-select" data-value={scenario}>
       <span className="cp-select__k mono">Scenario</span>
-      <button
-        type="button"
-        className="cp-select__btn"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        aria-label="Operating scenario"
-        onClick={() => setOpen((v) => !v)}
-      >
-        {meta.name}
-        <span className="cp-select__arrow" aria-hidden="true">▾</span>
-      </button>
-      {open && (
-        <ul className="cp-select__list" role="listbox" aria-label="Operating scenario">
-          {SCENARIO_KEYS.map((key: ScenarioKey) => (
-            <li key={key}>
-              <button
-                type="button"
-                role="option"
-                aria-selected={key === scenario}
-                className={'cp-select__opt' + (key === scenario ? ' is-active' : '')}
-                onClick={() => {
-                  setScenario(key);
-                  setOpen(false);
-                }}
-              >
-                <span className="cp-select__optname">{SCENARIO_META[key].name}</span>
-                <span className="cp-select__optdesc">{SCENARIO_META[key].description}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+      <CustomSelect compact ariaLabel="Operating scenario" value={scenario}
+        options={SCENARIO_KEYS.map((key) => ({ value: key, label: SCENARIO_META[key].name, description: SCENARIO_META[key].description }))}
+        onChange={setScenario} />
     </div>
   );
 }
@@ -90,8 +40,10 @@ function SimulationMenu() {
     const onPointer = (e: PointerEvent) => {
       if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
     };
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') { setOpen(false); rootRef.current?.querySelector('button')?.focus(); } };
     document.addEventListener('pointerdown', onPointer);
-    return () => document.removeEventListener('pointerdown', onPointer);
+    document.addEventListener('keydown', onKey);
+    return () => { document.removeEventListener('pointerdown', onPointer); document.removeEventListener('keydown', onKey); };
   }, [open]);
 
   return (

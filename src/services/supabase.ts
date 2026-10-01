@@ -11,7 +11,12 @@
  * the original behavior.
  */
 
+import { readAuthCallback, safeReturnTo } from './authNavigation';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+
+// Capture callback intent before Supabase consumes and clears the URL fragment.
+export const initialAuthCallback = typeof window === 'undefined'
+  ? readAuthCallback('', '') : readAuthCallback(window.location.search, window.location.hash);
 
 declare global {
   interface Window {
@@ -116,6 +121,9 @@ export function getSupabaseClient(): SupabaseClient | null {
   return client;
 }
 
-export function authCallbackUrl(): string {
-  return window.location.origin + '/auth-callback';
+export function authCallbackUrl(type?: 'recovery'): string {
+  const url = new URL('/auth-callback', window.location.origin);
+  url.searchParams.set('next', safeReturnTo(new URLSearchParams(window.location.search).get('next')));
+  if (type) url.searchParams.set('type', type);
+  return url.href;
 }

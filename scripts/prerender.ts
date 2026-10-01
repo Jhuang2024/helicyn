@@ -23,7 +23,10 @@ const ROUTES: { path: string; title: string }[] = [
   { path: '/partners', title: 'Founding Partners' },
   { path: '/patch-notes', title: 'Patch Notes' },
   { path: '/terms', title: 'Terms and Conditions' },
+  { path: '/report', title: 'Helicyn Thesis' },
+  { path: '/control-plane', title: 'Control Plane' },
 ];
+const REQUIRED = process.env.REQUIRE_PRERENDER === '1';
 const PINNED = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 
 async function main() {
@@ -31,6 +34,7 @@ async function main() {
   try {
     ({ chromium } = await import('@playwright/test'));
   } catch {
+    if (REQUIRED) throw new Error('Playwright is required for production prerendering.');
     console.warn('[prerender] playwright not available: skipping (SPA fallback still serves all routes)');
     return;
   }
@@ -46,10 +50,12 @@ async function main() {
   } catch (err) {
     console.warn('[prerender] could not launch a browser: skipping:', (err as Error).message);
     server.kill();
+    if (REQUIRED) throw err;
     return;
   }
 
-  const page = await browser.newPage();
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
+  let failures = 0;
   for (const route of ROUTES) {
     try {
       await page.goto(`http://localhost:${PORT}${route.path}`, { waitUntil: 'load', timeout: 15000 });
@@ -69,15 +75,17 @@ async function main() {
       writeFileSync(join(outDir, 'index.html'), html, 'utf8');
       console.log(`[prerender] wrote ${route.path}`);
     } catch (err) {
+      failures++;
       console.warn(`[prerender] skipped ${route.path}:`, (err as Error).message);
     }
   }
 
   await browser.close();
   server.kill();
+  if (failures && REQUIRED) throw new Error(`${failures} routes failed prerendering.`);
 }
 
 main().catch((err) => {
   console.warn('[prerender] non-fatal error:', err?.message ?? err);
-  process.exit(0);
+  process.exitCode = REQUIRED ? 1 : 0;
 });
